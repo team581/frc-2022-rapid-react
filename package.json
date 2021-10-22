@@ -1,0 +1,16 @@
+{
+  "name": "@team581/tshirt-cannon",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blazingbulldogs/tshirt-cannon.git"
+  },
+  "scripts": {
+    "style": "prettier --plugin prettier-plugin-java --check ."
+  },
+  "devDependencies": {
+    "prettier": "2.4.1",
+    "prettier-plugin-java": "1.5.0"
+  },
+  "packageManager": "yarn@3.0.2"
+}
