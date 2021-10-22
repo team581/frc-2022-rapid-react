@@ -1,9 +1,9 @@
 {
-  "name": "@team581/tshirt-cannon",
+  "name": "@team581/frc-2022-rapid-react",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/blazingbulldogs/tshirt-cannon.git"
+    "url": "https://github.com/blazingbulldogs/rapid-react.git"
   },
   "scripts": {
     "style": "prettier --plugin prettier-plugin-java --check ."

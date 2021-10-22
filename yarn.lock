@@ -5,9 +5,9 @@ __metadata:
   version: 4
   cacheKey: 8
 
-"@team581/tshirt-cannon@workspace:.":
+"@team581/frc-2022-rapid-react@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@team581/tshirt-cannon@workspace:."
+  resolution: "@team581/frc-2022-rapid-react@workspace:."
   dependencies:
     prettier: 2.4.1
     prettier-plugin-java: 1.5.0

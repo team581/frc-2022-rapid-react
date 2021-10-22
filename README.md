@@ -1,6 +1,6 @@
-# T-Shirt Cannon
+# FRC 2022 Rapid React
 
-[![Build Status](https://github.com/blazingbulldogs/tshirt-cannon/workflows/CI/badge.svg)](https://github.com/blazingbulldogs/tshirt-cannon/actions)
+[![CI](https://github.com/blazingbulldogs/frc-2022-rapid-react/actions/workflows/ci.yml/badge.svg)](https://github.com/blazingbulldogs/frc-2022-rapid-react/actions/workflows/ci.yml)
 
-T-Shirt cannon robot.
+FRC 2022 Rapid React robot.
 Built with WPILib.

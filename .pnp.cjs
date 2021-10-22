@@ -19,14 +19,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     ],
     "dependencyTreeRoots": [
       {
-        "name": "@team581/tshirt-cannon",
+        "name": "@team581/frc-2022-rapid-react",
         "reference": "workspace:."
       }
     ],
     "enableTopLevelFallback": true,
     "ignorePatternData": "(^(?:\\.yarn\\/sdks(?:\\/(?!\\.{1,2}(?:\\/|$))(?:(?:(?!(?:^|\\/)\\.{1,2}(?:\\/|$)).)*?)|$))$)",
     "fallbackExclusionList": [
-      ["@team581/tshirt-cannon", ["workspace:."]]
+      ["@team581/frc-2022-rapid-react", ["workspace:."]]
     ],
     "fallbackPool": [
     ],
@@ -41,11 +41,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "SOFT",
         }]
       ]],
-      ["@team581/tshirt-cannon", [
+      ["@team581/frc-2022-rapid-react", [
         ["workspace:.", {
           "packageLocation": "./",
           "packageDependencies": [
-            ["@team581/tshirt-cannon", "workspace:."],
+            ["@team581/frc-2022-rapid-react", "workspace:."],
             ["prettier", "npm:2.4.1"],
             ["prettier-plugin-java", "npm:1.5.0"]
           ],
