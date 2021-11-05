@@ -12,5 +12,5 @@
     "prettier": "2.4.1",
     "prettier-plugin-java": "1.5.0"
   },
-  "packageManager": "yarn@3.0.2"
+  "packageManager": "yarn@3.1.0"
 }
