@@ -36,7 +36,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",
           "packageDependencies": [
             ["prettier", "npm:2.4.1"],
-            ["prettier-plugin-java", "npm:1.5.0"]
+            ["prettier-plugin-java", "npm:1.6.0"]
           ],
           "linkType": "SOFT",
         }]
@@ -47,7 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@team581/frc-2022-rapid-react", "workspace:."],
             ["prettier", "npm:2.4.1"],
-            ["prettier-plugin-java", "npm:1.5.0"]
+            ["prettier-plugin-java", "npm:1.6.0"]
           ],
           "linkType": "SOFT",
         }]
@@ -99,10 +99,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["prettier-plugin-java", [
-        ["npm:1.5.0", {
-          "packageLocation": "./.yarn/cache/prettier-plugin-java-npm-1.5.0-43c2a528f5-e053f36949.zip/node_modules/prettier-plugin-java/",
+        ["npm:1.6.0", {
+          "packageLocation": "./.yarn/cache/prettier-plugin-java-npm-1.6.0-b4aaf9ae52-30fe055ba3.zip/node_modules/prettier-plugin-java/",
           "packageDependencies": [
-            ["prettier-plugin-java", "npm:1.5.0"],
+            ["prettier-plugin-java", "npm:1.6.0"],
             ["java-parser", "npm:2.0.0"],
             ["lodash", "npm:4.17.21"],
             ["prettier", "npm:2.3.1"]
