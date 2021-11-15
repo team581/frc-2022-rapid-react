@@ -10,7 +10,7 @@ __metadata:
   resolution: "@team581/frc-2022-rapid-react@workspace:."
   dependencies:
     prettier: 2.4.1
-    prettier-plugin-java: 1.5.0
+    prettier-plugin-java: 1.6.0
   languageName: unknown
   linkType: soft
 
@@ -40,14 +40,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-java@npm:1.5.0":
-  version: 1.5.0
-  resolution: "prettier-plugin-java@npm:1.5.0"
+"prettier-plugin-java@npm:1.6.0":
+  version: 1.6.0
+  resolution: "prettier-plugin-java@npm:1.6.0"
   dependencies:
     java-parser: 2.0.0
     lodash: 4.17.21
     prettier: 2.3.1
-  checksum: e053f36949367deee1f99ada651a4df49d6101290ac709e58513aff23907ddf0b7496eff4305f904c4f411ddb8cea49674a482392a2d17b73e279b9bca8af1a6
+  checksum: 30fe055ba370cd9f05204ea5b5cabdb490521b84d7673ded0151aba16c0767b1f596600a4924b3541ac1a82819b67a5cd783094b53192612e9f48ae23edbaa3d
   languageName: node
   linkType: hard
 
