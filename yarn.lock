@@ -10,7 +10,7 @@ __metadata:
   resolution: "@team581/frc-2022-rapid-react@workspace:."
   dependencies:
     prettier: 2.5.1
-    prettier-plugin-java: 1.6.0
+    prettier-plugin-java: 1.6.1
   languageName: unknown
   linkType: soft
 
@@ -23,13 +23,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"java-parser@npm:2.0.0":
-  version: 2.0.0
-  resolution: "java-parser@npm:2.0.0"
+"java-parser@npm:2.0.1":
+  version: 2.0.1
+  resolution: "java-parser@npm:2.0.1"
   dependencies:
     chevrotain: 6.5.0
     lodash: 4.17.21
-  checksum: ac2ccd448d0b5d9232927f514279edd1557cd898455d6528190ae2568303d73f53214c2977f6988d1c5c351719c69dd82c65850ba53d77d0cf0449e5b42cbe81
+  checksum: e9d708e5a3d285c977a4de9ae154389dc658857bb6eedf9aebc740fab20ec5e43e8f19a74208c222ca10bcdcbba19862c86bd3770af9501b245f83d652916a47
   languageName: node
   linkType: hard
 
@@ -40,14 +40,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-java@npm:1.6.0":
-  version: 1.6.0
-  resolution: "prettier-plugin-java@npm:1.6.0"
+"prettier-plugin-java@npm:1.6.1":
+  version: 1.6.1
+  resolution: "prettier-plugin-java@npm:1.6.1"
   dependencies:
-    java-parser: 2.0.0
+    java-parser: 2.0.1
     lodash: 4.17.21
     prettier: 2.3.1
-  checksum: 30fe055ba370cd9f05204ea5b5cabdb490521b84d7673ded0151aba16c0767b1f596600a4924b3541ac1a82819b67a5cd783094b53192612e9f48ae23edbaa3d
+  checksum: c36708a190115549e8158c8740404224e11fe63fd075f0ad6aa589453d583b10bba9c6a4b6498f259aaa1ccfb4528ec763ebaff48beaf04f9198b95abced706d
   languageName: node
   linkType: hard
 

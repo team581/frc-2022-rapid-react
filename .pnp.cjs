@@ -36,7 +36,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",
           "packageDependencies": [
             ["prettier", "npm:2.5.1"],
-            ["prettier-plugin-java", "npm:1.6.0"]
+            ["prettier-plugin-java", "npm:1.6.1"]
           ],
           "linkType": "SOFT",
         }]
@@ -47,7 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@team581/frc-2022-rapid-react", "workspace:."],
             ["prettier", "npm:2.5.1"],
-            ["prettier-plugin-java", "npm:1.6.0"]
+            ["prettier-plugin-java", "npm:1.6.1"]
           ],
           "linkType": "SOFT",
         }]
@@ -63,10 +63,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["java-parser", [
-        ["npm:2.0.0", {
-          "packageLocation": "./.yarn/cache/java-parser-npm-2.0.0-1aa0497592-ac2ccd448d.zip/node_modules/java-parser/",
+        ["npm:2.0.1", {
+          "packageLocation": "./.yarn/cache/java-parser-npm-2.0.1-483798753c-e9d708e5a3.zip/node_modules/java-parser/",
           "packageDependencies": [
-            ["java-parser", "npm:2.0.0"],
+            ["java-parser", "npm:2.0.1"],
             ["chevrotain", "npm:6.5.0"],
             ["lodash", "npm:4.17.21"]
           ],
@@ -99,11 +99,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["prettier-plugin-java", [
-        ["npm:1.6.0", {
-          "packageLocation": "./.yarn/cache/prettier-plugin-java-npm-1.6.0-b4aaf9ae52-30fe055ba3.zip/node_modules/prettier-plugin-java/",
+        ["npm:1.6.1", {
+          "packageLocation": "./.yarn/cache/prettier-plugin-java-npm-1.6.1-3f9ea9679a-c36708a190.zip/node_modules/prettier-plugin-java/",
           "packageDependencies": [
-            ["prettier-plugin-java", "npm:1.6.0"],
-            ["java-parser", "npm:2.0.0"],
+            ["prettier-plugin-java", "npm:1.6.1"],
+            ["java-parser", "npm:2.0.1"],
             ["lodash", "npm:4.17.21"],
             ["prettier", "npm:2.3.1"]
           ],
