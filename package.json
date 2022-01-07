@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "prettier": "2.5.1",
-    "prettier-plugin-java": "1.6.0"
+    "prettier-plugin-java": "1.6.1"
   },
   "packageManager": "yarn@3.1.1"
 }
