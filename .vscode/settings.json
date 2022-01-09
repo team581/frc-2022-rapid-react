@@ -18,5 +18,17 @@
     "**/.yarn": true,
     "**/.pnp.*": true
   },
-  "prettier.prettierPath": ".yarn/sdks/prettier/index.js"
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "java.test.config": [
+    {
+      "name": "WPIlibUnitTests",
+      "workingDirectory": "${workspaceFolder}/build/jni/release",
+      "vmargs": ["-Djava.library.path=${workspaceFolder}/build/jni/release"],
+      "env": {
+        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release",
+        "DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
+      }
+    }
+  ],
+  "java.test.defaultConfig": "WPIlibUnitTests"
 }
