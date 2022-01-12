@@ -125,9 +125,9 @@ spotless {
 	}
 
 	format 'misc', {
-    target '.gitignore'
+		target '.gitignore'
 
-    trimTrailingWhitespace()
-    endWithNewline()
-  }
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
 }
