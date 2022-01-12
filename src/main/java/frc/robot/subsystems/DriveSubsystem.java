@@ -4,11 +4,12 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
+
   private static final class Constants {
 
     public static final int FRONT_LEFT = 10;
@@ -25,9 +26,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final MecanumDrive mecanumDrive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
-
-  }
+  public DriveSubsystem() {}
 
   @Override
   public void periodic() {

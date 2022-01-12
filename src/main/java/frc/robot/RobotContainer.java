@@ -21,7 +21,7 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private static final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
@@ -50,13 +50,13 @@ private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
     return m_autoCommand;
   }
 
-  public void driveWithJoystick (){
+  public void driveWithJoystick() {
     final var rightY = controller.getRightY() / 3;
     final var rightX = controller.getRightX() / 3;
     final var leftX = controller.getLeftX() / 3;
 
     //TODO: use scaling on values
 
-    m_driveSubsystem.driveTeleop(rightX,rightY,leftX);
+    m_driveSubsystem.driveTeleop(rightX, rightY, leftX);
   }
 }
