@@ -57,7 +57,7 @@ public class RobotContainer {
     final var rightX = controller.getRightX() / scalar;
     final var leftX = controller.getLeftX() / scalar;
 
-    // TODO: Use sqrt() scaling on values
+    // TODO: Use quadratic scaling on values
 
     driveSubsystem.driveTeleop(rightX, rightY, leftX);
   }
