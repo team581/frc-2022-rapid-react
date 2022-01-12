@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 
 /**
@@ -20,8 +21,10 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private static final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -45,5 +48,15 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return m_autoCommand;
+  }
+
+  public void driveWithJoystick (){
+    final var rightY = controller.getRightY() / 3;
+    final var rightX = controller.getRightX() / 3;
+    final var leftX = controller.getLeftX() / 3;
+
+    //TODO: use scaling on values
+
+    m_driveSubsystem.driveTeleop(rightX,rightY,leftX);
   }
 }
