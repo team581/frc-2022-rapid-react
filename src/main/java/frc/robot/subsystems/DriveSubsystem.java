@@ -23,7 +23,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final WPI_TalonFX rearLeft = new WPI_TalonFX(Constants.REAR_LEFT);
   private final WPI_TalonFX rearRight = new WPI_TalonFX(Constants.REAR_RIGHT);
 
-  private final MecanumDrive mecanumDrive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
+  private final MecanumDrive mecanum = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {}
@@ -34,6 +34,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveTeleop(double x, double y, double z) {
-    mecanumDrive.driveCartesian(y, x, z);
+    mecanum.driveCartesian(y, x, z);
   }
 }

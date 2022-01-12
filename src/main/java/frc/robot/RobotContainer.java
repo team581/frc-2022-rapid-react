@@ -20,11 +20,11 @@ import frc.robot.subsystems.ExampleSubsystem;
 public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  private final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  private static final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
+  private final ExampleCommand autoCommand = new ExampleCommand(exampleSubsystem);
+  private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -47,16 +47,18 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return autoCommand;
   }
 
   public void driveWithJoystick() {
-    final var rightY = controller.getRightY() / 3;
-    final var rightX = controller.getRightX() / 3;
-    final var leftX = controller.getLeftX() / 3;
+    final int scalar = 3;
 
-    //TODO: use scaling on values
+    final var rightY = controller.getRightY() / scalar;
+    final var rightX = controller.getRightX() / scalar;
+    final var leftX = controller.getLeftX() / scalar;
 
-    m_driveSubsystem.driveTeleop(rightX, rightY, leftX);
+    // TODO: Use sqrt() scaling on values
+
+    driveSubsystem.driveTeleop(rightX, rightY, leftX);
   }
 }
