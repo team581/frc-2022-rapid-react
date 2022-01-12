@@ -23,7 +23,15 @@
       "sourcesClassifier": "sources",
       "sharedLibrary": true,
       "skipInvalidPlatforms": true,
-      "binaryPlatforms": ["linuxathena", "linuxraspbian", "linuxaarch64bionic", "windowsx86-64", "windowsx86", "linuxx86-64", "osxx86-64"]
+      "binaryPlatforms": [
+        "linuxathena",
+        "linuxraspbian",
+        "linuxaarch64bionic",
+        "windowsx86-64",
+        "windowsx86",
+        "linuxx86-64",
+        "osxx86-64"
+      ]
     }
   ]
 }
