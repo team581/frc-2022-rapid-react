@@ -9,9 +9,7 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
-
   private static final class Constants {
-
     public static final int FRONT_LEFT = 10;
     public static final int FRONT_RIGHT = 11;
     public static final int REAR_LEFT = 12;

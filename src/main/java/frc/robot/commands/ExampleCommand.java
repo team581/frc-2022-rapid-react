@@ -9,7 +9,6 @@ import frc.robot.subsystems.ExampleSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class ExampleCommand extends CommandBase {
-
   private final ExampleSubsystem subsystem;
 
   /**
