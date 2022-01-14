@@ -26,7 +26,10 @@ public class DriveSubsystem extends SubsystemBase {
   private final MecanumDrive mecanum = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {}
+  public DriveSubsystem() {
+    frontLeft.setInverted(true);
+    rearLeft.setInverted(true);
+  }
 
   @Override
   public void periodic() {
