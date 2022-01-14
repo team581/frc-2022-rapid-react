@@ -23,6 +23,7 @@
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "files.eol": "\n",
   "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
   "files.exclude": {
     "**/*~": true,
