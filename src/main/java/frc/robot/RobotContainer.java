@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.util.ControllerUtil;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,13 +52,9 @@ public class RobotContainer {
   }
 
   public void driveWithJoystick() {
-    final int scalar = 3;
-
-    final var rightY = controller.getRightY() / scalar;
-    final var rightX = controller.getRightX() / scalar;
-    final var leftX = controller.getLeftX() / scalar;
-
-    // TODO: Use quadratic scaling on values
+    final var rightX = ControllerUtil.joystickScale(controller.getRightX());
+    final var rightY = ControllerUtil.joystickScale(controller.getRightY());
+    final var leftX = ControllerUtil.joystickScale(controller.getLeftX());
 
     driveSubsystem.driveTeleop(rightX, rightY, leftX);
   }
