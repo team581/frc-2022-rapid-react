@@ -91,6 +91,9 @@ wpi.java.configureTestTasks(test)
 
 apply plugin: 'groovy'
 spotless {
+	encoding 'UTF-8'
+	lineEndings 'UNIX'
+
 	java {
 		licenseHeader '// Copyright (c) FIRST and other WPILib contributors.\n' +
 				'// Open Source Software; you can modify and/or share it under the terms of\n' +
