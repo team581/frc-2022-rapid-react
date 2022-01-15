@@ -51,8 +51,6 @@ public class RobotContainer {
   }
 
   public void driveWithJoystick() {
-    // TODO: Invert joystick input, un-invert left motors, invert right motors in order to get
-    // Shuffleboard Mecanum visualization to be correct
     final var rightX = ControllerUtil.joystickScale(controller.getRightX());
     final var rightY = ControllerUtil.joystickScale(controller.getRightY());
     final var leftX = ControllerUtil.joystickScale(controller.getLeftX());
