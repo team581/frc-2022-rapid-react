@@ -25,8 +25,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    frontLeft.setInverted(true);
-    rearLeft.setInverted(true);
+    frontRight.setInverted(true);
+    rearRight.setInverted(true);
   }
 
   @Override
@@ -35,6 +35,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveTeleop(double x, double y, double z) {
-    mecanum.driveCartesian(y, x, z);
+    mecanum.driveCartesian(-y, x, z);
   }
 }
