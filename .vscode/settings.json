@@ -23,8 +23,11 @@
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "files.eol": "\n",
   "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
+  "files.associations": {
+    "*.path": "json"
+  },
+  "files.eol": "\n",
   "files.exclude": {
     "**/*~": true,
     "**/.DS_Store": true,
