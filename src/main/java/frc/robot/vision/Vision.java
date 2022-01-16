@@ -4,8 +4,8 @@
 
 package frc.robot.vision;
 
-/** Used for configuring which mode the vision system is in. */
-public class ModesUtil {
+/** Used for configuring the vision system. */
+public class Vision {
   public enum Mode {
     /** Vision is enabled and trying to detect the high target (upper hub). */
     HIGH_TARGET,
@@ -13,7 +13,7 @@ public class ModesUtil {
     RAW_VIDEO
   }
 
-  private ModesUtil() {}
+  private Vision() {}
 
   public static void setMode(Mode mode) {
     switch (mode) {
