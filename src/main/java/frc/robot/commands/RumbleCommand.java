@@ -22,7 +22,7 @@ public class RumbleCommand extends CommandBase {
   /** The number of times a rumble has occurred. */
   private double times = 0;
 
-  /** Creates a new RumbleCommand which rumbles for <code>times</code> times. */
+  /** Creates a new RumbleCommand with a given controller and rumble pattern. */
   public RumbleCommand(XboxController controller, RumblePattern pattern) {
     this.controller = controller;
     this.pattern = pattern;
