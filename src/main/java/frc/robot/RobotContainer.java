@@ -7,10 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.ExampleCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.groups.vision.UpperHubAlignCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.util.ControllerUtil;
+import frc.robot.vision.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,11 +21,10 @@ import frc.robot.util.ControllerUtil;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
 
-  private final ExampleCommand autoCommand = new ExampleCommand(exampleSubsystem);
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
+  private final UpperHubAlignCommand autoCommand = new UpperHubAlignCommand(controller);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -38,7 +38,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    final var aButton = new JoystickButton(controller, XboxController.Button.kA.value);
+
+    aButton
+        // Continuously track the upper hub & notify the driver when locked in
+        .whileHeld(new UpperHubAlignCommand(controller))
+        // Go back to regular camera
+        .whenReleased((() -> Vision.setMode(Vision.Mode.RAW_VIDEO)));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -46,7 +54,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
     return autoCommand;
   }
 
