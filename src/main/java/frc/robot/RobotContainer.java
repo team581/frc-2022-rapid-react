@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.groups.vision.UpperHubAlignCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.util.ControllerUtil;
 import frc.robot.vision.Vision;
 
@@ -22,6 +23,7 @@ import frc.robot.vision.Vision;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
 
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
   private final UpperHubAlignCommand autoCommand = new UpperHubAlignCommand(controller);
