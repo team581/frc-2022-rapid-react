@@ -32,6 +32,8 @@ public class RobotContainer {
   private final Vision vision = new Vision(limelightSubsystem);
 
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
+  private final ControllerUtil controllerUtil = new ControllerUtil(controller);
+
   private final UpperHubAlignCommand autoCommand =
       new UpperHubAlignCommand(vision, limelightSubsystem, controller);
 
@@ -67,10 +69,10 @@ public class RobotContainer {
   }
 
   public void driveWithJoystick() {
-    final var rightX = ControllerUtil.joystickScale(controller.getRightX());
-    final var rightY = ControllerUtil.joystickScale(controller.getRightY());
-    final var leftX = ControllerUtil.joystickScale(controller.getLeftX());
+    final var x = controllerUtil.getXPercentage();
+    final var y = controllerUtil.getYPercentage();
+    final var theta = controllerUtil.getThetaPercentage();
 
-    driveSubsystem.driveTeleop(rightX, rightY, leftX);
+    driveSubsystem.driveTeleop(x, y, theta);
   }
 }
