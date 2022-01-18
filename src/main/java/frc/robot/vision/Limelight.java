@@ -12,6 +12,7 @@ public class Limelight {
   private static final NetworkTableInstance networkTables = NetworkTableInstance.getDefault();
   private static final NetworkTable table = networkTables.getTable("limelight");
 
+  // TODO: Remove ability to use as static, convert to subsystem, pass in NetworkTable table as constructor parameter
   private Limelight() {}
 
   public enum LEDMode {

@@ -27,6 +27,7 @@ public class UpperHubAlignCommand extends SequentialCommandGroup {
             new RumbleCommand(controller, new RumblePattern(1, 0.15, 0.15))),
 
         // TODO: Create AlignWithTargetCommand which accepts a VisionTarget
+        // TODO: Handle losing sight of target in AlignWithTargetCommand
 
         // Rumble until the command is interrupted by the driver
         new RumbleCommand(controller, new RumblePattern(1, 0.25, 0.15, 5)));
