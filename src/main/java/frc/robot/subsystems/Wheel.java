@@ -7,10 +7,19 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 
 public class Wheel {
+  /**
+   * The number of arbitrary "native units" per rotation of the sensor.
+   *
+   * @see https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#talon-fx-integrated-sensor
+   */
+  private static final int ENCODER_UNITS_PER_ROTATION = 2048;
+
   final WPI_TalonFX motor;
   final MotorConstants motorConstants;
 
@@ -54,6 +63,11 @@ public class Wheel {
     this.encoderConstants = encoderConstants;
 
     this.feedforward = feedforward;
+
+    // TODO: Follow the tuning instructions under "Recommended Procedures"
+    // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#changing-velocity-measurement-parameters
+    motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
+    motor.configVelocityMeasurementWindow(1);
   }
 
   /**
@@ -65,12 +79,13 @@ public class Wheel {
     // See https://www.chiefdelphi.com/t/falcon-500-closed-loop-velocity/378170/18 for source
 
     // TalonFX expects velocity over a 100ms period, we use 1s everywhere else in the project though
-    double desiredVelocityPer100ms = desiredVelocity * 0.1;
+    double desiredDistancePer100ms = desiredVelocity * Units.millisecondsToSeconds(100);
 
     motor.set(
         TalonFXControlMode.Velocity,
-        desiredVelocityPer100ms * encoderConstants.rotationsPerMeter * 2048,
+        desiredDistancePer100ms * encoderConstants.rotationsPerMeter * ENCODER_UNITS_PER_ROTATION,
         DemandType.ArbitraryFeedForward,
+        // TODO: Investigate if doing this voltage math is even necessary
         feedforward.calculate(desiredVelocity) / MOTOR_VOLTAGE);
   }
 }
