@@ -9,19 +9,21 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.WaitForVisionTargetCommand;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.util.RumblePattern;
 import frc.robot.vision.Vision;
 import frc.robot.vision.targets.UpperHub;
 
 public class UpperHubAlignCommand extends SequentialCommandGroup {
-  public UpperHubAlignCommand(XboxController controller) {
+  public UpperHubAlignCommand(
+      Vision vision, LimelightSubsystem limelightSubsystem, XboxController controller) {
     addCommands(
         // Enable vision
-        new InstantCommand(() -> Vision.setMode(Vision.Mode.COMPUTER_VISION)),
+        new InstantCommand(() -> vision.setMode(Vision.Mode.COMPUTER_VISION)),
 
         // Wait for driver to point the Limelight at the upper hub while rumbling the controller
         race(
-            new WaitForVisionTargetCommand(UpperHub.getInstance()),
+            new WaitForVisionTargetCommand(limelightSubsystem, UpperHub.getInstance()),
             // Rumble the controller indefinitely, this is a parallel race so the other command will
             // interrupt this one
             new RumbleCommand(controller, new RumblePattern(1, 0.15, 0.15))),

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.groups.vision.UpperHubAlignCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.util.ControllerUtil;
 import frc.robot.vision.Vision;
 
@@ -24,9 +25,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
+  private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
+
+  private final Vision vision = new Vision(limelightSubsystem);
 
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
-  private final UpperHubAlignCommand autoCommand = new UpperHubAlignCommand(controller);
+  private final UpperHubAlignCommand autoCommand =
+      new UpperHubAlignCommand(vision, limelightSubsystem, controller);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -45,9 +50,9 @@ public class RobotContainer {
 
     aButton
         // Continuously track the upper hub & notify the driver when locked in
-        .whileHeld(new UpperHubAlignCommand(controller))
+        .whileHeld(new UpperHubAlignCommand(vision, limelightSubsystem, controller))
         // Go back to regular camera
-        .whenReleased((() -> Vision.setMode(Vision.Mode.RAW_VIDEO)));
+        .whenReleased((() -> vision.setMode(Vision.Mode.RAW_VIDEO)));
   }
 
   /**

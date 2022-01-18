@@ -2,18 +2,29 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.vision;
+package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/** @see https://docs.limelightvision.io/en/latest/networktables_api.html */
-public class Limelight {
-  private static final NetworkTableInstance networkTables = NetworkTableInstance.getDefault();
-  private static final NetworkTable table = networkTables.getTable("limelight");
+public class LimelightSubsystem extends SubsystemBase {
+  private final NetworkTable table;
 
-  // TODO: Remove ability to use as static, convert to subsystem, pass in NetworkTable table as constructor parameter
-  private Limelight() {}
+  /** Creates a new LimelightSubsystem with the default NetworkTables table name ("limelight"). */
+  public LimelightSubsystem() {
+    table = NetworkTableInstance.getDefault().getTable("limelight");
+  }
+
+  /** Creates a new LimelightSubsystem with the specified NetworkTables table name. */
+  public LimelightSubsystem(String tableName) {
+    table = NetworkTableInstance.getDefault().getTable(tableName);
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
 
   public enum LEDMode {
     /** Use the LED Mode set in the current pipeline. */
@@ -72,7 +83,7 @@ public class Limelight {
   }
 
   /** Whether the Limelight has any valid targets. */
-  public static boolean hasTargets() {
+  public boolean hasTargets() {
     return table.getEntry("tv").getDouble(0) == 1;
   }
 
@@ -81,7 +92,7 @@ public class Limelight {
    *
    * <p><code>-24.85</code> to <code>24.85</code> degrees.
    */
-  public static double getX() {
+  public double getX() {
     return table.getEntry("tx").getDouble(0);
   }
 
@@ -90,17 +101,17 @@ public class Limelight {
    *
    * <p><code>-24.85</code> to <code>24.85</code> degrees.
    */
-  public static double getY() {
+  public double getY() {
     return table.getEntry("ty").getDouble(0);
   }
 
   /** Target area (0% of image to 100% of image). */
-  public static double getArea() {
+  public double getArea() {
     return table.getEntry("ta").getDouble(0);
   }
 
   /** Skew or rotation (-90 degrees to 0 degrees). */
-  public static double getSkew() {
+  public double getSkew() {
     return table.getEntry("ts").getDouble(0);
   }
 
@@ -108,12 +119,12 @@ public class Limelight {
    * The pipeline's latency contribution in milliseconds. Add at least 11ms for image capture
    * latency.
    */
-  public static double getPipelineLatency() {
+  public double getPipelineLatency() {
     return table.getEntry("tl").getDouble(0);
   }
 
   /** Sidelength of shortest side of the fitted bounding box in pixels. */
-  public static double getShortestSide() {
+  public double getShortestSide() {
     return table.getEntry("tshort").getDouble(0);
   }
 
@@ -122,7 +133,7 @@ public class Limelight {
    *
    * <p><code>0</code> to <code>320</code> pixels.
    */
-  public static double getLongestSide() {
+  public double getLongestSide() {
     return table.getEntry("tlong").getDouble(0);
   }
 
@@ -131,7 +142,7 @@ public class Limelight {
    *
    * <p><code>0</code> to <code>320</code> pixels.
    */
-  public static double getHorizontalSideLength() {
+  public double getHorizontalSideLength() {
     return table.getEntry("thor").getDouble(0);
   }
 
@@ -140,7 +151,7 @@ public class Limelight {
    *
    * <p><code>0</code> to <code>320</code> pixels.
    */
-  public static double getVerticalSideLength() {
+  public double getVerticalSideLength() {
     return table.getEntry("tvert").getDouble(0);
   }
 
@@ -149,7 +160,7 @@ public class Limelight {
    *
    * <p><code>0</code> to <code>9</code>.
    */
-  public static int getActivePipeline() {
+  public int getActivePipeline() {
     return (int) (table.getEntry("getpipe").getDouble(0));
   }
 
@@ -157,46 +168,46 @@ public class Limelight {
    * Results of a 3D position solution, 6 numbers: translation (x, y, z) and rotation (pitch, yaw,
    * roll).
    */
-  public static double[] getPosition3d() {
+  public double[] getPosition3d() {
     // TODO: Check if this is actually a double array or if it's a number array
     // TODO: Create a 3D vector class
     return table.getEntry("pos3d").getDoubleArray(new double[] {0, 0, 0, 0, 0, 0});
   }
 
-  public static LEDMode getLEDMode() {
+  public LEDMode getLEDMode() {
     return LEDMode.values()[(int) table.getEntry("ledMode").getDouble(0)];
   }
 
-  public static void setLEDMode(final LEDMode mode) {
+  public void setLEDMode(final LEDMode mode) {
     table.getEntry("ledMode").setNumber(mode.value);
   }
 
-  public static CamMode getCamMode() {
+  public CamMode getCamMode() {
     return CamMode.values()[(int) table.getEntry("camMode").getDouble(0)];
   }
 
-  public static void setCamMode(final CamMode mode) {
+  public void setCamMode(final CamMode mode) {
     table.getEntry("camMode").setNumber(mode.value);
   }
 
   /** Sets the camera's current pipeline. */
-  public static void setPipeline(final int pipeline) {
+  public void setPipeline(final int pipeline) {
     table.getEntry("pipeline").setNumber(pipeline);
   }
 
-  public static StreamingMode getStreamingMode() {
+  public StreamingMode getStreamingMode() {
     return StreamingMode.values()[(int) table.getEntry("stream").getDouble(0)];
   }
 
-  public static void setStreamingMode(final StreamingMode mode) {
+  public void setStreamingMode(final StreamingMode mode) {
     table.getEntry("stream").setNumber(mode.value);
   }
 
-  public static SnapshotMode getSnapshotMode() {
+  public SnapshotMode getSnapshotMode() {
     return SnapshotMode.values()[(int) table.getEntry("snapshot").getDouble(0)];
   }
 
-  public static void setSnapshotMode(final SnapshotMode mode) {
+  public void setSnapshotMode(final SnapshotMode mode) {
     table.getEntry("snapshot").setNumber(mode.value);
   }
 }

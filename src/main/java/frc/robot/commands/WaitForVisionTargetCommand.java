@@ -5,26 +5,31 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.vision.Limelight;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.vision.targets.VisionTarget;
 
 public class WaitForVisionTargetCommand extends CommandBase {
-  private VisionTarget visionTarget;
+  private final VisionTarget visionTarget;
+  private final LimelightSubsystem limelightSubsystem;
 
   /** Creates a new WaitForVisionTargetCommand. */
-  public WaitForVisionTargetCommand(VisionTarget visionTarget) {
+  public WaitForVisionTargetCommand(
+      LimelightSubsystem limelightSubsystem, VisionTarget visionTarget) {
+    addRequirements(limelightSubsystem);
+
+    this.limelightSubsystem = limelightSubsystem;
     this.visionTarget = visionTarget;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Limelight.setPipeline(visionTarget.getPipeline());
+    limelightSubsystem.setPipeline(visionTarget.getPipeline());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Limelight.hasTargets();
+    return limelightSubsystem.hasTargets();
   }
 }
