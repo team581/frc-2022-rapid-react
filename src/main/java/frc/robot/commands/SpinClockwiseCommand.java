@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -50,7 +49,8 @@ public class SpinClockwiseCommand extends CommandBase {
     final var poseRef = initialAngle.plus(Rotation2d.fromDegrees(360 - 1));
 
     // TODO: Fix this, perhaps just try driving forward insteadd of rotating
-    // return driveSubsystem.driveController.calculate(new Pose2d(0, 0, currentPose), new Pose2d(0, 0, currentPose), poseRef);
+    // return driveSubsystem.driveController.calculate(new Pose2d(0, 0, currentPose), new Pose2d(0,
+    // 0, currentPose), poseRef);
 
     return null;
   }
