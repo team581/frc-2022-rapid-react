@@ -74,11 +74,11 @@ public class DriveSubsystem extends SubsystemBase {
   // well-tuned either)
   private final PIDController xPid = new PIDController(0.03, 0, 0.006);
   private final PIDController yPid = new PIDController(0.03, 0, 0.004);
-  private final ProfiledPIDController omegaPid =
+  private final ProfiledPIDController thetaPid =
       new ProfiledPIDController(0.1, 0, 0.0003, Constants.MAX_ROTATION);
 
   public final HolonomicDriveController driveController =
-      new HolonomicDriveController(xPid, yPid, omegaPid);
+      new HolonomicDriveController(xPid, yPid, thetaPid);
 
   private final MecanumDrive drive =
       new MecanumDrive(frontLeft.motor, frontRight.motor, rearLeft.motor, rearRight.motor);
