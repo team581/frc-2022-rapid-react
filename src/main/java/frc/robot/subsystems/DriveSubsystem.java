@@ -48,25 +48,24 @@ public class DriveSubsystem extends SubsystemBase {
 
   // TODO: Replace these placeholder ports in EncoderConstants
   // TODO: Replace these placeholder distance/revolution ratios in EncoderConstants
-  // TODO: Replace these placeholder Translation2d values
   private final Wheel frontLeft =
       new Wheel(
-          new Wheel.MotorConstants(10, new Translation2d(0.5, 0.5)),
+          new Wheel.MotorConstants(10, new Translation2d(0.285, 0.285)),
           new Wheel.EncoderConstants(1),
           feedforward);
   private final Wheel frontRight =
       new Wheel(
-          new Wheel.MotorConstants(11, new Translation2d(0.5, -0.5)),
+          new Wheel.MotorConstants(11, new Translation2d(0.285, -0.285)),
           new Wheel.EncoderConstants(1),
           feedforward);
   private final Wheel rearLeft =
       new Wheel(
-          new Wheel.MotorConstants(12, new Translation2d(-0.5, 0.5)),
+          new Wheel.MotorConstants(12, new Translation2d(-0.285, 0.285)),
           new Wheel.EncoderConstants(1),
           feedforward);
   private final Wheel rearRight =
       new Wheel(
-          new Wheel.MotorConstants(13, new Translation2d(-0.5, -0.5)),
+          new Wheel.MotorConstants(13, new Translation2d(-0.285, -0.28)),
           new Wheel.EncoderConstants(1),
           feedforward);
 
