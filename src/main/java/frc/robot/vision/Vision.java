@@ -6,7 +6,6 @@ package frc.robot.vision;
 
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.vision.targets.UpperHub;
-import frc.robot.vision.targets.VisionTarget;
 
 /** Used for configuring the vision system. */
 public class Vision {
@@ -26,7 +25,8 @@ public class Vision {
   public void setMode(Mode mode) {
     switch (mode) {
       case COMPUTER_VISION:
-        // TODO: This only works because 2022 has a single vision target, in games with multiple ones you will need to rewrite this code
+        // TODO: This only works because 2022 has a single vision target, in games with multiple
+        // ones you will need to rewrite this code
         limelightSubsystem.setPipeline(UpperHub.getInstance().getPipeline());
         break;
       case RAW_VIDEO:
