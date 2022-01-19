@@ -80,7 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
       new HolonomicDriveController(xPid, yPid, thetaPid);
 
   private final MecanumDrive drive =
-      new MecanumDrive(frontLeft.motor, frontRight.motor, rearLeft.motor, rearRight.motor);
+      new MecanumDrive(frontLeft.motor, rearLeft.motor, frontRight.motor, rearRight.motor);
 
   private final MecanumDriveKinematics kinematics =
       new MecanumDriveKinematics(
@@ -103,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
     // TODO: See if you need to explicitly use percentage control mode here - I'm pretty sure this
     // works as-is though
-    drive.driveCartesian(yPercentage, xPercentage, thetaPercentage);
+    drive.driveCartesian(-yPercentage, xPercentage, thetaPercentage);
   }
 
   public void driveWithSpeeds(ChassisSpeeds chassisSpeeds) {

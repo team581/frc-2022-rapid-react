@@ -32,7 +32,7 @@ public class ControllerUtil {
 
   /** The translation across the robot's y-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getYPercentage() {
-    return joystickScale(yLimiter.calculate(controller.getRightY()));
+    return joystickScale(yLimiter.calculate(controller.getLeftY()));
   }
 
   /** The rotation about the robot's z-axis as a percentage (<code>-1 <= x <= 1</code>) */
