@@ -20,31 +20,6 @@ public class Vision {
     powerPort = new PowerPort(limelight);
   }
 
-  public enum CornerCoords {
-    /** Top left corner of the vision target */
-    TOP_LEFT_X(0),
-    /** Top left corner of the vision target */
-    TOP_LEFT_Y(1),
-    /** Top right corner of the vision target */
-    TOP_RIGHT_X(2),
-    /** Top right corner of the vision target */
-    TOP_RIGHT_Y(3),
-    /** Bottom right corner of the vision target */
-    BOTTOM_RIGHT_X(4),
-    /** Bottom right corner of the vision target */
-    BOTTOM_RIGHT_Y(5),
-    /** Bottom left corner of the vision target */
-    BOTTOM_LEFT_X(6),
-    /** Bottom left corner of the vision target */
-    BOTTOM_LEFT_Y(7);
-
-    public final int value;
-
-    CornerCoords(final int value) {
-      this.value = value;
-    }
-  }
-
   /**
    * Selects a vision target for the vision system to use. You must call this function before trying
    * to use a vision target.
