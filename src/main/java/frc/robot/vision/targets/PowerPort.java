@@ -4,6 +4,7 @@
 
 package frc.robot.vision.targets;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** The 2020 power port vision target. Exclusively used for debugging purposes. */
@@ -17,5 +18,11 @@ public class PowerPort extends LimelightVisionTarget {
     super.onSelected();
 
     limelight.setPipeline(1);
+  }
+
+  @Override
+  public Pose2d alignmentError() {
+    // TODO: Implement
+    return new Pose2d();
   }
 }
