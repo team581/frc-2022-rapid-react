@@ -5,8 +5,8 @@
 package frc.robot.vision.targets;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.lib.limelight.Limelight;
 import frc.robot.subsystems.LimelightSubsystem;
+import lib.limelight.Limelight;
 
 /** A vision target for the Limelight. */
 public abstract class LimelightVisionTarget extends VisionTarget {

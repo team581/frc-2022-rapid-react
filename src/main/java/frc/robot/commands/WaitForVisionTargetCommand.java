@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.lib.limelight.Limelight;
 import frc.robot.subsystems.LimelightSubsystem;
+import lib.limelight.Limelight;
 
 /**
  * A command that finishes when the Limelight has identified a vision target.
