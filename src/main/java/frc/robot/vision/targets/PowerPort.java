@@ -4,17 +4,19 @@
 
 package frc.robot.vision.targets;
 
-public class PowerPort extends VisionTarget {
-  private static final PowerPort instance = new PowerPort();
+import frc.robot.subsystems.LimelightSubsystem;
 
-  public static PowerPort getInstance() {
-    return instance;
+/** The 2020 power port vision target. Exclusively used for debugging purposes. */
+public class PowerPort extends LimelightVisionTarget {
+  private final LimelightSubsystem limelight;
+
+  public PowerPort(LimelightSubsystem limelight) {
+    this.limelight = limelight;
   }
 
-  private PowerPort() {}
-
   @Override
-  public int getPipeline() {
-    return 1;
+  public void onSelected() {
+    limelight.setCamMode(LimelightSubsystem.CamMode.VISION_PROCESSOR);
+    limelight.setPipeline(1);
   }
 }

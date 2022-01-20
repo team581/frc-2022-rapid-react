@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.PhotonCamera;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
-  private final PhotonCamera camera;
+  public final PhotonCamera camera;
 
   /** Creates a new PhotonVisionSubsystem with the default camera name ("photonvision"). */
   public PhotonVisionSubsystem() {

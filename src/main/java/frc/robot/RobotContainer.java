@@ -29,9 +29,11 @@ public class RobotContainer {
   private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
   private final PhotonVisionSubsystem photonVisionSubsystem = new PhotonVisionSubsystem();
 
-  private final Vision vision = new Vision(limelightSubsystem);
+  private final Vision vision = new Vision(limelightSubsystem, photonVisionSubsystem);
 
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
+  private final ControllerUtil controllerUtil = new ControllerUtil(controller);
+
   private final UpperHubAlignCommand autoCommand =
       new UpperHubAlignCommand(vision, limelightSubsystem, controller);
 
@@ -54,7 +56,7 @@ public class RobotContainer {
         // Continuously track the upper hub & notify the driver when locked in
         .whileHeld(new UpperHubAlignCommand(vision, limelightSubsystem, controller))
         // Go back to regular camera
-        .whenReleased((() -> vision.setMode(Vision.Mode.RAW_VIDEO)));
+        .whenReleased((() -> vision.useVisionTarget(vision.noVisionTarget)));
   }
 
   /**
@@ -67,10 +69,10 @@ public class RobotContainer {
   }
 
   public void driveWithJoystick() {
-    final var rightX = ControllerUtil.joystickScale(controller.getRightX());
-    final var rightY = ControllerUtil.joystickScale(controller.getRightY());
-    final var leftX = ControllerUtil.joystickScale(controller.getLeftX());
+    final var x = controllerUtil.getXPercentage();
+    final var y = controllerUtil.getYPercentage();
+    final var theta = controllerUtil.getThetaPercentage();
 
-    driveSubsystem.driveTeleop(rightX, rightY, leftX);
+    driveSubsystem.driveTeleop(x, y, theta);
   }
 }

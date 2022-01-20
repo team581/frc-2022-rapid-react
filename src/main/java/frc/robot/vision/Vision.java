@@ -5,34 +5,29 @@
 package frc.robot.vision;
 
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.vision.targets.DriverCamera;
+import frc.robot.vision.targets.PowerPort;
+import frc.robot.vision.targets.UpperHub;
+import frc.robot.vision.targets.VisionTarget;
 
 /** Used for configuring the vision system. */
 public class Vision {
-  private final LimelightSubsystem limelightSubsystem;
+  public final UpperHub upperHub;
+  public final PowerPort powerPort;
+  public final DriverCamera noVisionTarget;
 
-  public enum Mode {
-    /** Computer vision and lights are enabled. */
-    COMPUTER_VISION,
-    /** Computer vision is not enabled. The LEDs are disabled and a raw camera feed is shown. */
-    RAW_VIDEO
+  public Vision(LimelightSubsystem limelight, PhotonVisionSubsystem photonVision) {
+    upperHub = new UpperHub(limelight);
+    powerPort = new PowerPort(limelight);
+    noVisionTarget = new DriverCamera(limelight, photonVision);
   }
 
-  public Vision(LimelightSubsystem limelightSubsystem) {
-    this.limelightSubsystem = limelightSubsystem;
-  }
-
-  public void setMode(Mode mode) {
-    switch (mode) {
-      case COMPUTER_VISION:
-        limelightSubsystem.setCamMode(LimelightSubsystem.CamMode.VISION_PROCESSOR);
-        limelightSubsystem.setLEDMode(LimelightSubsystem.LEDMode.CURRENT_PIPELINE);
-        break;
-      case RAW_VIDEO:
-        limelightSubsystem.setCamMode(LimelightSubsystem.CamMode.DRIVER_CAMERA);
-        limelightSubsystem.setLEDMode(LimelightSubsystem.LEDMode.OFF);
-        break;
-      default:
-        throw new IllegalArgumentException("Invalid mode: " + mode);
-    }
+  /**
+   * Selects a vision target for the vision system to use. You must call this function before trying
+   * to use a vision target.
+   */
+  public void useVisionTarget(VisionTarget visionTarget) {
+    visionTarget.onSelected();
   }
 }

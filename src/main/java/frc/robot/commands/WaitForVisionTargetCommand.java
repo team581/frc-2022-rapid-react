@@ -6,30 +6,29 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.vision.targets.VisionTarget;
 
+/**
+ * A command that finishes when the Limelight has identified a vision target.
+ *
+ * <p>You must select the correct Limelight pipeline before calling the command!
+ */
 public class WaitForVisionTargetCommand extends CommandBase {
-  private final VisionTarget visionTarget;
-  private final LimelightSubsystem limelightSubsystem;
+  private final LimelightSubsystem limelight;
 
   /** Creates a new WaitForVisionTargetCommand. */
-  public WaitForVisionTargetCommand(
-      LimelightSubsystem limelightSubsystem, VisionTarget visionTarget) {
-    addRequirements(limelightSubsystem);
+  public WaitForVisionTargetCommand(LimelightSubsystem limelight) {
+    addRequirements(limelight);
 
-    this.limelightSubsystem = limelightSubsystem;
-    this.visionTarget = visionTarget;
+    this.limelight = limelight;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    limelightSubsystem.setPipeline(visionTarget.getPipeline());
-  }
+  public void initialize() {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return limelightSubsystem.hasTargets();
+    return limelight.hasTargets();
   }
 }

@@ -4,14 +4,37 @@
 
 package frc.robot.util;
 
-/** Util functions for joysticks. */
-public final class ControllerUtil {
-  private static final double SCALAR = 3;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.XboxController;
 
-  private ControllerUtil() {}
+public class ControllerUtil {
+  private final XboxController controller;
+  // TODO: Fine-tune these values
+  private final SlewRateLimiter xLimiter = new SlewRateLimiter(7);
+  private final SlewRateLimiter yLimiter = new SlewRateLimiter(7);
+  private final SlewRateLimiter thetaLimiter = new SlewRateLimiter(7);
+
+  public ControllerUtil(XboxController controller) {
+    this.controller = controller;
+  }
 
   /** Scale a joystick value. */
-  public static double joystickScale(double x) {
-    return Math.signum(x) * (Math.pow(x, 2) / SCALAR);
+  private static double joystickScale(double x) {
+    return Math.signum(x) * (Math.pow(x, 2));
+  }
+
+  /** The rotation across the robot's x-axis as a percentage (<code>-1 <= x <= 1</code>) */
+  public double getXPercentage() {
+    return joystickScale(xLimiter.calculate(controller.getRightX()));
+  }
+
+  /** The translation across the robot's y-axis as a percentage (<code>-1 <= x <= 1</code>) */
+  public double getYPercentage() {
+    return joystickScale(yLimiter.calculate(controller.getLeftY()));
+  }
+
+  /** The rotation about the robot's z-axis as a percentage (<code>-1 <= x <= 1</code>) */
+  public double getThetaPercentage() {
+    return joystickScale(thetaLimiter.calculate(controller.getLeftX()));
   }
 }
