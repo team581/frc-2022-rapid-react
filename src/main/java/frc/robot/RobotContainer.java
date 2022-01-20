@@ -12,6 +12,7 @@ import frc.robot.commands.groups.vision.UpperHubAlignCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.util.ControllerUtil;
 import frc.robot.vision.Vision;
 
@@ -26,6 +27,7 @@ public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
   private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
+  private final PhotonVisionSubsystem photonVisionSubsystem = new PhotonVisionSubsystem();
 
   private final Vision vision = new Vision(limelightSubsystem);
 
