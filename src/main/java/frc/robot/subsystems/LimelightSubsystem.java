@@ -13,7 +13,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
   /** Creates a new LimelightSubsystem with the default NetworkTables table name ("limelight"). */
   public LimelightSubsystem() {
-    table = NetworkTableInstance.getDefault().getTable("limelight");
+    this("limelight");
   }
 
   /** Creates a new LimelightSubsystem with the specified NetworkTables table name. */
