@@ -7,6 +7,9 @@ package lib.limelight;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.util.Position3d;
+import frc.robot.util.Rotation3d;
+import frc.robot.util.Vector3d;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,10 +194,14 @@ public class Limelight {
    * Results of a 3D position solution, 6 numbers: translation (x, y, z) and rotation (pitch, yaw,
    * roll).
    */
-  public double[] getPosition3d() {
+  public Position3d getPosition3d() {
     // TODO: Check if this is actually a double array or if it's a number array
-    // TODO: Create a 3D vector class
-    return table.getEntry("pos3d").getDoubleArray(new double[] {0, 0, 0, 0, 0, 0});
+    final var raw = table.getEntry("pos3d").getDoubleArray(new double[] {0, 0, 0, 0, 0, 0});
+
+    final var translation = new Vector3d(raw[0], raw[1], raw[2]);
+    final var rotation = new Rotation3d(raw[3], raw[4], raw[5]);
+
+    return new Position3d(translation, rotation);
   }
 
   public LEDMode getLEDMode() {
