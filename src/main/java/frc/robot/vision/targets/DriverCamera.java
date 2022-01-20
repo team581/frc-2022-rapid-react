@@ -5,6 +5,7 @@
 package frc.robot.vision.targets;
 
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.PhotonVisionSubsystem;
 
 /**
  * Not an actual vision target, selecting this this will enable raw camera output, turn off the
@@ -12,13 +13,18 @@ import frc.robot.subsystems.LimelightSubsystem;
  */
 public class DriverCamera extends VisionTarget {
   private final LimelightSubsystem limelight;
+  private final PhotonVisionSubsystem photonVision;
 
-  public DriverCamera(LimelightSubsystem limelight) {
+  public DriverCamera(LimelightSubsystem limelight, PhotonVisionSubsystem photonVision) {
     this.limelight = limelight;
+    this.photonVision = photonVision;
   }
 
   @Override
   public void onSelected() {
+    limelight.setCamMode(LimelightSubsystem.CamMode.DRIVER_CAMERA);
     limelight.setPipeline(9);
+
+    photonVision.camera.setDriverMode(true);
   }
 }

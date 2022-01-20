@@ -29,7 +29,7 @@ public class RobotContainer {
   private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
   private final PhotonVisionSubsystem photonVisionSubsystem = new PhotonVisionSubsystem();
 
-  private final Vision vision = new Vision(limelightSubsystem);
+  private final Vision vision = new Vision(limelightSubsystem, photonVisionSubsystem);
 
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
   private final ControllerUtil controllerUtil = new ControllerUtil(controller);

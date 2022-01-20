@@ -7,7 +7,7 @@ package frc.robot.vision.targets;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** The upper hub ring vision target. */
-public class UpperHub extends VisionTarget {
+public class UpperHub extends LimelightVisionTarget {
   private final LimelightSubsystem limelight;
 
   public UpperHub(LimelightSubsystem limelight) {
@@ -16,6 +16,7 @@ public class UpperHub extends VisionTarget {
 
   @Override
   public void onSelected() {
+    limelight.setCamMode(LimelightSubsystem.CamMode.VISION_PROCESSOR);
     limelight.setPipeline(0);
   }
 }

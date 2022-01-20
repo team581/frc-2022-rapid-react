@@ -7,7 +7,7 @@ package frc.robot.vision.targets;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** The 2020 power port vision target. Exclusively used for debugging purposes. */
-public class PowerPort extends VisionTarget {
+public class PowerPort extends LimelightVisionTarget {
   private final LimelightSubsystem limelight;
 
   public PowerPort(LimelightSubsystem limelight) {
@@ -16,6 +16,7 @@ public class PowerPort extends VisionTarget {
 
   @Override
   public void onSelected() {
+    limelight.setCamMode(LimelightSubsystem.CamMode.VISION_PROCESSOR);
     limelight.setPipeline(1);
   }
 }
