@@ -56,7 +56,7 @@ public class RobotContainer {
         // Continuously track the upper hub & notify the driver when locked in
         .whileHeld(new UpperHubAlignCommand(vision, limelightSubsystem, controller))
         // Go back to regular camera
-        .whenReleased((() -> vision.setMode(Vision.Mode.RAW_VIDEO)));
+        .whenReleased((() -> vision.useVisionTarget(vision.noVisionTarget)));
   }
 
   /**

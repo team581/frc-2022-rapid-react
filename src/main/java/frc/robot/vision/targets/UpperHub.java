@@ -4,17 +4,18 @@
 
 package frc.robot.vision.targets;
 
-public class UpperHub extends VisionTarget {
-  private static final UpperHub instance = new UpperHub();
+import frc.robot.subsystems.LimelightSubsystem;
 
-  public static UpperHub getInstance() {
-    return instance;
+/** The upper hub ring vision target. */
+public class UpperHub extends VisionTarget {
+  private final LimelightSubsystem limelight;
+
+  public UpperHub(LimelightSubsystem limelight) {
+    this.limelight = limelight;
   }
 
-  private UpperHub() {}
-
   @Override
-  public int getPipeline() {
-    return 0;
+  public void onSelected() {
+    limelight.setPipeline(0);
   }
 }
