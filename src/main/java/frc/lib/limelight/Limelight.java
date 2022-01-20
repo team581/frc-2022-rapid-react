@@ -4,8 +4,11 @@
 
 package frc.lib.limelight;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import java.util.ArrayList;
+import java.util.List;
 
 /** A wrapper for the Limelight NetworkTables API. */
 public class Limelight {
@@ -108,6 +111,31 @@ public class Limelight {
   /** Skew or rotation (-90 degrees to 0 degrees). */
   public double getSkew() {
     return table.getEntry("ts").getDouble(0);
+  }
+
+  /**
+   * Coordinate pairs for the vision target. The array is made up of x and y coordinates that should
+   * be grouped together. For example, <code>[10, 20, 30, 40]</code> is an array of 2 coordinate
+   * pairs, <code>(10, 20)</code> and <code>(30, 40)</code>.
+   */
+  private double[] getRawCorners() {
+    return table.getEntry("tcornxy").getDoubleArray(new double[0]);
+  }
+
+  /**
+   * Coordinate pairs (<code>(x, y)</code>) for the corners of the vision target. The length of the
+   * returnedd list is not guaranteed. If you are trying to detect a rectangular vision target but
+   * only 3 corners are visible then the array will have 3 elements.
+   */
+  public List<Pair<Double, Double>> getCorners() {
+    final var rawCoords = getRawCorners();
+    final var coords = new ArrayList<Pair<Double, Double>>();
+
+    for (var i = 0; i < rawCoords.length; i += 2) {
+      coords.add(new Pair<>(rawCoords[i], rawCoords[i + 1]));
+    }
+
+    return coords;
   }
 
   /**
