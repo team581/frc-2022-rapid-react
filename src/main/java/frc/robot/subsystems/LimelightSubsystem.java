@@ -17,4 +17,10 @@ public class LimelightSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  /** Enables raw camera output and disables computer processing. */
+  public void useDriverMode() {
+    limelight.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
+    limelight.setPipeline(9);
+  }
 }

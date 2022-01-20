@@ -6,7 +6,6 @@ package frc.robot.vision;
 
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
-import frc.robot.vision.targets.DriverCamera;
 import frc.robot.vision.targets.PowerPort;
 import frc.robot.vision.targets.UpperHub;
 import frc.robot.vision.targets.VisionTarget;
@@ -15,12 +14,10 @@ import frc.robot.vision.targets.VisionTarget;
 public class Vision {
   public final UpperHub upperHub;
   public final PowerPort powerPort;
-  public final DriverCamera noVisionTarget;
 
   public Vision(LimelightSubsystem limelight, PhotonVisionSubsystem photonVision) {
     upperHub = new UpperHub(limelight);
     powerPort = new PowerPort(limelight);
-    noVisionTarget = new DriverCamera(limelight, photonVision);
   }
 
   /**

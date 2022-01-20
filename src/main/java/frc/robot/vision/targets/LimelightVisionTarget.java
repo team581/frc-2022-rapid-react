@@ -18,8 +18,8 @@ public abstract class LimelightVisionTarget extends VisionTarget {
 
   @Override
   public void onSelected() {
-    limelight.setLEDMode(Limelight.LEDMode.CURRENT_PIPELINE);
     limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
+    limelight.setLEDMode(Limelight.LEDMode.CURRENT_PIPELINE);
   }
 
   /**
