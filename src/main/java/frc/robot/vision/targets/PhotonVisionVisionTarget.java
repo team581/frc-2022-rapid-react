@@ -4,5 +4,18 @@
 
 package frc.robot.vision.targets;
 
+import frc.robot.subsystems.PhotonVisionSubsystem;
+
 /** A vision target for PhotonVision. */
-public abstract class PhotonVisionVisionTarget extends VisionTarget {}
+public class PhotonVisionVisionTarget extends VisionTarget {
+  protected final PhotonVisionSubsystem photonVision;
+
+  protected PhotonVisionVisionTarget(PhotonVisionSubsystem photonVision) {
+    this.photonVision = photonVision;
+  }
+
+  @Override
+  public void onSelected() {
+    photonVision.camera.setDriverMode(false);
+  }
+}

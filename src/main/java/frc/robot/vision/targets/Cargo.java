@@ -16,17 +16,17 @@ public class Cargo extends PhotonVisionVisionTarget {
     BLUE
   }
 
-  private final PhotonVisionSubsystem photonVision;
   private final Color color;
 
-  public Cargo(Color color, PhotonVisionSubsystem photonVision) {
+  public Cargo(PhotonVisionSubsystem photonVision, Color color) {
+    super(photonVision);
+
     this.color = color;
-    this.photonVision = photonVision;
   }
 
   @Override
   public void onSelected() {
-    photonVision.camera.setDriverMode(false);
+    super.onSelected();
 
     switch (color) {
       case RED:

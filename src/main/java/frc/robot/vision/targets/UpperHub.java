@@ -8,15 +8,14 @@ import frc.robot.subsystems.LimelightSubsystem;
 
 /** The upper hub ring vision target. */
 public class UpperHub extends LimelightVisionTarget {
-  private final LimelightSubsystem limelight;
-
   public UpperHub(LimelightSubsystem limelight) {
-    this.limelight = limelight;
+    super(limelight);
   }
 
   @Override
   public void onSelected() {
-    limelight.setCamMode(LimelightSubsystem.CamMode.VISION_PROCESSOR);
+    super.onSelected();
+
     limelight.setPipeline(0);
   }
 }
