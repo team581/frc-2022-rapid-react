@@ -117,6 +117,8 @@ public class Limelight {
    * Coordinate pairs for the vision target. The array is made up of x and y coordinates that should
    * be grouped together. For example, <code>[10, 20, 30, 40]</code> is an array of 2 coordinate
    * pairs, <code>(10, 20)</code> and <code>(30, 40)</code>.
+   *
+   * <p>You must enable "send contours" in the "Output" tab to stream corner coordinates.
    */
   private double[] getRawCorners() {
     return table.getEntry("tcornxy").getDoubleArray(new double[0]);
@@ -126,6 +128,8 @@ public class Limelight {
    * Coordinate pairs (<code>(x, y)</code>) for the corners of the vision target. The length of the
    * returnedd list is not guaranteed. If you are trying to detect a rectangular vision target but
    * only 3 corners are visible then the array will have 3 elements.
+   *
+   * <p>You must enable "send contours" in the "Output" tab to stream corner coordinates.
    */
   public List<Pair<Double, Double>> getCorners() {
     final var rawCoords = getRawCorners();
