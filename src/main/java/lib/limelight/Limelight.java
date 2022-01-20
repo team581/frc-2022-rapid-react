@@ -114,17 +114,6 @@ public class Limelight {
   }
 
   /**
-   * Coordinate pairs for the vision target. The array is made up of x and y coordinates that should
-   * be grouped together. For example, <code>[10, 20, 30, 40]</code> is an array of 2 coordinate
-   * pairs, <code>(10, 20)</code> and <code>(30, 40)</code>.
-   *
-   * <p>You must enable "send contours" in the "Output" tab to stream corner coordinates.
-   */
-  private double[] getRawCorners() {
-    return table.getEntry("tcornxy").getDoubleArray(new double[0]);
-  }
-
-  /**
    * Coordinate pairs (<code>(x, y)</code>) for the corners of the vision target. The length of the
    * returnedd list is not guaranteed. If you are trying to detect a rectangular vision target but
    * only 3 corners are visible then the array will have 3 elements.
@@ -132,14 +121,21 @@ public class Limelight {
    * <p>You must enable "send contours" in the "Output" tab to stream corner coordinates.
    */
   public List<Pair<Double, Double>> getCorners() {
-    final var rawCoords = getRawCorners();
-    final var coords = new ArrayList<Pair<Double, Double>>();
+    /**
+     * Coordinate pairs for the vision target. The array is made up of x and y coordinates that
+     * should be grouped together. For example, <code>[10, 20, 30, 40]</code> is an array of 2
+     * coordinate pairs, <code>(10, 20)</code> and <code>(30, 40)</code>.
+     *
+     * <p>You must enable "send contours" in the "Output" tab to stream corner coordinates.
+     */
+    final var rawCorners = table.getEntry("tcornxy").getDoubleArray(new double[0]);
+    final var corners = new ArrayList<Pair<Double, Double>>();
 
-    for (var i = 0; i < rawCoords.length; i += 2) {
-      coords.add(new Pair<>(rawCoords[i], rawCoords[i + 1]));
+    for (var i = 0; i < rawCorners.length; i += 2) {
+      corners.add(new Pair<>(rawCorners[i], rawCorners[i + 1]));
     }
 
-    return coords;
+    return corners;
   }
 
   /**
@@ -202,7 +198,8 @@ public class Limelight {
   }
 
   public LEDMode getLEDMode() {
-    return LEDMode.values()[(int) table.getEntry("ledMode").getDouble(0)];
+    return LEDMode.values()[
+        (int) table.getEntry("ledMode").getDouble(LEDMode.CURRENT_PIPELINE.value)];
   }
 
   public void setLEDMode(final LEDMode mode) {
@@ -210,7 +207,8 @@ public class Limelight {
   }
 
   public CamMode getCamMode() {
-    return CamMode.values()[(int) table.getEntry("camMode").getDouble(0)];
+    return CamMode.values()[
+        (int) table.getEntry("camMode").getDouble(CamMode.VISION_PROCESSOR.value)];
   }
 
   public void setCamMode(final CamMode mode) {
@@ -223,7 +221,8 @@ public class Limelight {
   }
 
   public StreamingMode getStreamingMode() {
-    return StreamingMode.values()[(int) table.getEntry("stream").getDouble(0)];
+    return StreamingMode.values()[
+        (int) table.getEntry("stream").getDouble(StreamingMode.STANDARD.value)];
   }
 
   public void setStreamingMode(final StreamingMode mode) {
@@ -231,7 +230,8 @@ public class Limelight {
   }
 
   public SnapshotMode getSnapshotMode() {
-    return SnapshotMode.values()[(int) table.getEntry("snapshot").getDouble(0)];
+    return SnapshotMode.values()[
+        (int) table.getEntry("snapshot").getDouble(SnapshotMode.OFF.value)];
   }
 
   public void setSnapshotMode(final SnapshotMode mode) {
