@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.lib.limelight.Limelight;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /**
@@ -13,13 +14,13 @@ import frc.robot.subsystems.LimelightSubsystem;
  * <p>You must select the correct Limelight pipeline before calling the command!
  */
 public class WaitForVisionTargetCommand extends CommandBase {
-  private final LimelightSubsystem limelight;
+  private final Limelight limelight;
 
   /** Creates a new WaitForVisionTargetCommand. */
-  public WaitForVisionTargetCommand(LimelightSubsystem limelight) {
-    addRequirements(limelight);
+  public WaitForVisionTargetCommand(LimelightSubsystem limelightSubsystem) {
+    addRequirements(limelightSubsystem);
 
-    this.limelight = limelight;
+    this.limelight = limelightSubsystem.limelight;
   }
 
   // Called when the command is initially scheduled.

@@ -4,19 +4,20 @@
 
 package frc.robot.vision.targets;
 
+import frc.lib.limelight.Limelight;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** A vision target for the Limelight. */
 public class LimelightVisionTarget extends VisionTarget {
-  protected final LimelightSubsystem limelight;
+  protected final Limelight limelight;
 
-  protected LimelightVisionTarget(LimelightSubsystem limelight) {
-    this.limelight = limelight;
+  protected LimelightVisionTarget(LimelightSubsystem limelightSubsystem) {
+    this.limelight = limelightSubsystem.limelight;
   }
 
   @Override
   public void onSelected() {
-    limelight.setLEDMode(LimelightSubsystem.LEDMode.CURRENT_PIPELINE);
-    limelight.setCamMode(LimelightSubsystem.CamMode.VISION_PROCESSOR);
+    limelight.setLEDMode(Limelight.LEDMode.CURRENT_PIPELINE);
+    limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
   }
 }

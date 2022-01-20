@@ -4,6 +4,7 @@
 
 package frc.robot.vision.targets;
 
+import frc.lib.limelight.Limelight;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 
@@ -12,17 +13,17 @@ import frc.robot.subsystems.PhotonVisionSubsystem;
  * LEDs, etc. The camera will be used to help the driver see.
  */
 public class DriverCamera extends VisionTarget {
-  private final LimelightSubsystem limelight;
+  private final Limelight limelight;
   private final PhotonVisionSubsystem photonVision;
 
-  public DriverCamera(LimelightSubsystem limelight, PhotonVisionSubsystem photonVision) {
-    this.limelight = limelight;
+  public DriverCamera(LimelightSubsystem limelightSubsystem, PhotonVisionSubsystem photonVision) {
+    this.limelight = limelightSubsystem.limelight;
     this.photonVision = photonVision;
   }
 
   @Override
   public void onSelected() {
-    limelight.setCamMode(LimelightSubsystem.CamMode.DRIVER_CAMERA);
+    limelight.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
     limelight.setPipeline(9);
 
     photonVision.camera.setDriverMode(true);
