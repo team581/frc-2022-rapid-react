@@ -20,8 +20,6 @@ public class ControllerUtil {
 
   /** Scale a joystick value. */
   private static double joystickScale(double x) {
-    final double SCALAR = 3;
-
     return Math.signum(x) * (Math.pow(x, 2));
   }
 
