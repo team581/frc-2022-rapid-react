@@ -14,6 +14,7 @@ import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SnarferSubsystem;
 import frc.robot.util.ControllerUtil;
 import frc.robot.vision.Vision;
 import io.github.oblarg.oblog.Logger;
@@ -31,6 +32,8 @@ public class RobotContainer {
   private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
   private final PhotonVisionSubsystem photonVisionSubsystem = new PhotonVisionSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final SnarferSubsystem snarferSubsystem = new SnarferSubsystem();
+
   private final Vision vision = new Vision(limelightSubsystem, photonVisionSubsystem);
 
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
@@ -55,6 +58,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     final var aButton = new JoystickButton(controller, XboxController.Button.kA.value);
+    final var xButton = new JoystickButton(controller, XboxController.Button.kX.value);
+
+    final var leftTrigger = new JoystickButton(controller, XboxController.Axis.kLeftTrigger.value);
     final var rightTrigger =
         new JoystickButton(controller, XboxController.Axis.kRightTrigger.value);
 
@@ -63,7 +69,9 @@ public class RobotContainer {
         .whileHeld(new UpperHubAlignCommand(vision, limelightSubsystem, controller))
         // Go back to regular camera
         .whenReleased(limelightSubsystem::useDriverMode);
+    xButton.whenActive(snarferSubsystem::spit).whenInactive(snarferSubsystem::stop);
 
+    leftTrigger.whenActive(snarferSubsystem::start).whenInactive(snarferSubsystem::stop);
     rightTrigger.whenActive(shooterSubsystem::start).whenInactive(shooterSubsystem::stop);
   }
 
