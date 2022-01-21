@@ -15,16 +15,15 @@ public class SnarferSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void start(){
-    //TODO: start the snarfer
+  public void start() {
+    // TODO: start the snarfer
   }
 
-  public void stop(){
-      //TODO: stop the snarfer
+  public void stop() {
+    // TODO: stop the snarfer
   }
 
-  public void spit(){
-    //TODO: reversed snarfer
+  public void spit() {
+    // TODO: reversed snarfer
   }
-
 }

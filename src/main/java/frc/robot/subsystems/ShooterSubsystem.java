@@ -19,7 +19,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // TODO: when press button shoot ball
   }
 
-  public void stop () {
+  public void stop() {
     // TODO: When release button stop shooting ball
   }
 }
