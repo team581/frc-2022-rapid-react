@@ -16,14 +16,14 @@ public class SnarferSubsystem extends SubsystemBase {
   }
 
   public void start() {
-    // TODO: start the snarfer
+    // TODO: Implement "start snarfing" action
   }
 
   public void stop() {
-    // TODO: stop the snarfer
+    // TODO: Implement "stop snarfing" action
   }
 
   public void spit() {
-    // TODO: reversed snarfer
+    // TODO: Implement "spit out" action
   }
 }

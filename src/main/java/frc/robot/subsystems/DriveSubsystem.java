@@ -46,7 +46,6 @@ public class DriveSubsystem extends SubsystemBase {
   // TODO: Replace these placeholder values
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.1, 0.1);
 
-  // TODO: Replace these placeholder ports in EncoderConstants
   // TODO: Replace these placeholder distance/revolution ratios in EncoderConstants
   private final Wheel frontLeft =
       new Wheel(

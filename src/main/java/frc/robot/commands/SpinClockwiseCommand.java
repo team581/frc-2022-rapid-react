@@ -48,7 +48,7 @@ public class SpinClockwiseCommand extends CommandBase {
     final var currentPose = Rotation2d.fromDegrees(gyroSubsystem.gyro.getAngle());
     final var poseRef = initialAngle.plus(Rotation2d.fromDegrees(360 - 1));
 
-    // TODO: Fix this, perhaps just try driving forward insteadd of rotating
+    // TODO: Fix this, perhaps just try driving forward instead of rotating
     // return driveSubsystem.driveController.calculate(new Pose2d(0, 0, currentPose), new Pose2d(0,
     // 0, currentPose), poseRef);
 
