@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,7 +30,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
-  private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
+  // TODO: Measure the height of the Limelight to the floor
+  private final LimelightSubsystem limelightSubsystem =
+      new LimelightSubsystem(0, Units.inchesToMeters(9));
   private final PhotonVisionSubsystem photonVisionSubsystem = new PhotonVisionSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final SnarferSubsystem snarferSubsystem = new SnarferSubsystem();

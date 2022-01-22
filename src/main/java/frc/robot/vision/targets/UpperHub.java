@@ -4,25 +4,19 @@
 
 package frc.robot.vision.targets;
 
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.LimelightSubsystem;
 
 /** The upper hub ring vision target. */
 public class UpperHub extends LimelightVisionTarget {
   public UpperHub(LimelightSubsystem limelight) {
-    super(limelight);
+    super(limelight, Units.feetToMeters(8) + Units.inchesToMeters(5.0 + (5.0 / 8.0)));
   }
 
   @Override
   public void onSelected() {
     super.onSelected();
 
-    limelight.setPipeline(0);
-  }
-
-  @Override
-  public Pose2d alignmentError() {
-    // TODO: Implement
-    return new Pose2d();
+    limelightSubsystem.limelight.setPipeline(0);
   }
 }

@@ -10,8 +10,28 @@ import lib.limelight.Limelight;
 public class LimelightSubsystem extends SubsystemBase {
   public final Limelight limelight = new Limelight();
 
+  /**
+   * The angle of elevation of this Limelight, in radians.
+   *
+   * @see
+   *     <p>The <code>a1</code> angle in this diagram
+   *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
+   */
+  public final double angleOfElevation;
+  /**
+   * The height from the floor to this Limelight, in meters.
+   *
+   * @see
+   *     <p>The <code>h1</code> distance in this diagram
+   *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
+   */
+  public final double heightFromFloor;
+
   /** Creates a new LimelightSubsystem. */
-  public LimelightSubsystem() {}
+  public LimelightSubsystem(double angleOfElevation, double heightFromFloor) {
+    this.angleOfElevation = angleOfElevation;
+    this.heightFromFloor = heightFromFloor;
+  }
 
   @Override
   public void periodic() {
