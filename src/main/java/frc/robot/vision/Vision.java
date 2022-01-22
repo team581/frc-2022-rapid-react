@@ -6,6 +6,7 @@ package frc.robot.vision;
 
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.vision.targets.Cargo;
 import frc.robot.vision.targets.LoadingBay;
 import frc.robot.vision.targets.UpperHub;
 import frc.robot.vision.targets.VisionTarget;
@@ -14,10 +15,14 @@ import frc.robot.vision.targets.VisionTarget;
 public class Vision {
   public final UpperHub upperHub;
   public final LoadingBay loadingBay;
+  public final Cargo redCargo;
+  public final Cargo blueCargo;
 
   public Vision(LimelightSubsystem limelight, PhotonVisionSubsystem photonVision) {
     upperHub = new UpperHub(limelight);
     loadingBay = new LoadingBay(limelight);
+    redCargo = new Cargo(photonVision, Cargo.Color.RED);
+    blueCargo = new Cargo(photonVision, Cargo.Color.BLUE);
   }
 
   /**
