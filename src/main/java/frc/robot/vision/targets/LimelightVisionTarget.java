@@ -73,12 +73,12 @@ public abstract class LimelightVisionTarget extends VisionTarget {
   }
 
   /**
-   * A Pose2d representing the alignment error with this vision target. A Pose2d of (0, 0, 0) means
-   * the target is perfectly aligned.
+   * A Pose2d representing the alignment of the Limelight relative to this vision target. The vision
+   * target has a Pose2d of (0, 0, 0).
    *
    * <p>You can assume that the data in NetworkTables is for this vision target.
    */
-  public Pose2d alignmentError() {
+  public Pose2d alignment() {
     final var x = strafeDistance();
     final var y = distance();
     final var theta = rotation();

@@ -105,6 +105,11 @@ public class DriveSubsystem extends SubsystemBase {
     drive.driveCartesian(-yPercentage, xPercentage, thetaPercentage);
   }
 
+  /** Stops all the motors. */
+  public void stopMotors() {
+    drive.stopMotor();
+  }
+
   public void driveWithSpeeds(ChassisSpeeds chassisSpeeds) {
     final var wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds);
 
