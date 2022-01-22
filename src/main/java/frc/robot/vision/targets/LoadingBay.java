@@ -7,9 +7,9 @@ package frc.robot.vision.targets;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.LimelightSubsystem;
 
-/** The 2020 power port vision target. Exclusively used for debugging purposes. */
-public class PowerPort extends LimelightVisionTarget {
-  public PowerPort(LimelightSubsystem limelight) {
+/** The 2020 loading bay vision target. Exclusively used for debugging purposes. */
+public class LoadingBay extends LimelightVisionTarget {
+  public LoadingBay(LimelightSubsystem limelight) {
     super(limelight, Units.inchesToMeters(11));
   }
 
