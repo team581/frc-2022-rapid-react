@@ -43,7 +43,7 @@ public class RobotContainer {
   private final ControllerUtil controllerUtil = new ControllerUtil(controller);
 
   private final UpperHubAlignCommand autoCommand =
-      new UpperHubAlignCommand(vision, limelightSubsystem, controller);
+      new UpperHubAlignCommand(vision, driveSubsystem, limelightSubsystem, controller);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -69,7 +69,7 @@ public class RobotContainer {
 
     aButton
         // Continuously track the upper hub & notify the driver when locked in
-        .whileHeld(new UpperHubAlignCommand(vision, limelightSubsystem, controller))
+        .whileHeld(new UpperHubAlignCommand(vision, driveSubsystem, limelightSubsystem, controller))
         // Go back to regular camera
         .whenReleased(limelightSubsystem::useDriverMode);
     xButton.whenActive(snarferSubsystem::spit).whenInactive(snarferSubsystem::stop);
