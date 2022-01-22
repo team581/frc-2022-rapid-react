@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.LimelightSubsystem;
+import io.github.oblarg.oblog.annotations.Log;
 import lib.limelight.Limelight;
 
 /** A vision target for the Limelight. */
@@ -78,6 +79,7 @@ public abstract class LimelightVisionTarget extends VisionTarget {
    *
    * <p>You can assume that the data in NetworkTables is for this vision target.
    */
+  @Log
   public Pose2d alignment() {
     final var x = strafeDistance();
     final var y = distance();

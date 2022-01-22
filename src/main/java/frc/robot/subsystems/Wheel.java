@@ -4,13 +4,12 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 
 public class Wheel {
   /**
@@ -29,6 +28,12 @@ public class Wheel {
 
   private static final double MOTOR_VOLTAGE = 12;
 
+  private final double kF;
+
+  private final PIDController pid;
+
+  private final double circumference;
+
   public static class MotorConstants {
     public final int port;
 
@@ -45,29 +50,53 @@ public class Wheel {
   }
 
   public static class EncoderConstants {
-    /** The number of rotations of the encoder to travel 1 meter. */
-    public final double rotationsPerMeter;
+    /** The number of rotations of the encoder can do in 1 second at maximum speed. */
+    public final double maxEncoderRotationsPerSecond;
 
-    public EncoderConstants(double rotationsPerMeter) {
-      this.rotationsPerMeter = rotationsPerMeter;
+    public final double encoderRotationsPerWheelRotation;
+
+    public EncoderConstants(
+        double maxEncoderRotationsPerSecond, double encoderRotationsPerWheelRotation) {
+      this.maxEncoderRotationsPerSecond = maxEncoderRotationsPerSecond;
+      this.encoderRotationsPerWheelRotation = encoderRotationsPerWheelRotation;
     }
   }
 
   public Wheel(
       MotorConstants motorConstants,
       EncoderConstants encoderConstants,
-      SimpleMotorFeedforward feedforward) {
+      SimpleMotorFeedforward feedforward,
+      PIDController velocityPid,
+      double circumferenceMeters) {
     this.motor = new WPI_TalonFX(motorConstants.port);
     this.motorConstants = motorConstants;
 
     this.encoderConstants = encoderConstants;
 
     this.feedforward = feedforward;
+    this.pid = velocityPid;
 
-    // TODO: Follow the tuning instructions under "Recommended Procedures"
-    // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#changing-velocity-measurement-parameters
+    this.kF = encoderConstants.maxEncoderRotationsPerSecond * ENCODER_UNITS_PER_ROTATION;
+
     motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     motor.configVelocityMeasurementWindow(1);
+
+    this.circumference = circumferenceMeters;
+  }
+
+  public void periodic() {
+    final var nativePer100ms = motor.getSelectedSensorVelocity();
+    final var nativePerSecond = nativePer100ms * 10;
+    final var wheelRotationsPerSecond =
+        encoderConstants.encoderRotationsPerWheelRotation * nativePerSecond;
+    final var metersPerSecond = wheelRotationsPerSecond * circumference;
+
+    final var raw = pid.calculate(metersPerSecond);
+    final var clamped = MathUtil.clamp(raw, -1, 1);
+
+    System.out.println(clamped);
+
+    motor.set(clamped);
   }
 
   /**
@@ -76,16 +105,6 @@ public class Wheel {
    * @param desiredVelocity The desired velocity in meters/second
    */
   public void setVelocity(double desiredVelocity) {
-    // See https://www.chiefdelphi.com/t/falcon-500-closed-loop-velocity/378170/18 for source
-
-    // TalonFX expects velocity over a 100ms period, we use 1s everywhere else in the project though
-    double desiredDistancePer100ms = desiredVelocity * Units.millisecondsToSeconds(100);
-
-    motor.set(
-        TalonFXControlMode.Velocity,
-        desiredDistancePer100ms * encoderConstants.rotationsPerMeter * ENCODER_UNITS_PER_ROTATION,
-        DemandType.ArbitraryFeedForward,
-        // TODO: Investigate if doing this voltage math is even necessary
-        feedforward.calculate(desiredVelocity) / MOTOR_VOLTAGE);
+    pid.setSetpoint(desiredVelocity);
   }
 }

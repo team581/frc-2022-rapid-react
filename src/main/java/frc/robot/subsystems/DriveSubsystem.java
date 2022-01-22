@@ -12,8 +12,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.annotations.Config;
 
 // THE PLAN:
 
@@ -41,6 +43,10 @@ public class DriveSubsystem extends SubsystemBase {
     // per second squared (π radians per second squared)
     private static final TrapezoidProfile.Constraints MAX_ROTATION =
         new TrapezoidProfile.Constraints(2 * Math.PI, Math.PI);
+
+    private static double p = 0.25;
+    private static final double i = 0;
+    private static final double d = 0;
   }
 
   // TODO: Replace these placeholder values
@@ -50,23 +56,31 @@ public class DriveSubsystem extends SubsystemBase {
   private final Wheel frontLeft =
       new Wheel(
           new Wheel.MotorConstants(10, new Translation2d(0.285, 0.285)),
-          new Wheel.EncoderConstants(1),
-          feedforward);
+          new Wheel.EncoderConstants(22300 * 10, 3428340),
+          feedforward,
+          new PIDController(Constants.p, Constants.i, Constants.d),
+          Units.inchesToMeters(18.75));
   private final Wheel frontRight =
       new Wheel(
           new Wheel.MotorConstants(11, new Translation2d(0.285, -0.285)),
-          new Wheel.EncoderConstants(1),
-          feedforward);
+          new Wheel.EncoderConstants(22300 * 10, 3428340),
+          feedforward,
+          new PIDController(Constants.p, Constants.i, Constants.d),
+          Units.inchesToMeters(18.75));
   private final Wheel rearLeft =
       new Wheel(
           new Wheel.MotorConstants(12, new Translation2d(-0.285, 0.285)),
-          new Wheel.EncoderConstants(1),
-          feedforward);
+          new Wheel.EncoderConstants(22300 * 10, 3428340),
+          feedforward,
+          new PIDController(Constants.p, Constants.i, Constants.d),
+          Units.inchesToMeters(18.75));
   private final Wheel rearRight =
       new Wheel(
           new Wheel.MotorConstants(13, new Translation2d(-0.285, -0.28)),
-          new Wheel.EncoderConstants(1),
-          feedforward);
+          new Wheel.EncoderConstants(22300 * 10, 3428340),
+          feedforward,
+          new PIDController(Constants.p, Constants.i, Constants.d),
+          Units.inchesToMeters(18.75));
 
   // TODO: Tune these values - currently they are just copy-pasted from 2020 (which is probably not
   // well-tuned either)
@@ -100,9 +114,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
+    // drive.setSafetyEnabled(true);
+
     // TODO: See if you need to explicitly use percentage control mode here - I'm pretty sure this
     // works as-is though
-    drive.driveCartesian(-yPercentage, xPercentage, thetaPercentage);
+    // drive.driveCartesian(-yPercentage, xPercentage, thetaPercentage);
   }
 
   /** Stops all the motors. */
@@ -111,11 +127,18 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveWithSpeeds(ChassisSpeeds chassisSpeeds) {
+    drive.setSafetyEnabled(false);
+
     final var wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds);
 
     frontLeft.setVelocity(wheelSpeeds.frontLeftMetersPerSecond);
     frontRight.setVelocity(wheelSpeeds.frontRightMetersPerSecond);
     rearLeft.setVelocity(wheelSpeeds.rearLeftMetersPerSecond);
     rearRight.setVelocity(wheelSpeeds.rearRightMetersPerSecond);
+
+    frontLeft.periodic();
+    frontRight.periodic();
+    rearLeft.periodic();
+    rearRight.periodic();
   }
 }

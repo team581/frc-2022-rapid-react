@@ -18,7 +18,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SnarferSubsystem;
 import frc.robot.util.ControllerUtil;
 import frc.robot.vision.Vision;
-import io.github.oblarg.oblog.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -49,8 +48,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-
-    Logger.configureLoggingAndConfig(this, false);
   }
 
   /**
