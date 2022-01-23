@@ -15,7 +15,7 @@ public class PhotonVisionVisionTarget extends VisionTarget {
   }
 
   @Override
-  public void onSelected() {
+  public void prepareForUse() {
     photonVision.camera.setDriverMode(false);
   }
 }

@@ -7,11 +7,10 @@ package frc.robot.vision.targets;
 /** A class to represent a vision target on the field. */
 public abstract class VisionTarget {
   /**
-   * You should not call this function directly, instead use {@link
-   * frc.robot.vision.Vision#useVisionTarget} to select a vision target for use.
+   * Prepares this vision target for use. This is where you should select the correct pipeline,
+   * enable LEDs, etc.
    *
-   * <p>A function that is called when this vision target is selected. This is where you should
-   * select the correct pipeline, enable LEDs, etc.
+   * <p>You must call this function before trying to use a vision system to track a vision target.
    */
-  public abstract void onSelected();
+  public abstract void prepareForUse();
 }

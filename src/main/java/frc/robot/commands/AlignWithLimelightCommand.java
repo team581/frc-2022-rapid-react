@@ -44,6 +44,8 @@ public class AlignWithLimelightCommand extends CommandBase {
     final var chassisSpeeds =
         driveSubsystem.driveController.calculate(currentPose, goal, 0, goal.getRotation());
 
+    System.out.println(chassisSpeeds);
+
     driveSubsystem.driveWithSpeeds(chassisSpeeds);
   }
 
