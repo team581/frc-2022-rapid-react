@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.vision.targets.LoadingBay;
+import frc.robot.vision.targets.UpperHub;
 import lib.limelight.Limelight;
 
 public class LimelightSubsystem extends SubsystemBase {
@@ -26,6 +28,9 @@ public class LimelightSubsystem extends SubsystemBase {
    *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
    */
   public final double heightFromFloor;
+
+  public final UpperHub upperHub = new UpperHub(this);
+  public final LoadingBay loadingBay = new LoadingBay(this);
 
   /** Creates a new LimelightSubsystem. */
   public LimelightSubsystem(double angleOfElevation, double heightFromFloor) {

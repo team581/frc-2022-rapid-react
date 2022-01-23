@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.groups.vision.UpperHubAlignCommand;
+import frc.robot.commands.groups.vision.LoadingBayAlignCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -17,7 +17,6 @@ import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SnarferSubsystem;
 import frc.robot.util.ControllerUtil;
-import frc.robot.vision.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,13 +35,17 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final SnarferSubsystem snarferSubsystem = new SnarferSubsystem();
 
-  private final Vision vision = new Vision(limelightSubsystem, photonVisionSubsystem);
-
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
   private final ControllerUtil controllerUtil = new ControllerUtil(controller);
 
-  private final UpperHubAlignCommand autoCommand =
-      new UpperHubAlignCommand(vision, driveSubsystem, limelightSubsystem, controller);
+  private final Command autoCommand =
+      new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem);
+
+  /**
+   * Whether the joysticks should be ignored during teleop. This is used to prevent the drivetrain's
+   * wheel velocity controllers from clashing with the driver's joystick values.
+   */
+  private boolean ignoreJoysticks = false;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -64,15 +67,22 @@ public class RobotContainer {
     final var rightTrigger =
         new JoystickButton(controller, XboxController.Axis.kRightTrigger.value);
 
+    // Align for shooting
     aButton
-        // Continuously track the upper hub & notify the driver when locked in
-        .whileHeld(new UpperHubAlignCommand(vision, driveSubsystem, limelightSubsystem, controller))
-        // Go back to regular camera
-        .whenReleased(limelightSubsystem::useDriverMode);
-    xButton.whenActive(snarferSubsystem::spit).whenInactive(snarferSubsystem::stop);
+        .whenPressed(new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem))
+        .whenPressed(() -> ignoreJoysticks = true)
+        .whenReleased(
+            () -> {
+              ignoreJoysticks = false;
+              limelightSubsystem.useDriverMode();
+            });
 
-    leftTrigger.whenActive(snarferSubsystem::start).whenInactive(snarferSubsystem::stop);
-    rightTrigger.whenActive(shooterSubsystem::start).whenInactive(shooterSubsystem::stop);
+    // Snarfer
+    leftTrigger.whenPressed(snarferSubsystem::start).whenInactive(snarferSubsystem::stop);
+    xButton.whenPressed(snarferSubsystem::spit).whenInactive(snarferSubsystem::stop);
+
+    // Shooter
+    rightTrigger.whenPressed(shooterSubsystem::start).whenInactive(shooterSubsystem::stop);
   }
 
   /**
@@ -85,6 +95,10 @@ public class RobotContainer {
   }
 
   public void driveWithJoystick() {
+    if (!ignoreJoysticks) {
+      return;
+    }
+
     final var x = controllerUtil.getXPercentage();
     final var y = controllerUtil.getYPercentage();
     final var theta = controllerUtil.getThetaPercentage();

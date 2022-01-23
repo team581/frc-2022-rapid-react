@@ -25,8 +25,8 @@ public class Cargo extends PhotonVisionVisionTarget {
   }
 
   @Override
-  public void onSelected() {
-    super.onSelected();
+  public void prepareForUse() {
+    super.prepareForUse();
 
     switch (color) {
       case RED:

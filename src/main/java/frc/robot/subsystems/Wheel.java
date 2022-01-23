@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 
 public class Wheel {
   /**
@@ -22,41 +23,58 @@ public class Wheel {
   final WPI_TalonFX motor;
   final MotorConstants motorConstants;
 
+  final WheelConstants wheelConstants;
+
   final EncoderConstants encoderConstants;
 
   final SimpleMotorFeedforward feedforward;
 
-  private static final double MOTOR_VOLTAGE = 12;
-
   private final double kF;
 
-  private final PIDController pid;
-
-  private final double circumference;
+  /**
+   * Input: current velocity in meters/second
+   *
+   * <p>Output: motor voltage as a percentage
+   */
+  private final PIDController velocityPid;
 
   public static class MotorConstants {
     public final int port;
 
+    public MotorConstants(int port) {
+      this.port = port;
+    }
+  }
+
+  public static class WheelConstants {
+
     /**
      * The position of the wheel corresponding to this motor, relative to the robot center, in
-     * meters.
+     * meters. Used for kinematics.
      */
     public final Translation2d position;
 
-    public MotorConstants(int port, Translation2d position) {
-      this.port = port;
+    /** The circumference of the wheel in meters. */
+    public final double circumference;
+
+    /**
+     * @param position The position of the wheel relative to the robot center, in meters
+     * @param diameter The diameter of the wheel in meters
+     */
+    public WheelConstants(Translation2d position, double diameter) {
       this.position = position;
+      this.circumference = diameter * Math.PI;
     }
   }
 
   public static class EncoderConstants {
     /** The number of rotations of the encoder can do in 1 second at maximum speed. */
-    public final double maxEncoderRotationsPerSecond;
-
-    public final double encoderRotationsPerWheelRotation;
+    public final int maxEncoderRotationsPerSecond;
+    /** The number of encoder rotations for the wheel to rotate once. */
+    public final int encoderRotationsPerWheelRotation;
 
     public EncoderConstants(
-        double maxEncoderRotationsPerSecond, double encoderRotationsPerWheelRotation) {
+        int maxEncoderRotationsPerSecond, int encoderRotationsPerWheelRotation) {
       this.maxEncoderRotationsPerSecond = maxEncoderRotationsPerSecond;
       this.encoderRotationsPerWheelRotation = encoderRotationsPerWheelRotation;
     }
@@ -65,46 +83,51 @@ public class Wheel {
   public Wheel(
       MotorConstants motorConstants,
       EncoderConstants encoderConstants,
+      WheelConstants wheelConstants,
       SimpleMotorFeedforward feedforward,
-      PIDController velocityPid,
-      double circumferenceMeters) {
+      PIDController velocityPid) {
     this.motor = new WPI_TalonFX(motorConstants.port);
     this.motorConstants = motorConstants;
 
     this.encoderConstants = encoderConstants;
 
+    this.wheelConstants = wheelConstants;
+
     this.feedforward = feedforward;
-    this.pid = velocityPid;
+    this.velocityPid = velocityPid;
+    velocityPid.setSetpoint(0);
 
-    this.kF = encoderConstants.maxEncoderRotationsPerSecond * ENCODER_UNITS_PER_ROTATION;
+    this.kF = (double) encoderConstants.maxEncoderRotationsPerSecond * ENCODER_UNITS_PER_ROTATION;
 
+    // TODO: These values probably need to be tuned - see tuning instructions
+    // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
     motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     motor.configVelocityMeasurementWindow(1);
-
-    this.circumference = circumferenceMeters;
   }
 
-  public void periodic() {
+  /**
+   * Sets the motor output to meet the desired velocity configured with {@link
+   * Wheel#setDesiredVelocity(double)}.
+   */
+  public void drive() {
     final var nativePer100ms = motor.getSelectedSensorVelocity();
-    final var nativePerSecond = nativePer100ms * 10;
+    final var nativePerSecond = nativePer100ms / Units.millisecondsToSeconds(100);
     final var wheelRotationsPerSecond =
         encoderConstants.encoderRotationsPerWheelRotation * nativePerSecond;
-    final var metersPerSecond = wheelRotationsPerSecond * circumference;
+    final var metersPerSecond = wheelRotationsPerSecond * wheelConstants.circumference;
 
-    final var raw = pid.calculate(metersPerSecond);
-    final var clamped = MathUtil.clamp(raw, -1, 1);
+    final var rawVoltage = velocityPid.calculate(metersPerSecond);
+    final var clampedVoltage = MathUtil.clamp(rawVoltage, -1, 1);
 
-    System.out.println(clamped);
-
-    motor.set(clamped);
+    motor.set(clampedVoltage);
   }
 
   /**
    * Set desired velocity for the motor.
    *
-   * @param desiredVelocity The desired velocity in meters/second
+   * @param metersPerSecond The desired velocity in meters/second
    */
-  public void setVelocity(double desiredVelocity) {
-    pid.setSetpoint(desiredVelocity);
+  public void setDesiredVelocity(double metersPerSecond) {
+    velocityPid.setSetpoint(metersPerSecond);
   }
 }

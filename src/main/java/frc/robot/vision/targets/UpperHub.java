@@ -14,8 +14,8 @@ public class UpperHub extends LimelightVisionTarget {
   }
 
   @Override
-  public void onSelected() {
-    super.onSelected();
+  public void prepareForUse() {
+    super.prepareForUse();
 
     limelightSubsystem.limelight.setPipeline(0);
   }

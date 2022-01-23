@@ -38,48 +38,67 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
   private static final class Constants {
-    // Max of 1 rotation per second (2π radians per second) and max acceleration of 0.5 rotations
-    // per second squared (π radians per second squared)
+    // Max of 1 rotation per second and max acceleration of 0.5 rotations
+    // per second squared
     private static final TrapezoidProfile.Constraints MAX_ROTATION =
-        new TrapezoidProfile.Constraints(2 * Math.PI, Math.PI);
+        new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(180));
 
-    private static double p = 0.25;
-    private static final double i = 0;
-    private static final double d = 0;
+    /** The diameter of the mecanum wheels on the drivebase, in meters. */
+    private static final double MECANUM_WHEEL_DIAMETER = Units.inchesToMeters(5.97);
+
+    // Wheel velocity PID constants
+    private static final double WHEEL_VELOCITY_PID_P = 0.25;
+    private static final double WHEEL_VELOCITY_PID_I = 0;
+    private static final double WHEEL_VELOCITY_PID_D = 0;
   }
 
   // TODO: Replace these placeholder values
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.1, 0.1);
 
-  // TODO: Replace these placeholder distance/revolution ratios in EncoderConstants
   private final Wheel frontLeft =
       new Wheel(
-          new Wheel.MotorConstants(10, new Translation2d(0.285, 0.285)),
+          new Wheel.MotorConstants(10),
           new Wheel.EncoderConstants(22300 * 10, 3428340),
+          new Wheel.WheelConstants(
+              new Translation2d(0.285, 0.285), Constants.MECANUM_WHEEL_DIAMETER),
           feedforward,
-          new PIDController(Constants.p, Constants.i, Constants.d),
-          Units.inchesToMeters(18.75));
+          new PIDController(
+              Constants.WHEEL_VELOCITY_PID_P,
+              Constants.WHEEL_VELOCITY_PID_I,
+              Constants.WHEEL_VELOCITY_PID_D));
   private final Wheel frontRight =
       new Wheel(
-          new Wheel.MotorConstants(11, new Translation2d(0.285, -0.285)),
+          new Wheel.MotorConstants(11),
           new Wheel.EncoderConstants(22300 * 10, 3428340),
+          new Wheel.WheelConstants(
+              new Translation2d(0.285, -0.285), Constants.MECANUM_WHEEL_DIAMETER),
           feedforward,
-          new PIDController(Constants.p, Constants.i, Constants.d),
-          Units.inchesToMeters(18.75));
+          new PIDController(
+              Constants.WHEEL_VELOCITY_PID_P,
+              Constants.WHEEL_VELOCITY_PID_I,
+              Constants.WHEEL_VELOCITY_PID_D));
   private final Wheel rearLeft =
       new Wheel(
-          new Wheel.MotorConstants(12, new Translation2d(-0.285, 0.285)),
+          new Wheel.MotorConstants(12),
           new Wheel.EncoderConstants(22300 * 10, 3428340),
+          new Wheel.WheelConstants(
+              new Translation2d(-0.285, 0.285), Constants.MECANUM_WHEEL_DIAMETER),
           feedforward,
-          new PIDController(Constants.p, Constants.i, Constants.d),
-          Units.inchesToMeters(18.75));
+          new PIDController(
+              Constants.WHEEL_VELOCITY_PID_P,
+              Constants.WHEEL_VELOCITY_PID_I,
+              Constants.WHEEL_VELOCITY_PID_D));
   private final Wheel rearRight =
       new Wheel(
-          new Wheel.MotorConstants(13, new Translation2d(-0.285, -0.28)),
+          new Wheel.MotorConstants(13),
           new Wheel.EncoderConstants(22300 * 10, 3428340),
+          new Wheel.WheelConstants(
+              new Translation2d(-0.285, -0.28), Constants.MECANUM_WHEEL_DIAMETER),
           feedforward,
-          new PIDController(Constants.p, Constants.i, Constants.d),
-          Units.inchesToMeters(18.75));
+          new PIDController(
+              Constants.WHEEL_VELOCITY_PID_P,
+              Constants.WHEEL_VELOCITY_PID_I,
+              Constants.WHEEL_VELOCITY_PID_D));
 
   // TODO: Tune these values - currently they are just copy-pasted from 2020 (which is probably not
   // well-tuned either)
@@ -96,10 +115,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final MecanumDriveKinematics kinematics =
       new MecanumDriveKinematics(
-          frontLeft.motorConstants.position,
-          frontRight.motorConstants.position,
-          rearLeft.motorConstants.position,
-          rearRight.motorConstants.position);
+          frontLeft.wheelConstants.position,
+          frontRight.wheelConstants.position,
+          rearLeft.wheelConstants.position,
+          rearRight.wheelConstants.position);
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -113,15 +132,15 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
-    // drive.setSafetyEnabled(true);
+    drive.setSafetyEnabled(true);
 
-    // TODO: See if you need to explicitly use percentage control mode here - I'm pretty sure this
-    // works as-is though
-    // drive.driveCartesian(-yPercentage, xPercentage, thetaPercentage);
+    drive.driveCartesian(-yPercentage, xPercentage, thetaPercentage);
   }
 
   /** Stops all the motors. */
   public void stopMotors() {
+    drive.setSafetyEnabled(true);
+
     drive.stopMotor();
   }
 
@@ -130,14 +149,14 @@ public class DriveSubsystem extends SubsystemBase {
 
     final var wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds);
 
-    frontLeft.setVelocity(wheelSpeeds.frontLeftMetersPerSecond);
-    frontRight.setVelocity(wheelSpeeds.frontRightMetersPerSecond);
-    rearLeft.setVelocity(wheelSpeeds.rearLeftMetersPerSecond);
-    rearRight.setVelocity(wheelSpeeds.rearRightMetersPerSecond);
+    frontLeft.setDesiredVelocity(wheelSpeeds.frontLeftMetersPerSecond);
+    frontRight.setDesiredVelocity(wheelSpeeds.frontRightMetersPerSecond);
+    rearLeft.setDesiredVelocity(wheelSpeeds.rearLeftMetersPerSecond);
+    rearRight.setDesiredVelocity(wheelSpeeds.rearRightMetersPerSecond);
 
-    frontLeft.periodic();
-    frontRight.periodic();
-    rearLeft.periodic();
-    rearRight.periodic();
+    frontLeft.drive();
+    frontRight.drive();
+    rearLeft.drive();
+    rearRight.drive();
   }
 }

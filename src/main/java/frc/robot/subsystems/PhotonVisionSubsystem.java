@@ -5,10 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.vision.targets.Cargo;
 import org.photonvision.PhotonCamera;
 
 public class PhotonVisionSubsystem extends SubsystemBase {
   public final PhotonCamera camera;
+
+  public final Cargo redCargo = new Cargo(this, Cargo.Color.RED);
+  public final Cargo blueCargo = new Cargo(this, Cargo.Color.BLUE);
 
   /** Creates a new PhotonVisionSubsystem with the default camera name ("photonvision"). */
   public PhotonVisionSubsystem() {
