@@ -40,11 +40,9 @@ public class AlignWithLimelightCommand extends CommandBase {
   @Override
   public void execute() {
     // TODO: This will likely do bad things when the vision target is lost
-    final var currentPose = visionTarget.alignment();
+    final var currentPose = visionTarget.getAlignment();
     final var chassisSpeeds =
         driveSubsystem.driveController.calculate(currentPose, goal, 0, goal.getRotation());
-
-    System.out.println(chassisSpeeds);
 
     driveSubsystem.driveWithSpeeds(chassisSpeeds);
   }

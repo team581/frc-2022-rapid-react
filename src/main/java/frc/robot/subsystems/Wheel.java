@@ -14,11 +14,12 @@ import edu.wpi.first.math.util.Units;
 
 public class Wheel {
   /**
-   * The number of arbitrary "native units" per rotation of the sensor.
+   * The number of sensor units per rotation.
    *
-   * @see https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#talon-fx-integrated-sensor
+   * @see
+   *     https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#confirm-sensor-resolution-velocity
    */
-  private static final int ENCODER_UNITS_PER_ROTATION = 2048;
+  private static final int SENSOR_RESOLUTION = 2048;
 
   final WPI_TalonFX motor;
   final MotorConstants motorConstants;
@@ -97,7 +98,7 @@ public class Wheel {
     this.velocityPid = velocityPid;
     velocityPid.setSetpoint(0);
 
-    this.kF = (double) encoderConstants.maxEncoderRotationsPerSecond * ENCODER_UNITS_PER_ROTATION;
+    this.kF = (double) encoderConstants.maxEncoderRotationsPerSecond * SENSOR_RESOLUTION;
 
     // TODO: These values probably need to be tuned - see tuning instructions
     // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
@@ -110,13 +111,7 @@ public class Wheel {
    * Wheel#setDesiredVelocity(double)}.
    */
   public void drive() {
-    final var nativePer100ms = motor.getSelectedSensorVelocity();
-    final var nativePerSecond = nativePer100ms / Units.millisecondsToSeconds(100);
-    final var wheelRotationsPerSecond =
-        encoderConstants.encoderRotationsPerWheelRotation * nativePerSecond;
-    final var metersPerSecond = wheelRotationsPerSecond * wheelConstants.circumference;
-
-    final var rawVoltage = velocityPid.calculate(metersPerSecond);
+    final var rawVoltage = velocityPid.calculate(getVelocity());
     final var clampedVoltage = MathUtil.clamp(rawVoltage, -1, 1);
 
     motor.set(clampedVoltage);
@@ -129,5 +124,27 @@ public class Wheel {
    */
   public void setDesiredVelocity(double metersPerSecond) {
     velocityPid.setSetpoint(metersPerSecond);
+  }
+
+  /** Get this wheel's velocity in meters/second. */
+  public double getVelocity() {
+    final var nativePer100ms = motor.getSelectedSensorVelocity();
+    final var nativePerSecond = nativePer100ms / Units.millisecondsToSeconds(100);
+    final var wheelRotationsPerSecond =
+        encoderConstants.encoderRotationsPerWheelRotation * nativePerSecond;
+
+    return wheelRotationsPerSecond * wheelConstants.circumference;
+  }
+
+  /** Get the distance in meters this wheel's encoder has travelled since last being reset. */
+  public double getDistance() {
+    final var nativeDistance = motor.getSelectedSensorPosition();
+
+    // TODO: This is probably wrong
+    return nativeDistance * wheelConstants.circumference / SENSOR_RESOLUTION;
+  }
+
+  public void resetEncoder() {
+    motor.setSelectedSensorPosition(0);
   }
 }

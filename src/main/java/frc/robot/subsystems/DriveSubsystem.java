@@ -8,9 +8,13 @@ import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -52,9 +56,20 @@ public class DriveSubsystem extends SubsystemBase {
     private static final double WHEEL_VELOCITY_PID_D = 0;
   }
 
+  // TODO: Tune these values - currently they are just copy-pasted from 2020 (which is probably not
+  // well-tuned either)
+  private final PIDController xPid = new PIDController(0.03, 0, 0.006);
+  private final PIDController yPid = new PIDController(0.03, 0, 0.004);
+  private final ProfiledPIDController thetaPid =
+      new ProfiledPIDController(0.1, 0, 0.0003, Constants.MAX_ROTATION);
+
+  public final HolonomicDriveController driveController =
+      new HolonomicDriveController(xPid, yPid, thetaPid);
+
   // TODO: Replace these placeholder values
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.1, 0.1);
 
+  // #region wheels
   private final Wheel frontLeft =
       new Wheel(
           new Wheel.MotorConstants(10),
@@ -99,16 +114,7 @@ public class DriveSubsystem extends SubsystemBase {
               Constants.WHEEL_VELOCITY_PID_P,
               Constants.WHEEL_VELOCITY_PID_I,
               Constants.WHEEL_VELOCITY_PID_D));
-
-  // TODO: Tune these values - currently they are just copy-pasted from 2020 (which is probably not
-  // well-tuned either)
-  private final PIDController xPid = new PIDController(0.03, 0, 0.006);
-  private final PIDController yPid = new PIDController(0.03, 0, 0.004);
-  private final ProfiledPIDController thetaPid =
-      new ProfiledPIDController(0.1, 0, 0.0003, Constants.MAX_ROTATION);
-
-  public final HolonomicDriveController driveController =
-      new HolonomicDriveController(xPid, yPid, thetaPid);
+  // #endregion
 
   private final MecanumDrive drive =
       new MecanumDrive(frontLeft.motor, rearLeft.motor, frontRight.motor, rearRight.motor);
@@ -120,33 +126,40 @@ public class DriveSubsystem extends SubsystemBase {
           rearLeft.wheelConstants.position,
           rearRight.wheelConstants.position);
 
+  private final GyroSubsystem gyroSubsystem;
+  private final MecanumDriveOdometry odometry;
+
+  public final TrajectoryConfig trajectoryConfig =
+      new TrajectoryConfig(1, 1).setKinematics(kinematics);
+
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
+  public DriveSubsystem(GyroSubsystem gyroSubsystem) {
+    this.gyroSubsystem = gyroSubsystem;
+
     frontRight.motor.setInverted(true);
     rearRight.motor.setInverted(true);
+
+    resetEncoders();
+    odometry = new MecanumDriveOdometry(kinematics, gyroSubsystem.gyro.getRotation2d());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    odometry.update(gyroSubsystem.gyro.getRotation2d(), getWheelSpeeds());
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
-    drive.setSafetyEnabled(true);
-
     drive.driveCartesian(-yPercentage, xPercentage, thetaPercentage);
   }
 
   /** Stops all the motors. */
   public void stopMotors() {
-    drive.setSafetyEnabled(true);
-
     drive.stopMotor();
   }
 
   public void driveWithSpeeds(ChassisSpeeds chassisSpeeds) {
-    drive.setSafetyEnabled(false);
-
     final var wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds);
 
     frontLeft.setDesiredVelocity(wheelSpeeds.frontLeftMetersPerSecond);
@@ -158,5 +171,31 @@ public class DriveSubsystem extends SubsystemBase {
     frontRight.drive();
     rearLeft.drive();
     rearRight.drive();
+
+    drive.feed();
+  }
+
+  private MecanumDriveWheelSpeeds getWheelSpeeds() {
+    return new MecanumDriveWheelSpeeds(
+        frontLeft.getVelocity(),
+        frontRight.getVelocity(),
+        rearLeft.getVelocity(),
+        rearRight.getVelocity());
+  }
+
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  public void resetOdometry() {
+    resetEncoders();
+    odometry.resetPosition(getPose(), gyroSubsystem.gyro.getRotation2d());
+  }
+
+  public void resetEncoders() {
+    frontLeft.resetEncoder();
+    frontRight.resetEncoder();
+    rearLeft.resetEncoder();
+    rearRight.resetEncoder();
   }
 }

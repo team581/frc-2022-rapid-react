@@ -44,7 +44,7 @@ public abstract class LimelightVisionTarget extends VisionTarget {
    *     <p>Returns the <code>d</code> distance from this diagram
    *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
    */
-  private double distance() {
+  private double getDistance() {
     final var h1 = limelightSubsystem.heightFromFloor;
     final var h2 = heightFromFloor;
 
@@ -62,14 +62,14 @@ public abstract class LimelightVisionTarget extends VisionTarget {
    *
    * <p>This value can be used for calculating the x-axis error.
    */
-  private double strafeDistance() {
-    final var d = distance();
-    final var theta = rotation();
+  private double getStrafeDistance() {
+    final var d = getDistance();
+    final var theta = getRotation();
 
     return d * Math.sin(theta.getRadians());
   }
 
-  private Rotation2d rotation() {
+  private Rotation2d getRotation() {
     return new Rotation2d(Units.degreesToRadians(limelightSubsystem.limelight.getX()));
   }
 
@@ -80,10 +80,10 @@ public abstract class LimelightVisionTarget extends VisionTarget {
    * <p>You can assume that the data in NetworkTables is for this vision target.
    */
   @Log
-  public Pose2d alignment() {
-    final var x = strafeDistance();
-    final var y = distance();
-    final var theta = rotation();
+  public Pose2d getAlignment() {
+    final var x = getStrafeDistance();
+    final var y = getDistance();
+    final var theta = getRotation();
 
     return new Pose2d(x, y, theta);
   }
