@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // 3. This object is given to driveWithSpeeds() (see above).
 
 public class DriveSubsystem extends SubsystemBase {
+
   private static final class Constants {
     // Max of 1 rotation per second and max acceleration of 0.5 rotations
     // per second squared
@@ -49,6 +50,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     /** The diameter of the mecanum wheels on the drivebase, in meters. */
     private static final double MECANUM_WHEEL_DIAMETER = Units.inchesToMeters(5.97);
+
+    // TODO: These values are almost certainly wrong, how can one wheel rotation be 3.4M encoder
+    // rotations but the robot can only do 223k encoder rotations per second
+    private static final Wheel.EncoderConstants ENCODER_CONSTANTS =
+        new Wheel.EncoderConstants(22300 / Units.millisecondsToSeconds(100), 3428340);
 
     // Wheel velocity PID constants
     private static final double WHEEL_VELOCITY_PID_P = 0.25;
@@ -73,7 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final Wheel frontLeft =
       new Wheel(
           new Wheel.MotorConstants(10),
-          new Wheel.EncoderConstants(22300 * 10, 3428340),
+          Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
               new Translation2d(0.285, 0.285), Constants.MECANUM_WHEEL_DIAMETER),
           feedforward,
@@ -84,7 +90,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final Wheel frontRight =
       new Wheel(
           new Wheel.MotorConstants(11),
-          new Wheel.EncoderConstants(22300 * 10, 3428340),
+          Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
               new Translation2d(0.285, -0.285), Constants.MECANUM_WHEEL_DIAMETER),
           feedforward,
@@ -95,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final Wheel rearLeft =
       new Wheel(
           new Wheel.MotorConstants(12),
-          new Wheel.EncoderConstants(22300 * 10, 3428340),
+          Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
               new Translation2d(-0.285, 0.285), Constants.MECANUM_WHEEL_DIAMETER),
           feedforward,
@@ -106,7 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final Wheel rearRight =
       new Wheel(
           new Wheel.MotorConstants(13),
-          new Wheel.EncoderConstants(22300 * 10, 3428340),
+          Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
               new Translation2d(-0.285, -0.28), Constants.MECANUM_WHEEL_DIAMETER),
           feedforward,
