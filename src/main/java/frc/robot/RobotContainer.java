@@ -95,7 +95,7 @@ public class RobotContainer {
   }
 
   public void driveWithJoystick() {
-    if (!ignoreJoysticks) {
+    if (ignoreJoysticks) {
       return;
     }
 
