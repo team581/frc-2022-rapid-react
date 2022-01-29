@@ -20,7 +20,6 @@ public final class Constants {
   /** The Limelight's angle of elevation, in radians. */
   public static final double LIMELIGHT_ANGLE_OF_ELEVATION = 0;
 
-  // TODO: Measure this value
   /** The Limelight's height from the floor, in meters. */
-  public static final double LIMELIGHT_HEIGHT_FROM_FLOOR = Units.inchesToMeters(9);
+  public static final double LIMELIGHT_HEIGHT_FROM_FLOOR = Units.inchesToMeters(15.5);
 }
