@@ -68,13 +68,16 @@ public class RobotContainer {
         new JoystickButton(controller, XboxController.Axis.kRightTrigger.value);
 
     // Align for shooting
+    LoadingBayAlignCommand loadingBayAlignCommand =
+        new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem);
     aButton
-        .whenPressed(new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem))
         .whenPressed(() -> ignoreJoysticks = true)
+        .whenPressed(loadingBayAlignCommand)
         .whenReleased(
             () -> {
               ignoreJoysticks = false;
               limelightSubsystem.useDriverMode();
+              loadingBayAlignCommand.cancel();
             });
 
     // Snarfer
@@ -104,5 +107,15 @@ public class RobotContainer {
     final var theta = controllerUtil.getThetaPercentage();
 
     driveSubsystem.driveTeleop(x, y, theta);
+  }
+
+  /**
+   * Disables the vision-powered autonomous system used during the autonomous period or while the
+   * driver has a target alignment command running. This restores joystick control and will set the
+   * camera(s) to disable vision processing (driver mode).
+   */
+  public void disableVisionAutonomous() {
+    ignoreJoysticks = false;
+    this.limelightSubsystem.useDriverMode();
   }
 }
