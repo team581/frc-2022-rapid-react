@@ -31,7 +31,6 @@ public abstract class LimelightVisionTarget extends VisionTarget {
   @Override
   public void prepareForUse() {
     limelightSubsystem.limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
-    limelightSubsystem.limelight.setLEDMode(Limelight.LEDMode.CURRENT_PIPELINE);
   }
 
   /**
