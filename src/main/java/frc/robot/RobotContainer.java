@@ -12,7 +12,6 @@ import frc.robot.commands.groups.vision.LoadingBayAlignCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.PhotonVisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SnarferSubsystem;
 import frc.robot.util.ControllerUtil;
@@ -31,7 +30,6 @@ public class RobotContainer {
   private final LimelightSubsystem limelightSubsystem =
       new LimelightSubsystem(
           Constants.LIMELIGHT_ANGLE_OF_ELEVATION, Constants.LIMELIGHT_HEIGHT_FROM_FLOOR);
-  private final PhotonVisionSubsystem photonVisionSubsystem = new PhotonVisionSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final SnarferSubsystem snarferSubsystem = new SnarferSubsystem();
 

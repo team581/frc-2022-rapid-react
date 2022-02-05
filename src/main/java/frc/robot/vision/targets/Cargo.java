@@ -4,10 +4,10 @@
 
 package frc.robot.vision.targets;
 
-import frc.robot.subsystems.PhotonVisionSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 /** A vision target for the 2022 cargo. */
-public class Cargo extends PhotonVisionVisionTarget {
+public class Cargo extends LimelightVisionTarget {
   /** The possible colors of cargo. */
   public enum Color {
     /** A red cargo. */
@@ -18,8 +18,8 @@ public class Cargo extends PhotonVisionVisionTarget {
 
   private final Color color;
 
-  public Cargo(PhotonVisionSubsystem photonVision, Color color) {
-    super(photonVision);
+  public Cargo(LimelightSubsystem limeLight, Color color) {
+    super(limeLight, 0.0);
 
     this.color = color;
   }
@@ -30,10 +30,10 @@ public class Cargo extends PhotonVisionVisionTarget {
 
     switch (color) {
       case RED:
-        photonVision.camera.setPipelineIndex(0);
+        limelightSubsystem.limelight.setPipeline(3);
         break;
       case BLUE:
-        photonVision.camera.setPipelineIndex(1);
+        limelightSubsystem.limelight.setPipeline(4);
         break;
       default:
         throw new IllegalArgumentException("Unknown color: " + color);
