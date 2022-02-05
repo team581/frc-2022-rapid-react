@@ -17,6 +17,6 @@ public class LoadingBay extends LimelightVisionTarget {
   public void prepareForUse() {
     super.prepareForUse();
 
-    limelightSubsystem.limelight.setPipeline(1);
+    limelightSubsystem.limelight.setPipeline(3);
   }
 }
