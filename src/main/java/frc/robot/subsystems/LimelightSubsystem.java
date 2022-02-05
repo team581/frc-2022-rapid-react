@@ -30,6 +30,8 @@ public class LimelightSubsystem extends SubsystemBase {
    */
   public final double heightFromFloor;
 
+  // TODO: This subsystem should expose a bool when it's currently controlling the motors
+
   public final UpperHub upperHub = new UpperHub(this);
   public final LoadingBay loadingBay = new LoadingBay(this);
   public final Cargo redCargo = new Cargo(this, Cargo.Color.RED);

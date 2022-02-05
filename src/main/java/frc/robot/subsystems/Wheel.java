@@ -10,17 +10,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 public class Wheel {
-  /**
-   * The number of sensor units per rotation.
-   *
-   * @see
-   *     https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#confirm-sensor-resolution-velocity
-   */
-  private static final double SENSOR_RESOLUTION = 2048;
-
   final WPI_TalonFX motor;
   final MotorConstants motorConstants;
 
@@ -82,6 +74,7 @@ public class Wheel {
   }
 
   public Wheel(
+      String name,
       MotorConstants motorConstants,
       EncoderConstants encoderConstants,
       WheelConstants wheelConstants,
@@ -98,12 +91,15 @@ public class Wheel {
     this.velocityPid = velocityPid;
     velocityPid.setSetpoint(0);
 
-    this.kF = encoderConstants.maxEncoderRotationsPerSecond * SENSOR_RESOLUTION;
+    this.kF = encoderConstants.maxEncoderRotationsPerSecond;
 
     // TODO: These values probably need to be tuned - see tuning instructions
     // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
     motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     motor.configVelocityMeasurementWindow(1);
+
+    Shuffleboard.getTab("Robot").addNumber("velocity/" + name, () -> this.getVelocity());
+    Shuffleboard.getTab("Robot").addNumber("distance/" + name, () -> this.getDistance());
   }
 
   /**
@@ -128,8 +124,9 @@ public class Wheel {
 
   /** Get this wheel's velocity in meters/second. */
   public double getVelocity() {
-    final var nativePer100ms = motor.getSelectedSensorVelocity();
-    final var nativePerSecond = nativePer100ms / Units.millisecondsToSeconds(100);
+    // This is definitely per 100ms
+    final var nativePer100Ms = motor.getSelectedSensorVelocity();
+    final var nativePerSecond = nativePer100Ms * 10;
 
     return encoderRotationsToMeters(nativePerSecond);
   }

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,6 +61,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     final var aButton = new JoystickButton(controller, XboxController.Button.kA.value);
     final var xButton = new JoystickButton(controller, XboxController.Button.kX.value);
+    final var yButton = new JoystickButton(controller, XboxController.Button.kY.value);
 
     final var leftTrigger = new JoystickButton(controller, XboxController.Axis.kLeftTrigger.value);
     final var rightTrigger =
@@ -77,6 +79,17 @@ public class RobotContainer {
               limelightSubsystem.useDriverMode();
               loadingBayAlignCommand.cancel();
             });
+
+    yButton
+        .whenPressed(() -> ignoreJoysticks = true)
+        .whenPressed(() -> driveSubsystem.frontRight.setDesiredVelocity(Units.inchesToMeters(6 * Math.PI)))
+        .whileActiveContinuous(() -> driveSubsystem.frontRight.drive());
+    yButton.whenReleased(
+        () -> {
+          driveSubsystem.frontRight.setDesiredVelocity(0);
+          ignoreJoysticks = false;
+          limelightSubsystem.useDriverMode();
+        });
 
     // Snarfer
     leftTrigger.whenPressed(snarferSubsystem::start).whenInactive(snarferSubsystem::stop);
