@@ -30,10 +30,10 @@ public class Cargo extends LimelightVisionTarget {
 
     switch (color) {
       case RED:
-        limelightSubsystem.limelight.setPipeline(3);
+        limelightSubsystem.limelight.setPipeline(1);
         break;
       case BLUE:
-        limelightSubsystem.limelight.setPipeline(4);
+        limelightSubsystem.limelight.setPipeline(2);
         break;
       default:
         throw new IllegalArgumentException("Unknown color: " + color);
