@@ -118,7 +118,7 @@ public class Limelight {
 
   /**
    * Coordinate pairs (<code>(x, y)</code>) for the corners of the vision target. The length of the
-   * returnedd list is not guaranteed. If you are trying to detect a rectangular vision target but
+   * returned list is not guaranteed. If you are trying to detect a rectangular vision target but
    * only 3 corners are visible then the array will have 3 elements.
    *
    * <p>You must enable "send contours" in the "Output" tab to stream corner coordinates.
