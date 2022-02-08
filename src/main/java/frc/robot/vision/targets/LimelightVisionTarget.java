@@ -7,13 +7,13 @@ package frc.robot.vision.targets;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.LimelightSubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 import lib.limelight.Limelight;
 
 /** A vision target for the Limelight. */
 public abstract class LimelightVisionTarget implements VisionTarget {
-  protected final LimelightSubsystem limelightSubsystem;
+  protected final LimelightSubsystemBase limelightSubsystem;
   /**
    * The height from the floor to this vision target, in meters.
    *
@@ -23,7 +23,8 @@ public abstract class LimelightVisionTarget implements VisionTarget {
    */
   private final double heightFromFloor;
 
-  protected LimelightVisionTarget(LimelightSubsystem limelightSubsystem, double heightFromFloor) {
+  protected LimelightVisionTarget(
+      LimelightSubsystemBase limelightSubsystem, double heightFromFloor) {
     this.limelightSubsystem = limelightSubsystem;
     this.heightFromFloor = heightFromFloor;
   }

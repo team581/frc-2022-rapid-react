@@ -10,11 +10,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.groups.vision.LoadingBayAlignCommand;
+import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SnarferSubsystem;
+import frc.robot.subsystems.UpperHubLimelightSubsystem;
 import frc.robot.util.ControllerUtil;
 import frc.robot.util.InputFilter;
 
@@ -29,19 +30,20 @@ public class RobotContainer {
 
   private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
   private final DriveSubsystem driveSubsystem = new DriveSubsystem(gyroSubsystem);
-  private final LimelightSubsystem limelightSubsystem =
-      new LimelightSubsystem(
-          Constants.LIMELIGHT_ANGLE_OF_ELEVATION, Constants.LIMELIGHT_HEIGHT_FROM_FLOOR);
+  private final UpperHubLimelightSubsystem upperLimelightSubsystem =
+      new UpperHubLimelightSubsystem();
+  private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final SnarferSubsystem snarferSubsystem = new SnarferSubsystem();
 
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
   private final ControllerUtil controllerUtil = new ControllerUtil(controller);
 
-  public final InputFilter inputFilter = new InputFilter(limelightSubsystem);
+  // TODO: This doesn't use both Limelights
+  public final InputFilter inputFilter = new InputFilter(cargoLimelightSubsystem);
 
   private final Command autoCommand =
-      new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem, inputFilter);
+      new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem, inputFilter);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -65,7 +67,8 @@ public class RobotContainer {
         new JoystickButton(controller, XboxController.Axis.kRightTrigger.value);
 
     // Align for shooting
-    aButton.whenHeld(new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem, inputFilter));
+    aButton.whenHeld(
+        new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem, inputFilter));
 
     // Testing autonomous
     yButton

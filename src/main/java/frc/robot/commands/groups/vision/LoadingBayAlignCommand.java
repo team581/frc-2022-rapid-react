@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AlignWithLimelightCommand;
 import frc.robot.commands.WaitForVisionTargetCommand;
+import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.util.InputFilter;
 
 /** Aligns with the loading bay. */
@@ -24,7 +24,7 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
           new Rotation2d(Units.degreesToRadians(5)));
 
   public LoadingBayAlignCommand(
-      DriveSubsystem drive, LimelightSubsystem limelight, InputFilter inputFilter) {
+      DriveSubsystem drive, CargoLimelightSubsystem limelight, InputFilter inputFilter) {
     addCommands(
         new InstantCommand(limelight.loadingBay::prepareForUse),
         new WaitForVisionTargetCommand(limelight),

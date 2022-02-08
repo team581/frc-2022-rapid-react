@@ -5,11 +5,11 @@
 package frc.robot.vision.targets;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.UpperHubLimelightSubsystem;
 
 /** The upper hub ring vision target. */
 public class UpperHub extends LimelightVisionTarget {
-  public UpperHub(LimelightSubsystem limelight) {
+  public UpperHub(UpperHubLimelightSubsystem limelight) {
     super(limelight, Units.feetToMeters(8) + Units.inchesToMeters(5.0 + (5.0 / 8.0)));
   }
 

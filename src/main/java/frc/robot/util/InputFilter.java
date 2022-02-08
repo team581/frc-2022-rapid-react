@@ -4,7 +4,7 @@
 
 package frc.robot.util;
 
-import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.LimelightSubsystemBase;
 
 /**
  * A class for filtering joystick input from the driver.
@@ -14,9 +14,9 @@ import frc.robot.subsystems.LimelightSubsystem;
  */
 public class InputFilter {
   private boolean ignoreJoysticks = false;
-  private LimelightSubsystem limelightSubsystem;
+  private LimelightSubsystemBase limelightSubsystem;
 
-  public InputFilter(LimelightSubsystem limelightSubsystem) {
+  public InputFilter(LimelightSubsystemBase limelightSubsystem) {
     this.limelightSubsystem = limelightSubsystem;
   }
 

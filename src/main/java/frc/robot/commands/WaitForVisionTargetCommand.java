@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.LimelightSubsystemBase;
 
 /**
  * A command that finishes when the Limelight has identified a vision target.
@@ -14,7 +14,7 @@ import frc.robot.subsystems.LimelightSubsystem;
  */
 public class WaitForVisionTargetCommand extends WaitUntilCommand {
   /** Creates a new WaitForVisionTargetCommand. */
-  public WaitForVisionTargetCommand(LimelightSubsystem limelightSubsystem) {
+  public WaitForVisionTargetCommand(LimelightSubsystemBase limelightSubsystem) {
     super(limelightSubsystem.limelight::hasTargets);
 
     addRequirements(limelightSubsystem);

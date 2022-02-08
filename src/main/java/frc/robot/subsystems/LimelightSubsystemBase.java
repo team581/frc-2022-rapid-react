@@ -5,13 +5,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.vision.targets.Cargo;
-import frc.robot.vision.targets.LoadingBay;
-import frc.robot.vision.targets.UpperHub;
 import lib.limelight.Limelight;
 
-public class LimelightSubsystem extends SubsystemBase {
-  public final Limelight limelight = new Limelight();
+public abstract class LimelightSubsystemBase extends SubsystemBase {
+  public final Limelight limelight;
 
   /**
    * The angle of elevation of this Limelight, in radians.
@@ -30,13 +27,15 @@ public class LimelightSubsystem extends SubsystemBase {
    */
   public final double heightFromFloor;
 
-  public final UpperHub upperHub = new UpperHub(this);
-  public final LoadingBay loadingBay = new LoadingBay(this);
-  public final Cargo redCargo = new Cargo(this, Cargo.Color.RED);
-  public final Cargo blueCargo = new Cargo(this, Cargo.Color.BLUE);
-
-  /** Creates a new LimelightSubsystem. */
-  public LimelightSubsystem(double angleOfElevation, double heightFromFloor) {
+  /**
+   * Creates a new LimelightSubsystemBase.
+   *
+   * @param name The NetworkTables name of this Limelight
+   * @param angleOfElevation The Limelight's angle of elevation, in radians.
+   * @param heightFromFloor The Limelight's height from the floor, in meters.
+   */
+  protected LimelightSubsystemBase(String name, double angleOfElevation, double heightFromFloor) {
+    this.limelight = new Limelight(name);
     this.angleOfElevation = angleOfElevation;
     this.heightFromFloor = heightFromFloor;
   }
