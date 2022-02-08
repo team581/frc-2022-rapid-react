@@ -4,7 +4,9 @@
 
 package frc.robot.util;
 
+import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.subsystems.LimelightSubsystemBase;
+import frc.robot.subsystems.UpperHubLimelightSubsystem;
 
 /**
  * A class for filtering joystick input from the driver.
@@ -13,23 +15,31 @@ import frc.robot.subsystems.LimelightSubsystemBase;
  * or the autonomous computer system.
  */
 public class InputFilter {
-  private boolean ignoreJoysticks = false;
-  private LimelightSubsystemBase limelightSubsystem;
+  private final UpperHubLimelightSubsystem upperHubLimelightSubsystem;
+  private final LimelightSubsystemBase cargoLimelightSubsystem;
 
-  public InputFilter(LimelightSubsystemBase limelightSubsystem) {
-    this.limelightSubsystem = limelightSubsystem;
+  public InputFilter(
+      UpperHubLimelightSubsystem upperHubLimelightSubsystem,
+      CargoLimelightSubsystem cargoLimelightSubsystem) {
+    this.upperHubLimelightSubsystem = upperHubLimelightSubsystem;
+    this.cargoLimelightSubsystem = cargoLimelightSubsystem;
   }
 
   public void useDriverControl() {
-    ignoreJoysticks = false;
-    this.limelightSubsystem.useDriverMode();
+    this.upperHubLimelightSubsystem.useDriverMode();
+    this.cargoLimelightSubsystem.useDriverMode();
   }
 
-  public void useComputerControl() {
-    ignoreJoysticks = true;
+  public void useCargoControl() {
+    this.upperHubLimelightSubsystem.useDriverMode();
+  }
+
+  public void useUpperHubControl() {
+    this.cargoLimelightSubsystem.useDriverMode();
   }
 
   public boolean shouldIgnoreJoysticks() {
-    return ignoreJoysticks;
+    return !this.cargoLimelightSubsystem.isDriverMode()
+        && !this.upperHubLimelightSubsystem.isDriverMode();
   }
 }

@@ -17,24 +17,36 @@ import frc.robot.util.InputFilter;
 
 /** Aligns with the loading bay. */
 public class LoadingBayAlignCommand extends SequentialCommandGroup {
+  // TODO: Check if this goal Pose2d is correct - we should manually put the robot in the
+  // desired position and then use those values as the goal pose
+  private static final Pose2d GOAL = new Pose2d(0, Units.feetToMeters(1.5), new Rotation2d(0));
   private static final Pose2d TOLERANCE =
       new Pose2d(
           Units.inchesToMeters(1),
           Units.inchesToMeters(1),
           new Rotation2d(Units.degreesToRadians(5)));
 
+          private final InputFilter inputFilter;
+
   public LoadingBayAlignCommand(
       DriveSubsystem drive, CargoLimelightSubsystem limelight, InputFilter inputFilter) {
+        this.inputFilter = inputFilter;
+
     addCommands(
         new InstantCommand(() -> limelight.useVisionTarget(limelight.loadingBay)),
         new WaitForVisionTargetCommand(limelight),
-        // TODO: Check if this goal Pose2d is correct - you should manually put the robot in the
-        // desired position and then use those values as the goal pose
-        new AlignWithLimelightCommand(
-            drive,
-            limelight.loadingBay,
-            inputFilter,
-            new Pose2d(0, Units.feetToMeters(1.5), new Rotation2d(0)),
-            TOLERANCE));
+        new AlignWithLimelightCommand(drive, limelight.loadingBay, GOAL, TOLERANCE));
+  }
+
+  @Override
+  public void initialize() {
+    inputFilter.useCargoControl();
+    super.initialize();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    super.end(interrupted);
+    inputFilter.useDriverControl();
   }
 }

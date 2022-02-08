@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.util.InputFilter;
 import frc.robot.vision.targets.LimelightVisionTarget;
 
 /** Align with a vision target using the Limelight. */
@@ -16,20 +15,19 @@ public class AlignWithLimelightCommand extends CommandBase {
   private final DriveSubsystem driveSubsystem;
   private final Pose2d goal;
   private final Pose2d tolerance;
-  private InputFilter inputFilter;
 
+  // TODO: The only reason this is Limelight specific is because it uses a LimelightVisionTarget.
+  // This *could* be refactored to be a generic "drive to pose" command.
   /** Creates a new AlignWithLimelightCommand. */
   public AlignWithLimelightCommand(
       DriveSubsystem driveSubsystem,
       LimelightVisionTarget visionTarget,
-      InputFilter inputFilter,
       Pose2d goal,
       Pose2d tolerance) {
     addRequirements(driveSubsystem);
 
     this.driveSubsystem = driveSubsystem;
     this.visionTarget = visionTarget;
-    this.inputFilter = inputFilter;
     this.goal = goal;
     this.tolerance = tolerance;
   }
@@ -38,7 +36,6 @@ public class AlignWithLimelightCommand extends CommandBase {
   @Override
   public void initialize() {
     driveSubsystem.driveController.setTolerance(tolerance);
-    inputFilter.useComputerControl();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,7 +52,6 @@ public class AlignWithLimelightCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    inputFilter.useDriverControl();
     driveSubsystem.stopMotors();
   }
 

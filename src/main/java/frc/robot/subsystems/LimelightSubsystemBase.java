@@ -29,6 +29,8 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
    */
   public final double heightFromFloor;
 
+  private boolean isDriverMode = false;
+
   /**
    * Creates a new LimelightSubsystemBase.
    *
@@ -47,8 +49,14 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  /** Whether this Limelight is in driver mode. */
+  public boolean isDriverMode() {
+    return isDriverMode;
+  }
+
   /** Enables raw camera output and disables computer processing. */
   public void useDriverMode() {
+    isDriverMode = true;
     limelight.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
     limelight.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
     limelight.setPipeline(Pipelines.DRIVER_MODE.index);
@@ -56,6 +64,7 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
 
   /** Enables vision processing for the provided vision target. */
   public void useVisionTarget(LimelightVisionTarget target) {
+    isDriverMode = false;
     limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
     limelight.setStreamingMode(Limelight.StreamingMode.PIP_SECONDARY);
     limelight.setPipeline(target.pipeline.index);

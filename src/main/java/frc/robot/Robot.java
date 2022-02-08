@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
       autonomousCommand.schedule();
     }
 
-    robotContainer.inputFilter.useComputerControl();
+    robotContainer.inputFilter.useCargoControl();
   }
 
   /** This function is called periodically during autonomous. */
