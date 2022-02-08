@@ -26,11 +26,11 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
           Units.inchesToMeters(1),
           new Rotation2d(Units.degreesToRadians(5)));
 
-          private final InputFilter inputFilter;
+  private final InputFilter inputFilter;
 
   public LoadingBayAlignCommand(
       DriveSubsystem drive, CargoLimelightSubsystem limelight, InputFilter inputFilter) {
-        this.inputFilter = inputFilter;
+    this.inputFilter = inputFilter;
 
     addCommands(
         new InstantCommand(() -> limelight.useVisionTarget(limelight.loadingBay)),

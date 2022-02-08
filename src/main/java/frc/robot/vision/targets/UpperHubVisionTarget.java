@@ -13,6 +13,6 @@ public class UpperHubVisionTarget extends LimelightVisionTarget {
     super(
         limelight,
         Units.feetToMeters(8) + Units.inchesToMeters(5.0 + (5.0 / 8.0)),
-        Pipelines.UPPER_HUB);
+        UpperHubLimelightSubsystem.Pipelines.UPPER_HUB.index);
   }
 }

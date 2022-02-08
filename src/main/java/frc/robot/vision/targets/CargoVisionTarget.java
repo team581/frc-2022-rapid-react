@@ -21,6 +21,8 @@ public class CargoVisionTarget extends LimelightVisionTarget {
         limeLight,
         // We are going to assume all cargo is on the floor (a height of 0)
         0.0,
-        color == Color.RED ? Pipelines.RED_CARGO : Pipelines.BLUE_CARGO);
+        color == Color.RED
+            ? CargoLimelightSubsystem.Pipelines.RED_CARGO.index
+            : CargoLimelightSubsystem.Pipelines.BLUE_CARGO.index);
   }
 }

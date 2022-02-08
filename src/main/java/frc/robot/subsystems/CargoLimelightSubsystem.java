@@ -9,6 +9,19 @@ import frc.robot.vision.targets.CargoVisionTarget;
 import frc.robot.vision.targets.LoadingBayVisionTarget;
 
 public class CargoLimelightSubsystem extends LimelightSubsystemBase {
+  public enum Pipelines {
+    RED_CARGO(0),
+    BLUE_CARGO(1),
+    LOADING_BAY(2),
+    DRIVER_MODE(9);
+
+    public final int index;
+
+    Pipelines(final int index) {
+      this.index = index;
+    }
+  }
+
   public final LoadingBayVisionTarget loadingBay = new LoadingBayVisionTarget(this);
   public final CargoVisionTarget redCargo =
       new CargoVisionTarget(this, CargoVisionTarget.Color.RED);

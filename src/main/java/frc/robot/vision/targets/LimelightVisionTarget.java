@@ -12,21 +12,8 @@ import io.github.oblarg.oblog.annotations.Log;
 
 /** A vision target for the Limelight. */
 public abstract class LimelightVisionTarget {
-  public enum Pipelines {
-    UPPER_HUB(0),
-    RED_CARGO(1),
-    BLUE_CARGO(2),
-    LOADING_BAY(3),
-    DRIVER_MODE(9);
-
-    public final int index;
-
-    Pipelines(final int index) {
-      this.index = index;
-    }
-  }
-
-  public final Pipelines pipeline;
+  /** The index of this vision target's pipeline. */
+  public final int pipeline;
 
   protected final LimelightSubsystemBase limelightSubsystem;
   /**
@@ -39,7 +26,7 @@ public abstract class LimelightVisionTarget {
   private final double heightFromFloor;
 
   protected LimelightVisionTarget(
-      LimelightSubsystemBase limelightSubsystem, double heightFromFloor, Pipelines pipeline) {
+      LimelightSubsystemBase limelightSubsystem, double heightFromFloor, int pipeline) {
     this.limelightSubsystem = limelightSubsystem;
     this.heightFromFloor = heightFromFloor;
     this.pipeline = pipeline;

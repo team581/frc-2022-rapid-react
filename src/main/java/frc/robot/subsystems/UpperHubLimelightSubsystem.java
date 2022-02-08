@@ -7,6 +7,17 @@ package frc.robot.subsystems;
 import frc.robot.vision.targets.UpperHubVisionTarget;
 
 public class UpperHubLimelightSubsystem extends LimelightSubsystemBase {
+  public enum Pipelines {
+    UPPER_HUB(0),
+    DRIVER_MODE(9);
+
+    public final int index;
+
+    Pipelines(final int index) {
+      this.index = index;
+    }
+  }
+
   public final UpperHubVisionTarget upperHub = new UpperHubVisionTarget(this);
 
   /** Creates a new UpperHubLimelightSubsystem. */
