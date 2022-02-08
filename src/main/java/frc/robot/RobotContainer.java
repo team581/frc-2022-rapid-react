@@ -43,7 +43,6 @@ public class RobotContainer {
   private final Command autoCommand =
       new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem, inputFilter);
 
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
