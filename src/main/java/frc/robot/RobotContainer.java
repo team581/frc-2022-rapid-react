@@ -38,10 +38,11 @@ public class RobotContainer {
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
   private final ControllerUtil controllerUtil = new ControllerUtil(controller);
 
-  private final Command autoCommand =
-      new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem);
-
   public final InputFilter inputFilter = new InputFilter(limelightSubsystem);
+
+  private final Command autoCommand =
+      new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem, inputFilter);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
