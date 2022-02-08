@@ -8,8 +8,8 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.UpperHubLimelightSubsystem;
 
 /** The upper hub ring vision target. */
-public class UpperHub extends LimelightVisionTarget {
-  public UpperHub(UpperHubLimelightSubsystem limelight) {
+public class UpperHubVisionTarget extends LimelightVisionTarget {
+  public UpperHubVisionTarget(UpperHubLimelightSubsystem limelight) {
     super(
         limelight,
         Units.feetToMeters(8) + Units.inchesToMeters(5.0 + (5.0 / 8.0)),

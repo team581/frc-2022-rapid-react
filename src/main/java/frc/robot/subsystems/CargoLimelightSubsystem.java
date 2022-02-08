@@ -5,13 +5,15 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.vision.targets.Cargo;
-import frc.robot.vision.targets.LoadingBay;
+import frc.robot.vision.targets.CargoVisionTarget;
+import frc.robot.vision.targets.LoadingBayVisionTarget;
 
 public class CargoLimelightSubsystem extends LimelightSubsystemBase {
-  public final LoadingBay loadingBay = new LoadingBay(this);
-  public final Cargo redCargo = new Cargo(this, Cargo.Color.RED);
-  public final Cargo blueCargo = new Cargo(this, Cargo.Color.BLUE);
+  public final LoadingBayVisionTarget loadingBay = new LoadingBayVisionTarget(this);
+  public final CargoVisionTarget redCargo =
+      new CargoVisionTarget(this, CargoVisionTarget.Color.RED);
+  public final CargoVisionTarget blueCargo =
+      new CargoVisionTarget(this, CargoVisionTarget.Color.BLUE);
 
   /** Creates a new CargoLimelightSubsystem. */
   public CargoLimelightSubsystem() {

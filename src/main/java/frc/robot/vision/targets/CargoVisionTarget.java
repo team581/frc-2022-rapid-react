@@ -7,7 +7,7 @@ package frc.robot.vision.targets;
 import frc.robot.subsystems.CargoLimelightSubsystem;
 
 /** A vision target for the 2022 cargo. */
-public class Cargo extends LimelightVisionTarget {
+public class CargoVisionTarget extends LimelightVisionTarget {
   /** The possible colors of cargo. */
   public enum Color {
     /** A red cargo. */
@@ -16,7 +16,7 @@ public class Cargo extends LimelightVisionTarget {
     BLUE
   }
 
-  public Cargo(CargoLimelightSubsystem limeLight, Color color) {
+  public CargoVisionTarget(CargoLimelightSubsystem limeLight, Color color) {
     super(
         limeLight,
         // We are going to assume all cargo is on the floor (a height of 0)

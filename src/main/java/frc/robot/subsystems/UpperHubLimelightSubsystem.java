@@ -4,10 +4,10 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.vision.targets.UpperHub;
+import frc.robot.vision.targets.UpperHubVisionTarget;
 
 public class UpperHubLimelightSubsystem extends LimelightSubsystemBase {
-  public final UpperHub upperHub = new UpperHub(this);
+  public final UpperHubVisionTarget upperHub = new UpperHubVisionTarget(this);
 
   /** Creates a new UpperHubLimelightSubsystem. */
   public UpperHubLimelightSubsystem() {
