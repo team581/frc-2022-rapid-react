@@ -19,6 +19,7 @@ public class Cargo extends LimelightVisionTarget {
   private final Color color;
 
   public Cargo(LimelightSubsystem limeLight, Color color) {
+    // We are going to assume all cargo is on the floor (a height of 0)
     super(limeLight, 0.0);
 
     this.color = color;
