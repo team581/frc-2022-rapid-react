@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.vision.targets.LimelightVisionTarget;
+import frc.robot.vision.targets.LimelightVisionTarget.Pipelines;
 import lib.limelight.Limelight;
 
 public abstract class LimelightSubsystemBase extends SubsystemBase {
@@ -48,6 +50,14 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
   /** Enables raw camera output and disables computer processing. */
   public void useDriverMode() {
     limelight.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
-    limelight.setPipeline(9);
+    limelight.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
+    limelight.setPipeline(Pipelines.DRIVER_MODE.index);
+  }
+
+  /** Enables vision processing for the provided vision target. */
+  public void useVisionTarget(LimelightVisionTarget target) {
+    limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
+    limelight.setStreamingMode(Limelight.StreamingMode.PIP_SECONDARY);
+    limelight.setPipeline(target.pipeline.index);
   }
 }

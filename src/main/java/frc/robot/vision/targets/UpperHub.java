@@ -10,13 +10,9 @@ import frc.robot.subsystems.UpperHubLimelightSubsystem;
 /** The upper hub ring vision target. */
 public class UpperHub extends LimelightVisionTarget {
   public UpperHub(UpperHubLimelightSubsystem limelight) {
-    super(limelight, Units.feetToMeters(8) + Units.inchesToMeters(5.0 + (5.0 / 8.0)));
-  }
-
-  @Override
-  public void prepareForUse() {
-    super.prepareForUse();
-
-    limelightSubsystem.limelight.setPipeline(0);
+    super(
+        limelight,
+        Units.feetToMeters(8) + Units.inchesToMeters(5.0 + (5.0 / 8.0)),
+        Pipelines.UPPER_HUB);
   }
 }

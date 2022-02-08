@@ -26,7 +26,7 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
   public LoadingBayAlignCommand(
       DriveSubsystem drive, CargoLimelightSubsystem limelight, InputFilter inputFilter) {
     addCommands(
-        new InstantCommand(limelight.loadingBay::prepareForUse),
+        new InstantCommand(() -> limelight.useVisionTarget(limelight.loadingBay)),
         new WaitForVisionTargetCommand(limelight),
         // TODO: Check if this goal Pose2d is correct - you should manually put the robot in the
         // desired position and then use those values as the goal pose

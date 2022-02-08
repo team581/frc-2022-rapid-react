@@ -9,10 +9,25 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.LimelightSubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
-import lib.limelight.Limelight;
 
 /** A vision target for the Limelight. */
-public abstract class LimelightVisionTarget implements VisionTarget {
+public abstract class LimelightVisionTarget {
+  public enum Pipelines {
+    UPPER_HUB(0),
+    RED_CARGO(1),
+    BLUE_CARGO(2),
+    LOADING_BAY(3),
+    DRIVER_MODE(9);
+
+    public final int index;
+
+    Pipelines(final int index) {
+      this.index = index;
+    }
+  }
+
+  public final Pipelines pipeline;
+
   protected final LimelightSubsystemBase limelightSubsystem;
   /**
    * The height from the floor to this vision target, in meters.
@@ -24,13 +39,10 @@ public abstract class LimelightVisionTarget implements VisionTarget {
   private final double heightFromFloor;
 
   protected LimelightVisionTarget(
-      LimelightSubsystemBase limelightSubsystem, double heightFromFloor) {
+      LimelightSubsystemBase limelightSubsystem, double heightFromFloor, Pipelines pipeline) {
     this.limelightSubsystem = limelightSubsystem;
     this.heightFromFloor = heightFromFloor;
-  }
-
-  public void prepareForUse() {
-    limelightSubsystem.limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
+    this.pipeline = pipeline;
   }
 
   /**

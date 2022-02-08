@@ -16,28 +16,11 @@ public class Cargo extends LimelightVisionTarget {
     BLUE
   }
 
-  private final Color color;
-
   public Cargo(CargoLimelightSubsystem limeLight, Color color) {
-    // We are going to assume all cargo is on the floor (a height of 0)
-    super(limeLight, 0.0);
-
-    this.color = color;
-  }
-
-  @Override
-  public void prepareForUse() {
-    super.prepareForUse();
-
-    switch (color) {
-      case RED:
-        limelightSubsystem.limelight.setPipeline(1);
-        break;
-      case BLUE:
-        limelightSubsystem.limelight.setPipeline(2);
-        break;
-      default:
-        throw new IllegalArgumentException("Unknown color: " + color);
-    }
+    super(
+        limeLight,
+        // We are going to assume all cargo is on the floor (a height of 0)
+        0.0,
+        color == Color.RED ? Pipelines.RED_CARGO : Pipelines.BLUE_CARGO);
   }
 }

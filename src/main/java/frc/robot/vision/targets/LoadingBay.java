@@ -10,13 +10,6 @@ import frc.robot.subsystems.CargoLimelightSubsystem;
 /** The 2020 loading bay vision target. Exclusively used for debugging purposes. */
 public class LoadingBay extends LimelightVisionTarget {
   public LoadingBay(CargoLimelightSubsystem limelight) {
-    super(limelight, Units.inchesToMeters(11));
-  }
-
-  @Override
-  public void prepareForUse() {
-    super.prepareForUse();
-
-    limelightSubsystem.limelight.setPipeline(3);
+    super(limelight, Units.inchesToMeters(11), Pipelines.LOADING_BAY);
   }
 }
