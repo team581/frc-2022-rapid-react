@@ -4,13 +4,13 @@
 
 package frc.robot.vision.targets;
 
-/** A class to represent a vision target on the field. */
-public abstract class VisionTarget {
+/** An interface to represent a vision target on the field. */
+public interface VisionTarget {
   /**
    * Prepares this vision target for use. This is where you should select the correct pipeline,
    * enable LEDs, etc.
    *
    * <p>You must call this function before trying to use a vision system to track a vision target.
    */
-  public abstract void prepareForUse();
+  public void prepareForUse();
 }

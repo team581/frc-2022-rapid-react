@@ -12,7 +12,7 @@ import io.github.oblarg.oblog.annotations.Log;
 import lib.limelight.Limelight;
 
 /** A vision target for the Limelight. */
-public abstract class LimelightVisionTarget extends VisionTarget {
+public abstract class LimelightVisionTarget implements VisionTarget {
   protected final LimelightSubsystem limelightSubsystem;
   /**
    * The height from the floor to this vision target, in meters.
@@ -28,7 +28,6 @@ public abstract class LimelightVisionTarget extends VisionTarget {
     this.heightFromFloor = heightFromFloor;
   }
 
-  @Override
   public void prepareForUse() {
     limelightSubsystem.limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
   }
