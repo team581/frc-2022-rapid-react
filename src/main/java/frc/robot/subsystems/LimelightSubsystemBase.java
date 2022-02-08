@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.vision.targets.LimelightVisionTarget;
-import frc.robot.vision.targets.LimelightVisionTarget.Pipelines;
 import lib.limelight.Limelight;
 
 public abstract class LimelightSubsystemBase extends SubsystemBase {
@@ -29,19 +28,23 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
    */
   public final double heightFromFloor;
 
+  private final int driverModePipeline;
   private boolean isDriverMode = false;
 
   /**
    * Creates a new LimelightSubsystemBase.
    *
    * @param name The NetworkTables name of this Limelight
-   * @param angleOfElevation The Limelight's angle of elevation, in radians.
-   * @param heightFromFloor The Limelight's height from the floor, in meters.
+   * @param angleOfElevation The Limelight's angle of elevation, in radians
+   * @param heightFromFloor The Limelight's height from the floor, in meters
+   * @param driverModePipeline The index of the pipeline to use when in driver mode
    */
-  protected LimelightSubsystemBase(String name, double angleOfElevation, double heightFromFloor) {
+  protected LimelightSubsystemBase(
+      String name, double angleOfElevation, double heightFromFloor, int driverModePipeline) {
     this.limelight = new Limelight(name);
     this.angleOfElevation = angleOfElevation;
     this.heightFromFloor = heightFromFloor;
+    this.driverModePipeline = driverModePipeline;
   }
 
   @Override
@@ -59,7 +62,7 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
     isDriverMode = true;
     limelight.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
     limelight.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
-    limelight.setPipeline(Pipelines.DRIVER_MODE.index);
+    limelight.setPipeline(driverModePipeline);
   }
 
   /** Enables vision processing for the provided vision target. */
@@ -67,6 +70,6 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
     isDriverMode = false;
     limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
     limelight.setStreamingMode(Limelight.StreamingMode.PIP_SECONDARY);
-    limelight.setPipeline(target.pipeline.index);
+    limelight.setPipeline(target.pipeline);
   }
 }
