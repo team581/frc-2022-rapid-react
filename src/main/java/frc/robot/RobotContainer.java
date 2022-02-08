@@ -82,7 +82,8 @@ public class RobotContainer {
 
     yButton
         .whenPressed(() -> ignoreJoysticks = true)
-        .whenPressed(() -> driveSubsystem.frontRight.setDesiredVelocity(Units.inchesToMeters(6 * Math.PI)))
+        .whenPressed(
+            () -> driveSubsystem.frontRight.setDesiredVelocity(Units.inchesToMeters(6 * Math.PI)))
         .whileActiveContinuous(() -> driveSubsystem.frontRight.drive());
     yButton.whenReleased(
         () -> {
