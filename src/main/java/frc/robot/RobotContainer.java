@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +16,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SnarferSubsystem;
 import frc.robot.util.ControllerUtil;
+import frc.robot.util.InputFilter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,14 +38,10 @@ public class RobotContainer {
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
   private final ControllerUtil controllerUtil = new ControllerUtil(controller);
 
-  private final Command autoCommand =
-      new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem);
+  public final InputFilter inputFilter = new InputFilter(limelightSubsystem);
 
-  /**
-   * Whether the joysticks should be ignored during teleop. This is used to prevent the drivetrain's
-   * wheel velocity controllers from clashing with the driver's joystick values.
-   */
-  private boolean ignoreJoysticks = false;
+  private final Command autoCommand =
+      new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem, inputFilter);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -60,30 +58,35 @@ public class RobotContainer {
   private void configureButtonBindings() {
     final var aButton = new JoystickButton(controller, XboxController.Button.kA.value);
     final var xButton = new JoystickButton(controller, XboxController.Button.kX.value);
+    final var yButton = new JoystickButton(controller, XboxController.Button.kY.value);
 
     final var leftTrigger = new JoystickButton(controller, XboxController.Axis.kLeftTrigger.value);
     final var rightTrigger =
         new JoystickButton(controller, XboxController.Axis.kRightTrigger.value);
 
     // Align for shooting
-    LoadingBayAlignCommand loadingBayAlignCommand =
-        new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem);
-    aButton
-        .whenPressed(() -> ignoreJoysticks = true)
-        .whenPressed(loadingBayAlignCommand)
+    aButton.whenHeld(new LoadingBayAlignCommand(driveSubsystem, limelightSubsystem, inputFilter));
+
+    // Testing autonomous
+    yButton
+        .whenPressed(
+            () -> {
+              inputFilter.useComputerControl();
+              driveSubsystem.frontRight.setDesiredVelocity(Units.inchesToMeters(6 * Math.PI));
+            })
         .whenReleased(
             () -> {
-              ignoreJoysticks = false;
-              limelightSubsystem.useDriverMode();
-              loadingBayAlignCommand.cancel();
-            });
+              driveSubsystem.frontRight.setDesiredVelocity(0);
+              inputFilter.useDriverControl();
+            })
+        .whileHeld(driveSubsystem.frontRight::drive);
 
     // Snarfer
-    leftTrigger.whenPressed(snarferSubsystem::start).whenInactive(snarferSubsystem::stop);
-    xButton.whenPressed(snarferSubsystem::spit).whenInactive(snarferSubsystem::stop);
+    leftTrigger.whenPressed(snarferSubsystem::start).whenReleased(snarferSubsystem::stop);
+    xButton.whenPressed(snarferSubsystem::spit).whenReleased(snarferSubsystem::stop);
 
     // Shooter
-    rightTrigger.whenPressed(shooterSubsystem::start).whenInactive(shooterSubsystem::stop);
+    rightTrigger.whenPressed(shooterSubsystem::start).whenReleased(shooterSubsystem::stop);
   }
 
   /**
@@ -96,7 +99,7 @@ public class RobotContainer {
   }
 
   public void driveWithJoystick() {
-    if (ignoreJoysticks) {
+    if (inputFilter.shouldIgnoreJoysticks()) {
       return;
     }
 
@@ -105,15 +108,5 @@ public class RobotContainer {
     final var theta = controllerUtil.getThetaPercentage();
 
     driveSubsystem.driveTeleop(x, y, theta);
-  }
-
-  /**
-   * Disables the vision-powered autonomous system used during the autonomous period or while the
-   * driver has a target alignment command running. This restores joystick control and will set the
-   * camera(s) to disable vision processing (driver mode).
-   */
-  public void disableVisionAutonomous() {
-    ignoreJoysticks = false;
-    this.limelightSubsystem.useDriverMode();
   }
 }

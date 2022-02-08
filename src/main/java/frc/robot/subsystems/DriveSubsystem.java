@@ -51,23 +51,21 @@ public class DriveSubsystem extends SubsystemBase {
     /** The diameter of the mecanum wheels on the drivebase, in meters. */
     private static final double MECANUM_WHEEL_DIAMETER = Units.inchesToMeters(5.97);
 
-    // TODO: These values are almost certainly wrong, how can one wheel rotation be 3.4M encoder
-    // rotations but the robot can only do 223k encoder rotations per second
     private static final Wheel.EncoderConstants ENCODER_CONSTANTS =
-        new Wheel.EncoderConstants(22300 / Units.millisecondsToSeconds(100), 3428340);
+        new Wheel.EncoderConstants(22197, 21998);
 
     // Wheel velocity PID constants
-    private static final double WHEEL_VELOCITY_PID_P = 0.25;
+    private static final double WHEEL_VELOCITY_PID_P = 0.30;
     private static final double WHEEL_VELOCITY_PID_I = 0;
     private static final double WHEEL_VELOCITY_PID_D = 0;
   }
 
   // TODO: Tune these values - currently they are just copy-pasted from 2020 (which is probably not
   // well-tuned either)
-  private final PIDController xPid = new PIDController(0.03, 0, 0.006);
-  private final PIDController yPid = new PIDController(0.03, 0, 0.004);
+  private final PIDController xPid = new PIDController(0.01, 0, 0.0);
+  private final PIDController yPid = new PIDController(0.01, 0, 0.0);
   private final ProfiledPIDController thetaPid =
-      new ProfiledPIDController(0.1, 0, 0.0003, Constants.MAX_ROTATION);
+      new ProfiledPIDController(0.01, 0, 0.0, Constants.MAX_ROTATION);
 
   public final HolonomicDriveController driveController =
       new HolonomicDriveController(xPid, yPid, thetaPid);
@@ -78,6 +76,7 @@ public class DriveSubsystem extends SubsystemBase {
   // #region wheels
   private final Wheel frontLeft =
       new Wheel(
+          "frontLeft",
           new Wheel.MotorConstants(10),
           Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
@@ -87,8 +86,9 @@ public class DriveSubsystem extends SubsystemBase {
               Constants.WHEEL_VELOCITY_PID_P,
               Constants.WHEEL_VELOCITY_PID_I,
               Constants.WHEEL_VELOCITY_PID_D));
-  private final Wheel frontRight =
+  public final Wheel frontRight =
       new Wheel(
+          "frontRight",
           new Wheel.MotorConstants(11),
           Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
@@ -100,6 +100,7 @@ public class DriveSubsystem extends SubsystemBase {
               Constants.WHEEL_VELOCITY_PID_D));
   private final Wheel rearLeft =
       new Wheel(
+          "rearLeft",
           new Wheel.MotorConstants(12),
           Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
@@ -111,6 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
               Constants.WHEEL_VELOCITY_PID_D));
   private final Wheel rearRight =
       new Wheel(
+          "rearRight",
           new Wheel.MotorConstants(13),
           Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(

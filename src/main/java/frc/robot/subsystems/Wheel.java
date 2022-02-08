@@ -10,17 +10,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class Wheel {
-  /**
-   * The number of sensor units per rotation.
-   *
-   * @see
-   *     https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#confirm-sensor-resolution-velocity
-   */
-  private static final double SENSOR_RESOLUTION = 2048;
-
+public class Wheel implements Loggable {
   final WPI_TalonFX motor;
   final MotorConstants motorConstants;
 
@@ -38,6 +31,8 @@ public class Wheel {
    * <p>Output: motor voltage as a percentage
    */
   private final PIDController velocityPid;
+
+  private final String name;
 
   public static class MotorConstants {
     public final int port;
@@ -82,11 +77,14 @@ public class Wheel {
   }
 
   public Wheel(
+      String name,
       MotorConstants motorConstants,
       EncoderConstants encoderConstants,
       WheelConstants wheelConstants,
       SimpleMotorFeedforward feedforward,
       PIDController velocityPid) {
+    this.name = name;
+
     this.motor = new WPI_TalonFX(motorConstants.port);
     this.motorConstants = motorConstants;
 
@@ -98,12 +96,17 @@ public class Wheel {
     this.velocityPid = velocityPid;
     velocityPid.setSetpoint(0);
 
-    this.kF = encoderConstants.maxEncoderRotationsPerSecond * SENSOR_RESOLUTION;
+    this.kF = encoderConstants.maxEncoderRotationsPerSecond;
 
     // TODO: These values probably need to be tuned - see tuning instructions
     // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
     motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     motor.configVelocityMeasurementWindow(1);
+  }
+
+  @Override
+  public String configureLogName() {
+    return "Wheel " + name;
   }
 
   /**
@@ -127,14 +130,17 @@ public class Wheel {
   }
 
   /** Get this wheel's velocity in meters/second. */
+  @Log
   public double getVelocity() {
-    final var nativePer100ms = motor.getSelectedSensorVelocity();
-    final var nativePerSecond = nativePer100ms / Units.millisecondsToSeconds(100);
+    // This is definitely per 100ms
+    final var nativePer100Ms = motor.getSelectedSensorVelocity();
+    final var nativePerSecond = nativePer100Ms * 10;
 
     return encoderRotationsToMeters(nativePerSecond);
   }
 
   /** Get the distance in meters this wheel's encoder has travelled since last being reset. */
+  @Log
   public double getDistance() {
     final var nativeDistance = motor.getSelectedSensorPosition();
 
