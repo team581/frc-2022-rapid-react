@@ -10,9 +10,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class Wheel {
+public class Wheel implements Loggable {
   final WPI_TalonFX motor;
   final MotorConstants motorConstants;
 
@@ -30,6 +31,8 @@ public class Wheel {
    * <p>Output: motor voltage as a percentage
    */
   private final PIDController velocityPid;
+
+  private final String name;
 
   public static class MotorConstants {
     public final int port;
@@ -80,6 +83,8 @@ public class Wheel {
       WheelConstants wheelConstants,
       SimpleMotorFeedforward feedforward,
       PIDController velocityPid) {
+    this.name = name;
+
     this.motor = new WPI_TalonFX(motorConstants.port);
     this.motorConstants = motorConstants;
 
@@ -97,9 +102,11 @@ public class Wheel {
     // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
     motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     motor.configVelocityMeasurementWindow(1);
+  }
 
-    Shuffleboard.getTab("Robot").addNumber("velocity/" + name, () -> this.getVelocity());
-    Shuffleboard.getTab("Robot").addNumber("distance/" + name, () -> this.getDistance());
+  @Override
+  public String configureLogName() {
+    return "Wheel " + name;
   }
 
   /**
@@ -123,6 +130,7 @@ public class Wheel {
   }
 
   /** Get this wheel's velocity in meters/second. */
+  @Log
   public double getVelocity() {
     // This is definitely per 100ms
     final var nativePer100Ms = motor.getSelectedSensorVelocity();
@@ -132,6 +140,7 @@ public class Wheel {
   }
 
   /** Get the distance in meters this wheel's encoder has travelled since last being reset. */
+  @Log
   public double getDistance() {
     final var nativeDistance = motor.getSelectedSensorPosition();
 
