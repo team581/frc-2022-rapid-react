@@ -7,7 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.SetAllianceCommand;
 import frc.robot.commands.VelocityControlTestCommand;
 import frc.robot.commands.groups.vision.LoadingBayAlignCommand;
 import frc.robot.subsystems.CargoLimelightSubsystem;
@@ -43,7 +45,9 @@ public class RobotContainer {
       new InputFilter(upperLimelightSubsystem, cargoLimelightSubsystem);
 
   private final Command autoCommand =
-      new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem, inputFilter);
+      new SequentialCommandGroup(
+          new SetAllianceCommand(cargoLimelightSubsystem),
+          new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem, inputFilter));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

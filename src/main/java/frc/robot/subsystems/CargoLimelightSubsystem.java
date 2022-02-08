@@ -23,13 +23,43 @@ public class CargoLimelightSubsystem extends LimelightSubsystemBase {
   }
 
   public final LoadingBayVisionTarget loadingBay = new LoadingBayVisionTarget(this);
-  public final CargoVisionTarget redCargo =
+  private final CargoVisionTarget redCargo =
       new CargoVisionTarget(this, CargoVisionTarget.Color.RED);
-  public final CargoVisionTarget blueCargo =
+  private final CargoVisionTarget blueCargo =
       new CargoVisionTarget(this, CargoVisionTarget.Color.BLUE);
+  private CargoVisionTarget ourCargoVisionTarget;
+  private CargoVisionTarget opponentCargoVisionTarget;
 
   /** Creates a new CargoLimelightSubsystem. */
   public CargoLimelightSubsystem() {
     super("cargo", 0.0, Units.inchesToMeters(15.5));
+  }
+
+  public CargoVisionTarget getOurCargoVisionTarget() {
+    return ourCargoVisionTarget;
+  }
+
+  public CargoVisionTarget getOpponentCargoVisionTarget() {
+    return opponentCargoVisionTarget;
+  }
+
+  /** Sets the {@link CargoVisionTarget}s in this class based on what our team's alliance is. */
+  public void setOurAlliance(CargoVisionTarget.Color ourAlliance) {
+    final var opponentAlliance =
+        ourAlliance == CargoVisionTarget.Color.RED
+            ? CargoVisionTarget.Color.BLUE
+            : CargoVisionTarget.Color.RED;
+
+    ourCargoVisionTarget = getTargetForAlliance(ourAlliance);
+    opponentCargoVisionTarget = getTargetForAlliance(opponentAlliance);
+  }
+
+  /** Gets the {@link CargoVisionTarget} instance for the provided alliance (red or blue). */
+  private CargoVisionTarget getTargetForAlliance(CargoVisionTarget.Color alliance) {
+    if (alliance == CargoVisionTarget.Color.RED) {
+      return redCargo;
+    }
+
+    return blueCargo;
   }
 }
