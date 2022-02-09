@@ -72,13 +72,13 @@ public abstract class LimelightVisionTarget {
   }
 
   /**
-   * A Pose2d representing the alignment of the Limelight relative to this vision target. The vision
+   * A pose representing the alignment of the Limelight relative to this vision target. The vision
    * target has a Pose2d of (0, 0, 0).
    *
    * <p>You can assume that the data in NetworkTables is for this vision target.
    */
   @Log
-  public Pose2d getAlignment() {
+  public Pose2d getRobotPose() {
     final var x = getStrafeDistance();
     final var y = getDistance();
     final var theta = getRotation();

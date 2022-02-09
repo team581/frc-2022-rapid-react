@@ -30,13 +30,13 @@ public class VelocityControlTestCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveSubsystem.driveWithSpeeds(new ChassisSpeeds(1.5, 0, 0));
+    driveSubsystem.setChassisSpeeds(new ChassisSpeeds(1.5, 0, 0));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.driveWithSpeeds(new ChassisSpeeds(0, 0, 0));
+    driveSubsystem.setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
     driveSubsystem.stopMotors();
     inputFilter.useDriverControl();
   }

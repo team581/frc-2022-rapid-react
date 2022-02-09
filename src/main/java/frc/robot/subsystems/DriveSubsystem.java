@@ -4,13 +4,13 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -33,16 +33,15 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
         new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(180));
   }
 
+  // Components of the drive subsystem to reduce how huge this file is
   private final Drivebase drivebase = new Drivebase();
   private final Gyro gyro = new Gyro();
 
-  private final PIDController xPid = new PIDController(1, 0, 0.0);
-  private final PIDController yPid = new PIDController(1, 0, 0.0);
-  private final ProfiledPIDController thetaPid =
+  // Used for following trajectories
+  public final PIDController xPositionPid = new PIDController(1, 0, 0.0);
+  public final PIDController yPositionPid = new PIDController(1, 0, 0.0);
+  public final ProfiledPIDController thetaPositionPid =
       new ProfiledPIDController(1, 0, 0.0, Constants.MAX_ROTATION);
-
-  public final HolonomicDriveController driveController =
-      new HolonomicDriveController(xPid, yPid, thetaPid);
 
   public final MecanumDriveKinematics kinematics =
       new MecanumDriveKinematics(
@@ -54,8 +53,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   private final MecanumDriveOdometry odometry =
       new MecanumDriveOdometry(kinematics, gyro.sensor.getRotation2d());
 
+  // TODO: Update max velocity and acceleration of the robot
   public final TrajectoryConfig trajectoryConfig =
-      new TrajectoryConfig(1, 1).setKinematics(kinematics);
+      new TrajectoryConfig(3, 2).setKinematics(kinematics);
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {}
@@ -76,9 +76,13 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     drivebase.stopMotors();
   }
 
-  public void driveWithSpeeds(ChassisSpeeds chassisSpeeds) {
+  public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
     final var wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds);
 
+    setWheelSpeeds(wheelSpeeds);
+  }
+
+  public void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
     drivebase.setWheelSpeeds(wheelSpeeds);
   }
 

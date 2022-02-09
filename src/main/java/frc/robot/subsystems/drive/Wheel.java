@@ -17,6 +17,12 @@ import io.github.oblarg.oblog.annotations.Log;
 
 /** This class should only be used within {@link DriveSubsystem} and {@link Drivebase}. */
 public class Wheel implements Loggable {
+  /** The maximum velocity of a wheel in meters/second. */
+  public static final double MAX_WHEEL_VELOCITY =
+      Wheel.encoderRotationsToMeters(Constants.MAX_ENCODER_ROTATIONS_PER_SECOND);
+
+  public static final SimpleMotorFeedforward FEEDFORWARD =
+      new SimpleMotorFeedforward(0.63584, 2.2138, 0.18561);
 
   private static class Constants {
     /** The circumference of the wheel in meters. */
@@ -32,21 +38,18 @@ public class Wheel implements Loggable {
     public static final double MAX_MOTOR_VOLTAGE = 12;
   }
 
-  /**
-   * The position of the wheel corresponding to this motor, relative to the robot center, in meters.
-   * Used for kinematics.
-   */
-  public final Translation2d positionToCenterOfRobot;
-
-  public static final SimpleMotorFeedforward FEEDFORWARD =
-      new SimpleMotorFeedforward(0.63584, 2.2138, 0.18561);
-
   /** Convert encoder rotations to meters this wheel has travelled since last being reset. */
   private static double encoderRotationsToMeters(double encoderRotations) {
     final var wheelRotations = encoderRotations / Constants.ENCODER_ROTATIONS_PER_WHEEL_ROTATION;
 
     return wheelRotations * Constants.CIRCUMFERENCE;
   }
+
+  /**
+   * The position of the wheel corresponding to this motor, relative to the robot center, in meters.
+   * Used for kinematics.
+   */
+  public final Translation2d positionToCenterOfRobot;
 
   public final WPI_TalonFX motor;
 
