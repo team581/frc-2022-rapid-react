@@ -55,10 +55,18 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     private static final Wheel.EncoderConstants ENCODER_CONSTANTS =
         new Wheel.EncoderConstants(22197, 21998);
 
+    private static final double MOTOR_VOLTAGE = 12;
+
     // Wheel velocity PID constants
-    private static final double WHEEL_VELOCITY_PID_P = 0.30;
+    private static final double WHEEL_VELOCITY_PID_P = 3;
     private static final double WHEEL_VELOCITY_PID_I = 0;
     private static final double WHEEL_VELOCITY_PID_D = 0;
+
+    // Wheel velocity feedforward constants
+    // TODO: Re-run sysid to update these values
+    private static final double WHEEL_VELOCITY_FF_S = 0.63584;
+    private static final double WHEEL_VELOCITY_FF_V = 2.2138;
+    private static final double WHEEL_VELOCITY_FF_A = 0.18561;
   }
 
   // TODO: Tune these values - currently they are just copy-pasted from 2020 (which is probably not
@@ -71,14 +79,17 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   public final HolonomicDriveController driveController =
       new HolonomicDriveController(xPid, yPid, thetaPid);
 
-  // TODO: Replace these placeholder values
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.1, 0.1);
+  private final SimpleMotorFeedforward feedforward =
+      new SimpleMotorFeedforward(
+          Constants.WHEEL_VELOCITY_FF_S,
+          Constants.WHEEL_VELOCITY_FF_V,
+          Constants.WHEEL_VELOCITY_FF_A);
 
   // #region wheels
   private final Wheel frontLeft =
       new Wheel(
           "frontLeft",
-          new Wheel.MotorConstants(10),
+          new Wheel.MotorConstants(10, Constants.MOTOR_VOLTAGE),
           Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
               new Translation2d(0.285, 0.285), Constants.MECANUM_WHEEL_DIAMETER),
@@ -90,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   public final Wheel frontRight =
       new Wheel(
           "frontRight",
-          new Wheel.MotorConstants(11),
+          new Wheel.MotorConstants(11, Constants.MOTOR_VOLTAGE),
           Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
               new Translation2d(0.285, -0.285), Constants.MECANUM_WHEEL_DIAMETER),
@@ -102,7 +113,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   private final Wheel rearLeft =
       new Wheel(
           "rearLeft",
-          new Wheel.MotorConstants(12),
+          new Wheel.MotorConstants(12, Constants.MOTOR_VOLTAGE),
           Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
               new Translation2d(-0.285, 0.285), Constants.MECANUM_WHEEL_DIAMETER),
@@ -114,7 +125,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   private final Wheel rearRight =
       new Wheel(
           "rearRight",
-          new Wheel.MotorConstants(13),
+          new Wheel.MotorConstants(13, Constants.MOTOR_VOLTAGE),
           Constants.ENCODER_CONSTANTS,
           new Wheel.WheelConstants(
               new Translation2d(-0.285, -0.28), Constants.MECANUM_WHEEL_DIAMETER),

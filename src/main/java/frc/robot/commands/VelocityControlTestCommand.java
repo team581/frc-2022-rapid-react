@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.util.InputFilter;
@@ -25,19 +25,19 @@ public class VelocityControlTestCommand extends CommandBase {
   @Override
   public void initialize() {
     inputFilter.useCargoControl();
-    driveSubsystem.frontRight.setDesiredVelocity(Units.inchesToMeters(6 * Math.PI));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveSubsystem.frontRight.drive();
+    driveSubsystem.driveWithSpeeds(new ChassisSpeeds(1.5, 0, 0));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.frontRight.setDesiredVelocity(0);
+    driveSubsystem.driveWithSpeeds(new ChassisSpeeds(0, 0, 0));
+    driveSubsystem.stopMotors();
     inputFilter.useDriverControl();
   }
 

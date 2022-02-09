@@ -21,7 +21,7 @@ public class ControllerUtil {
   /** Scale a joystick value. */
   private static double joystickScale(double x) {
     // TODO: Remove this once testing is finished
-    final double scalar = 10;
+    final double scalar = 3;
 
     return (Math.signum(x) * Math.pow(x, 2)) / scalar;
   }

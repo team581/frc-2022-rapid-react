@@ -11,7 +11,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class Wheel implements Loggable {
@@ -24,8 +23,6 @@ public class Wheel implements Loggable {
 
   final SimpleMotorFeedforward feedforward;
 
-  private final double kF;
-
   /**
    * Input: current velocity in meters/second
    *
@@ -37,9 +34,11 @@ public class Wheel implements Loggable {
 
   public static class MotorConstants {
     public final int port;
+    public final double maxVoltage;
 
-    public MotorConstants(int port) {
+    public MotorConstants(int port, double maxVoltage) {
       this.port = port;
+      this.maxVoltage = maxVoltage;
     }
   }
 
@@ -97,8 +96,6 @@ public class Wheel implements Loggable {
     this.velocityPid = velocityPid;
     velocityPid.setSetpoint(0);
 
-    this.kF = encoderConstants.maxEncoderRotationsPerSecond;
-
     // TODO: These values probably need to be tuned - see tuning instructions
     // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
     motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
@@ -115,10 +112,12 @@ public class Wheel implements Loggable {
    * Wheel#setDesiredVelocity(double)}.
    */
   public void drive() {
-    final var rawVoltage = velocityPid.calculate(getVelocity());
-    final var clampedVoltage = MathUtil.clamp(rawVoltage, -1, 1);
+    final var rawVoltage =
+        feedforward.calculate(getVelocity(), velocityPid.getSetpoint())
+            + velocityPid.calculate(getVelocity());
+    final var clampedVoltage = MathUtil.clamp(rawVoltage, -motorConstants.maxVoltage, motorConstants.maxVoltage);
 
-    motor.set(clampedVoltage);
+    motor.setVoltage(clampedVoltage);
   }
 
   /**
