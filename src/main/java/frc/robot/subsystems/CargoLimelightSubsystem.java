@@ -32,7 +32,7 @@ public class CargoLimelightSubsystem extends LimelightSubsystemBase {
 
   /** Creates a new CargoLimelightSubsystem. */
   public CargoLimelightSubsystem() {
-    super("cargo", 0.0, Units.inchesToMeters(15.5), Pipelines.DRIVER_MODE.index);
+    super("limelight-cargo", 0.0, Units.inchesToMeters(15.5), Pipelines.DRIVER_MODE.index);
   }
 
   public CargoVisionTarget getOurCargoVisionTarget() {
