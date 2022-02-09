@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.SetAllianceCommand;
+import frc.robot.commands.RefreshAllianceWithFmsCommand;
 import frc.robot.commands.VelocityControlTestCommand;
 import frc.robot.commands.groups.vision.LoadingBayAlignCommand;
 import frc.robot.subsystems.CargoLimelightSubsystem;
@@ -45,7 +45,7 @@ public class RobotContainer implements Loggable {
 
   private final Command autoCommand =
       new SequentialCommandGroup(
-          new SetAllianceCommand(cargoLimelightSubsystem),
+          new RefreshAllianceWithFmsCommand(cargoLimelightSubsystem),
           new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem, inputFilter));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

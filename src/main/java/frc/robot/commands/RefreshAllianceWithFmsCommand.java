@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.vision.targets.CargoVisionTarget.Color;
 
-/** Retrieves our alliance from the FMS. */
-public class SetAllianceCommand extends CommandBase {
+/** Retrieves our alliance data from the FMS. */
+public class RefreshAllianceWithFmsCommand extends CommandBase {
   private final CargoLimelightSubsystem limelightSubsystem;
   private Alliance alliance = Alliance.Invalid;
 
   /** Creates a new SetAllianceCommand. */
-  public SetAllianceCommand(CargoLimelightSubsystem cargoLimelightSubsystem) {
+  public RefreshAllianceWithFmsCommand(CargoLimelightSubsystem cargoLimelightSubsystem) {
     this.limelightSubsystem = cargoLimelightSubsystem;
   }
 
