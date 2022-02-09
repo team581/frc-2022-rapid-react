@@ -19,6 +19,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.Loggable;
 
 // THE PLAN:
 
@@ -40,7 +41,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //    If trying to go maximum speed is too fast, you can try using 50% of the max velocities before.
 // 3. This object is given to driveWithSpeeds() (see above).
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase implements Loggable {
 
   private static final class Constants {
     // Max of 1 rotation per second and max acceleration of 0.5 rotations

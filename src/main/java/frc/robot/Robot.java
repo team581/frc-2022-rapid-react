@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.Logger;
 
 /**
@@ -15,7 +16,7 @@ import io.github.oblarg.oblog.Logger;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot implements Loggable {
   private Command autonomousCommand;
 
   private RobotContainer robotContainer;

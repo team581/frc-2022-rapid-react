@@ -20,6 +20,7 @@ import frc.robot.subsystems.SnarferSubsystem;
 import frc.robot.subsystems.UpperHubLimelightSubsystem;
 import frc.robot.util.ControllerUtil;
 import frc.robot.util.InputFilter;
+import io.github.oblarg.oblog.Loggable;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,7 +28,7 @@ import frc.robot.util.InputFilter;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Loggable {
   // The robot's subsystems and commands are defined here...
 
   private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
