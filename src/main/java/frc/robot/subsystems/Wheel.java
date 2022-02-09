@@ -115,7 +115,8 @@ public class Wheel implements Loggable {
     final var rawVoltage =
         feedforward.calculate(getVelocity(), velocityPid.getSetpoint())
             + velocityPid.calculate(getVelocity());
-    final var clampedVoltage = MathUtil.clamp(rawVoltage, -motorConstants.maxVoltage, motorConstants.maxVoltage);
+    final var clampedVoltage =
+        MathUtil.clamp(rawVoltage, -motorConstants.maxVoltage, motorConstants.maxVoltage);
 
     motor.setVoltage(clampedVoltage);
   }
