@@ -23,6 +23,6 @@ public class UpperHubLimelightSubsystem extends LimelightSubsystemBase {
   /** Creates a new UpperHubLimelightSubsystem. */
   public UpperHubLimelightSubsystem() {
     // TODO: Add in the Limelight's angle of elevation and height
-    super("upperhub", -1.0, -1.0, Pipelines.DRIVER_MODE.index);
+    super("upper", -1.0, -1.0, Pipelines.DRIVER_MODE.index);
   }
 }
