@@ -14,7 +14,6 @@ import frc.robot.commands.VelocityControlTestCommand;
 import frc.robot.commands.groups.vision.LoadingBayAlignCommand;
 import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SnarferSubsystem;
 import frc.robot.subsystems.UpperHubLimelightSubsystem;
@@ -31,8 +30,7 @@ import io.github.oblarg.oblog.Loggable;
 public class RobotContainer implements Loggable {
   // The robot's subsystems and commands are defined here...
 
-  private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem(gyroSubsystem);
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final UpperHubLimelightSubsystem upperLimelightSubsystem =
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
