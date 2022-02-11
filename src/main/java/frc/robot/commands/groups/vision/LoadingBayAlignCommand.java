@@ -17,10 +17,10 @@ import frc.robot.util.InputFilter;
 public class LoadingBayAlignCommand extends SequentialCommandGroup {
   // Because the vision target is (0, 0, 0) facing directly towards it means your rotation is 0,
   // which is why this can be a constant for the entire trajectory
-  private static final Rotation2d GOAL_POSE = new Rotation2d(0);
+  private static final Rotation2d GOAL_ROTATION = new Rotation2d(0);
   // TODO: Check if this goal Pose2d is correct - we should manually put the robot in the
   // desired position and then use those values as the goal pose
-  private static final Pose2d GOAL = new Pose2d(0, 1, GOAL_POSE);
+  private static final Pose2d GOAL = new Pose2d(0, 1, GOAL_ROTATION);
 
   private final InputFilter inputFilter;
 
@@ -32,7 +32,7 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(() -> limelight.useVisionTarget(limelight.loadingBay)),
         new WaitForVisionTargetCommand(limelight),
-        commandFactory.generateCommand(limelight.loadingBay, GOAL, () -> GOAL_POSE),
+        commandFactory.generateCommand(limelight.loadingBay, GOAL, () -> GOAL_ROTATION),
         new InstantCommand(drive::stopMotors));
   }
 
