@@ -90,7 +90,6 @@ public class DynamicMecanumControllerCommand extends CommandBase {
   }
 
   @Override
-  @SuppressWarnings("LocalVariableName")
   public void execute() {
     final double curTime = timer.get();
 
