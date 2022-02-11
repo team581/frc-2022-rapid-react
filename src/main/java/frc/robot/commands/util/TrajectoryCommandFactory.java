@@ -29,7 +29,7 @@ public class TrajectoryCommandFactory {
    * @param desiredRotation The angle that the robot should be facing. This is sampled at each time
    *     step. This is essential because we use a holonomic drivetrain, and WPILib's trajectory
    *     generation assumes you are using a differential drivetrain.
-   * @return
+   * @return A command to follow the trajectory provided by the supplier.
    */
   public Command createCommand(
       Supplier<Trajectory> trajectorySupplier,
