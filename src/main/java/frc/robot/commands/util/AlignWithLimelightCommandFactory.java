@@ -6,6 +6,7 @@ package frc.robot.commands.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.util.LimelightTrajectoryGenerator;
@@ -36,8 +37,10 @@ public class AlignWithLimelightCommandFactory {
    */
   public Command generateCommand(
       LimelightVisionTarget visionTarget, Pose2d goal, Supplier<Rotation2d> rotationSupplier) {
-    final var trajectory = trajectoryGenerator.generateTrajectory(visionTarget, goal);
+    final Supplier<Trajectory> trajectorySupplier =
+        () -> trajectoryGenerator.generateTrajectory(visionTarget, goal);
 
-    return commandFactory.createCommand(trajectory, visionTarget::getRobotPose, rotationSupplier);
+    return commandFactory.createCommand(
+        trajectorySupplier, visionTarget::getRobotPose, rotationSupplier);
   }
 }

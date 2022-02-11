@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
+import frc.robot.commands.DynamicMecanumControllerCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.drive.Wheel;
 import java.util.function.Supplier;
@@ -22,7 +22,8 @@ public class TrajectoryCommandFactory {
   }
 
   /**
-   * @param trajectory The trajectory to follow.
+   * @param trajectorySupplier A supplier for the trajectory to follow. Called once when the command
+   *     is initialized.
    * @param getCurrentPose A function that returns the current pose of the robot (usually the
    *     distance to vision target or odometry).
    * @param desiredRotation The angle that the robot should be facing. This is sampled at each time
@@ -31,11 +32,11 @@ public class TrajectoryCommandFactory {
    * @return
    */
   public Command createCommand(
-      Trajectory trajectory,
+      Supplier<Trajectory> trajectorySupplier,
       Supplier<Pose2d> getCurrentPose,
       Supplier<Rotation2d> desiredRotation) {
-    return new MecanumControllerCommand(
-        trajectory,
+    return new DynamicMecanumControllerCommand(
+        trajectorySupplier,
         getCurrentPose,
         driveSubsystem.kinematics,
 
