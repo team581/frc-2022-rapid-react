@@ -4,6 +4,7 @@
 
 package frc.robot.commands.util;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -12,6 +13,7 @@ import frc.robot.commands.DynamicMecanumControllerCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.drive.Wheel;
 import java.util.function.Supplier;
+import lib.pathplanner.PPMecanumControllerCommand;
 
 public class TrajectoryCommandFactory {
   private final DriveSubsystem driveSubsystem;
@@ -31,7 +33,7 @@ public class TrajectoryCommandFactory {
    *     generation assumes you are using a differential drivetrain.
    * @return A command to follow the trajectory provided by the supplier.
    */
-  public Command createCommand(
+  public Command createDynamicCommand(
       Supplier<Trajectory> trajectorySupplier,
       Supplier<Pose2d> getCurrentPose,
       Supplier<Rotation2d> desiredRotation) {
@@ -47,6 +49,32 @@ public class TrajectoryCommandFactory {
 
         // Custom rotation supplier because we're using holonomic drive
         desiredRotation,
+
+        // Velocity control
+        Wheel.MAX_WHEEL_VELOCITY,
+        driveSubsystem::setWheelSpeeds,
+
+        // Required subsystems
+        driveSubsystem);
+  }
+
+  /**
+   * @param trajectory The trajectory to follow.
+   * @param getCurrentPose A function that returns the current pose of the robot (usually the
+   *     distance to vision target or odometry).
+   * @return A command to follow the trajectory provided by the supplier.
+   */
+  public Command createPPCommand(
+      PathPlannerTrajectory trajectory, Supplier<Pose2d> getCurrentPose) {
+    return new PPMecanumControllerCommand(
+        trajectory,
+        getCurrentPose,
+        driveSubsystem.kinematics,
+
+        // Position PID controllers
+        driveSubsystem.xPositionPid,
+        driveSubsystem.yPositionPid,
+        driveSubsystem.thetaPositionPid,
 
         // Velocity control
         Wheel.MAX_WHEEL_VELOCITY,
