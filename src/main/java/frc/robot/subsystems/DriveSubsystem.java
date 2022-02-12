@@ -53,9 +53,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   private final MecanumDriveOdometry odometry =
       new MecanumDriveOdometry(kinematics, gyro.sensor.getRotation2d());
 
-  // TODO: Update max velocity and acceleration of the robot
   public final TrajectoryConfig trajectoryConfig =
-      new TrajectoryConfig(3, 2).setKinematics(kinematics);
+      new TrajectoryConfig(Drivebase.Constants.MAX_VELOCITY, Drivebase.Constants.MAX_ACCELERATION)
+          .setKinematics(kinematics);
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {}

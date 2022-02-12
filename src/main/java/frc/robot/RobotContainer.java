@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.RefreshAllianceWithFmsCommand;
 import frc.robot.commands.VelocityControlTestCommand;
+import frc.robot.commands.groups.trajectories.SimplePathCommand;
 import frc.robot.commands.groups.vision.LoadingBayAlignCommand;
 import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -62,6 +63,7 @@ public class RobotContainer implements Loggable {
    */
   private void configureButtonBindings() {
     final var aButton = new JoystickButton(controller, XboxController.Button.kA.value);
+    final var bButton = new JoystickButton(controller, XboxController.Button.kB.value);
     final var xButton = new JoystickButton(controller, XboxController.Button.kX.value);
     final var yButton = new JoystickButton(controller, XboxController.Button.kY.value);
 
@@ -72,6 +74,9 @@ public class RobotContainer implements Loggable {
     // Align for shooting
     aButton.whenHeld(
         new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem, inputFilter));
+
+    // Testing PathPlanner
+    bButton.whenHeld(new SimplePathCommand(driveSubsystem));
 
     // Testing autonomous
     yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem, inputFilter));

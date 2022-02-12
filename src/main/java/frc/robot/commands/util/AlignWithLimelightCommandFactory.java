@@ -40,7 +40,7 @@ public class AlignWithLimelightCommandFactory {
     final Supplier<Trajectory> trajectorySupplier =
         () -> trajectoryGenerator.generateTrajectory(visionTarget, goal);
 
-    return commandFactory.createCommand(
+    return commandFactory.createDynamicCommand(
         trajectorySupplier, visionTarget::getRobotPose, rotationSupplier);
   }
 }
