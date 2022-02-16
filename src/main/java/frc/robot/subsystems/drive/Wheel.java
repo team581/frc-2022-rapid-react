@@ -28,6 +28,7 @@ public class Wheel implements Loggable {
     /** The circumference of the wheel in meters. */
     public static final double CIRCUMFERENCE =
         // Wheel diameter * pi is the circumference
+        // 0.476 meters
         Units.inchesToMeters(5.97) * Math.PI;
 
     /** The number of rotations of the encoder can do in 1 second at maximum speed. */
