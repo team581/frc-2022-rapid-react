@@ -22,7 +22,7 @@ public class Wheel implements Loggable {
       Wheel.encoderRotationsToMeters(Constants.MAX_ENCODER_ROTATIONS_PER_SECOND);
 
   public static final SimpleMotorFeedforward FEEDFORWARD =
-      new SimpleMotorFeedforward(0.63584, 2.2138, 0.18561);
+      new SimpleMotorFeedforward(0.61761, 2.3902, 0.17718);
 
   private static class Constants {
     /** The circumference of the wheel in meters. */
@@ -33,7 +33,7 @@ public class Wheel implements Loggable {
     /** The number of rotations of the encoder can do in 1 second at maximum speed. */
     public static final double MAX_ENCODER_ROTATIONS_PER_SECOND = 22197;
     /** The number of encoder rotations for the wheel to rotate once. */
-    public static final double ENCODER_ROTATIONS_PER_WHEEL_ROTATION = 21998;
+    public static final double ENCODER_ROTATIONS_PER_WHEEL_ROTATION = 2048 * 10.7;
 
     public static final double MAX_MOTOR_VOLTAGE = 12;
   }
