@@ -38,10 +38,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   private final Gyro gyro = new Gyro();
 
   // Used for following trajectories
-  public final PIDController xPositionPid = new PIDController(1, 0, 0.0);
-  public final PIDController yPositionPid = new PIDController(1, 0, 0.0);
+  public final PIDController xPositionPid = new PIDController(1, 0, 0);
+  public final PIDController yPositionPid = new PIDController(1, 0, 0);
   public final ProfiledPIDController thetaPositionPid =
-      new ProfiledPIDController(1, 0, 0.0, Constants.MAX_ROTATION);
+      new ProfiledPIDController(1, 0, 0, Constants.MAX_ROTATION);
 
   public final MecanumDriveKinematics kinematics =
       new MecanumDriveKinematics(
