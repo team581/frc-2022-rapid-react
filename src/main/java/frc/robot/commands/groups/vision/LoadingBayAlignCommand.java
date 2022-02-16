@@ -33,7 +33,10 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
         new InstantCommand(() -> limelight.useVisionTarget(limelight.loadingBay)),
         new WaitForVisionTargetCommand(limelight),
         // TODO: This "invert current angle" thing is untested
-        commandFactory.generateCommand(limelight.loadingBay, GOAL, () -> limelight.loadingBay.getRobotPose().getRotation().unaryMinus()),
+        commandFactory.generateCommand(
+            limelight.loadingBay,
+            GOAL,
+            () -> limelight.loadingBay.getRobotPose().getRotation().unaryMinus()),
         new InstantCommand(drive::stopMotors));
   }
 
