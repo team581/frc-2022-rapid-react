@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.ControllerUtil;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * A high-level interface for the drivetrain.
@@ -120,6 +121,21 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
 
   public Pose2d getPose() {
     return odometry.getPoseMeters();
+  }
+
+  @Log
+  private double getPoseX() {
+    return this.getPose().getX();
+  }
+
+  @Log
+  private double getPoseY() {
+    return this.getPose().getY();
+  }
+
+  @Log
+  private double getPoseTheta() {
+    return this.getPose().getRotation().getDegrees();
   }
 
   public void resetOdometry() {

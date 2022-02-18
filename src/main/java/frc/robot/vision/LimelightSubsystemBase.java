@@ -68,7 +68,7 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
   public void useDriverMode() {
     isDriverMode = true;
     limelight.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
-    limelight.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
+    // limelight.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
     limelight.setPipeline(driverModePipeline);
   }
 
@@ -80,7 +80,7 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
   public void useVisionTarget(LimelightVisionTarget target) {
     isDriverMode = false;
     limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
-    limelight.setStreamingMode(Limelight.StreamingMode.PIP_SECONDARY);
+    // limelight.setStreamingMode(Limelight.StreamingMode.PIP_SECONDARY);
     limelight.setPipeline(target.pipeline);
   }
 }

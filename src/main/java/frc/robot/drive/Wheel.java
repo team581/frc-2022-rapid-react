@@ -130,7 +130,7 @@ public class Wheel implements Loggable {
 
   /** Converts a velocity in meters/second to a voltage. */
   private double velocityToVoltage(double velocity) {
-    final var rawVoltage = FEEDFORWARD.calculate(velocity) + velocityPid.calculate(getVelocity());
+    final var rawVoltage = FEEDFORWARD.calculate(velocity);
 
     return MathUtil.clamp(rawVoltage, -Constants.MAX_MOTOR_VOLTAGE, Constants.MAX_MOTOR_VOLTAGE);
   }
