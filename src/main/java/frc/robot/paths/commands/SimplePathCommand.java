@@ -18,14 +18,4 @@ public class SimplePathCommand extends SequentialCommandGroup {
 
     addCommands(new PPCommand(PPPaths.simplePath, driveSubsystem));
   }
-
-  @Override
-  public void initialize() {
-    super.initialize();
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    super.end(interrupted);
-  }
 }

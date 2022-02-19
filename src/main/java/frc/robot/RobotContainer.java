@@ -74,7 +74,7 @@ public class RobotContainer implements Loggable {
     aButton.whenHeld(new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
 
     // Testing PathPlanner
-    bButton.whenHeld(new SimplePathCommand(driveSubsystem, inputFilter));
+    bButton.whenHeld(new SimplePathCommand(driveSubsystem));
 
     // Testing autonomous
     yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
