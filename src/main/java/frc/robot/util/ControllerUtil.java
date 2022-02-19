@@ -20,10 +20,7 @@ public class ControllerUtil {
 
   /** Scale a joystick value. */
   private static double joystickScale(double x) {
-    // TODO: Remove this once testing is finished
-    final double scalar = 3;
-
-    return (Math.signum(x) * Math.pow(x, 2)) / scalar;
+    return Math.signum(x) * Math.pow(x, 2);
   }
 
   /** The rotation across the robot's x-axis as a percentage (<code>-1 <= x <= 1</code>) */
