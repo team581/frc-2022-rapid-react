@@ -1,0 +1,50 @@
+{
+  "MainWindow": {
+    "GLOBAL": {
+      "height": "1001",
+      "maximized": "1",
+      "style": "0",
+      "userScale": "2",
+      "width": "1920",
+      "xpos": "0",
+      "ypos": "29"
+    }
+  },
+  "Window": {
+    "###/LiveWindow/Ungrouped/MecanumDrive[1]": {
+      "Collapsed": "0",
+      "Pos": "87,383",
+      "Size": "375,437"
+    },
+    "###/LiveWindow/Ungrouped/Scheduler": {
+      "Collapsed": "0",
+      "Pos": "691,66",
+      "Size": "500,250"
+    },
+    "###/SmartDashboard/Field": {
+      "Collapsed": "0",
+      "Pos": "756,202",
+      "Size": "658,516"
+    },
+    "###NetworkTables": {
+      "Collapsed": "0",
+      "Pos": "767,688",
+      "Size": "937,231"
+    },
+    "###NetworkTables Settings": {
+      "Collapsed": "0",
+      "Pos": "37,37",
+      "Size": "330,138"
+    },
+    "###Plot <0>": {
+      "Collapsed": "0",
+      "Pos": "599,87",
+      "Size": "1043,725"
+    },
+    "Debug##Default": {
+      "Collapsed": "0",
+      "Pos": "60,60",
+      "Size": "400,400"
+    }
+  }
+}
