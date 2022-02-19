@@ -19,7 +19,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SnarferSubsystem;
 import frc.robot.subsystems.UpperHubLimelightSubsystem;
 import frc.robot.util.ControllerUtil;
-import frc.robot.util.InputFilter;
 import io.github.oblarg.oblog.Loggable;
 
 /**
@@ -31,23 +30,20 @@ import io.github.oblarg.oblog.Loggable;
 public class RobotContainer implements Loggable {
   // The robot's subsystems and commands are defined here...
 
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
+  private final ControllerUtil controllerUtil = new ControllerUtil(controller);
+
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem(controllerUtil);
   private final UpperHubLimelightSubsystem upperLimelightSubsystem =
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final SnarferSubsystem snarferSubsystem = new SnarferSubsystem();
 
-  private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
-  private final ControllerUtil controllerUtil = new ControllerUtil(controller);
-
-  public final InputFilter inputFilter =
-      new InputFilter(upperLimelightSubsystem, cargoLimelightSubsystem);
-
   private final Command autoCommand =
       new SequentialCommandGroup(
           new RefreshAllianceWithFmsCommand(cargoLimelightSubsystem),
-          new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem, inputFilter));
+          new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -72,14 +68,13 @@ public class RobotContainer implements Loggable {
         new JoystickButton(controller, XboxController.Axis.kRightTrigger.value);
 
     // Align for shooting
-    aButton.whenHeld(
-        new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem, inputFilter));
+    aButton.whenHeld(new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
 
     // Testing PathPlanner
     bButton.whenHeld(new SimplePathCommand(driveSubsystem));
 
     // Testing autonomous
-    yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem, inputFilter));
+    yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
 
     // Snarfer
     leftTrigger.whenPressed(snarferSubsystem::start).whenReleased(snarferSubsystem::stop);
@@ -94,19 +89,8 @@ public class RobotContainer implements Loggable {
    *
    * @return the command to run in autonomous
    */
+  // TODO: Move this method to a dedicated AutonomousChooser class
   public Command getAutonomousCommand() {
     return autoCommand;
-  }
-
-  public void driveWithJoystick() {
-    if (inputFilter.shouldIgnoreJoysticks()) {
-      return;
-    }
-
-    final var x = controllerUtil.getXPercentage();
-    final var y = controllerUtil.getYPercentage();
-    final var theta = controllerUtil.getThetaPercentage();
-
-    driveSubsystem.driveTeleop(x, y, theta);
   }
 }

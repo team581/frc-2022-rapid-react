@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.groups.vision.UseDriverModeCommand;
 import frc.robot.vision.targets.LimelightVisionTarget;
 import lib.limelight.Limelight;
 
@@ -45,6 +46,9 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
     this.angleOfElevation = angleOfElevation;
     this.heightFromFloor = heightFromFloor;
     this.driverModePipeline = driverModePipeline;
+
+    // Enable driver mode when other commands aren't using vision processing
+    setDefaultCommand(new UseDriverModeCommand(this));
   }
 
   @Override
@@ -57,7 +61,11 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
     return isDriverMode;
   }
 
-  /** Enables raw camera output and disables computer processing. */
+  /**
+   * Enables raw camera output and disables computer processing.
+   *
+   * @see {@link frc.robot.commands.groups.vision.UseDriverModeCommand}
+   */
   public void useDriverMode() {
     isDriverMode = true;
     limelight.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
@@ -65,7 +73,11 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
     limelight.setPipeline(driverModePipeline);
   }
 
-  /** Enables vision processing for the provided vision target. */
+  /**
+   * Enables vision processing for the provided vision target.
+   *
+   * @see {@link frc.robot.commands.groups.vision.UseVisionTargetCommand}
+   */
   public void useVisionTarget(LimelightVisionTarget target) {
     isDriverMode = false;
     limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);

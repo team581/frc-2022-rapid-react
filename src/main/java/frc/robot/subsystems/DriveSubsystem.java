@@ -15,8 +15,10 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.groups.drive.TeleopDriveCommand;
 import frc.robot.subsystems.drive.Drivebase;
 import frc.robot.subsystems.drive.Gyro;
+import frc.robot.util.ControllerUtil;
 import io.github.oblarg.oblog.Loggable;
 
 /**
@@ -58,7 +60,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
           .setKinematics(kinematics);
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {}
+  public DriveSubsystem(ControllerUtil controller) {
+    setDefaultCommand(new TeleopDriveCommand(this, controller));
+  }
 
   @Override
   public void periodic() {

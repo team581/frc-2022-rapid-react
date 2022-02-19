@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.util.AlignWithLimelightCommandFactory;
 import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.util.InputFilter;
 
 /** Aligns with the loading bay. */
 public class LoadingBayAlignCommand extends SequentialCommandGroup {
@@ -22,15 +21,11 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
   // desired position and then use those values as the goal pose
   private static final Pose2d GOAL = new Pose2d(0, 1, GOAL_ROTATION);
 
-  private final InputFilter inputFilter;
-
-  public LoadingBayAlignCommand(
-      DriveSubsystem drive, CargoLimelightSubsystem limelight, InputFilter inputFilter) {
-    this.inputFilter = inputFilter;
+  public LoadingBayAlignCommand(DriveSubsystem drive, CargoLimelightSubsystem limelight) {
     final var commandFactory = new AlignWithLimelightCommandFactory(drive);
 
     addCommands(
-        new InstantCommand(() -> limelight.useVisionTarget(limelight.loadingBay)),
+        new UseVisionTargetCommand(limelight, limelight.loadingBay),
         new WaitForVisionTargetCommand(limelight),
         // TODO: This "invert current angle" thing is untested
         commandFactory.generateCommand(
@@ -38,17 +33,5 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
             GOAL,
             () -> limelight.loadingBay.getRobotPose().getRotation().unaryMinus()),
         new InstantCommand(drive::stopMotors));
-  }
-
-  @Override
-  public void initialize() {
-    inputFilter.useCargoControl();
-    super.initialize();
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    super.end(interrupted);
-    inputFilter.useDriverControl();
   }
 }

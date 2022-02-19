@@ -53,9 +53,7 @@ public class Robot extends TimedRobot implements Loggable {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
-    robotContainer.inputFilter.useDriverControl();
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -69,8 +67,6 @@ public class Robot extends TimedRobot implements Loggable {
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
     }
-
-    robotContainer.inputFilter.useCargoControl();
   }
 
   /** This function is called periodically during autonomous. */
@@ -86,15 +82,11 @@ public class Robot extends TimedRobot implements Loggable {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-
-    robotContainer.inputFilter.useDriverControl();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    robotContainer.driveWithJoystick();
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
