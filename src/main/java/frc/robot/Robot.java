@@ -31,6 +31,8 @@ public class Robot extends TimedRobot implements Loggable {
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
     Logger.configureLoggingAndConfig(this, false);
+
+    setNetworkTablesFlushEnabled(true);
   }
 
   /**
