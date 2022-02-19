@@ -62,7 +62,7 @@ public class Wheel implements Loggable {
    *
    * <p>Setpoint: target velocity in meters/second
    */
-  private final PIDController velocityPid = new PIDController(3, 0, 0);
+  private final PIDController velocityPid = new PIDController(2.7182, 0, 0);
 
   /**
    * This wheel's name.
@@ -130,7 +130,7 @@ public class Wheel implements Loggable {
 
   /** Converts a velocity in meters/second to a voltage. */
   private double velocityToVoltage(double velocity) {
-    final var rawVoltage = FEEDFORWARD.calculate(velocity);
+    final var rawVoltage = FEEDFORWARD.calculate(velocity) + velocityPid.calculate(velocity);
 
     return MathUtil.clamp(rawVoltage, -Constants.MAX_MOTOR_VOLTAGE, Constants.MAX_MOTOR_VOLTAGE);
   }
