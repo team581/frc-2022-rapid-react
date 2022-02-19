@@ -15,7 +15,6 @@ import frc.robot.subsystems.drive.Drivebase;
  */
 public class PPPaths {
   private static final class Constants {
-    // TODO: Adjust these for slower trajectory following during debug
     public static final double MAX_VELOCITY = Drivebase.Constants.MAX_VELOCITY;
     public static final double MAX_ACCELERATION = Drivebase.Constants.MAX_ACCELERATION;
   }
