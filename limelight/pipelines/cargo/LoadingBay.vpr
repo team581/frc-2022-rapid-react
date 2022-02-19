@@ -3,7 +3,7 @@ area_min:0
 area_similarity:20
 aspect_max:3.0517578125
 aspect_min:0.15146701250000008
-black_level:24
+black_level:0
 blue_balance:1975
 calibration_type:0
 contour_grouping:0
