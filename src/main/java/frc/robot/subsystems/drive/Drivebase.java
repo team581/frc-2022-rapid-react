@@ -19,9 +19,9 @@ public class Drivebase implements Loggable {
   // TODO: Update max velocity and acceleration of the robot
   public static final class Constants {
     /** The robot's maximum velocity in meters per second. */
-    public static final double MAX_VELOCITY = 3;
+    public static final double MAX_VELOCITY = 4.5;
     /** The robot's maximum acceleration in meters per second squared. */
-    public static final double MAX_ACCELERATION = 2;
+    public static final double MAX_ACCELERATION = 16;
   }
 
   public final Wheel frontLeft = new Wheel("frontLeft", 10, new Translation2d(0.285, 0.285));
