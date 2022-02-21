@@ -32,6 +32,8 @@ public class Robot extends TimedRobot implements Loggable {
     robotContainer = new RobotContainer();
     Logger.configureLoggingAndConfig(this, false);
 
+    // TODO: Remove during competitions, this pushes lots of data to NetworkTables and can cause lag
+    // or network congestion
     setNetworkTablesFlushEnabled(true);
   }
 
