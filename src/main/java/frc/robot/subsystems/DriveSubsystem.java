@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
@@ -34,6 +35,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     // per second squared
     private static final TrapezoidProfile.Constraints MAX_ROTATION =
         new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(180));
+
+    /** The acceptable amount of error between the robot's current pose and the desired pose. */
+    private static final Pose2d POSE_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(5));
   }
 
   // Components of the drive subsystem to reduce how huge this file is
@@ -67,6 +71,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(ControllerUtil controller) {
     setDefaultCommand(new TeleopDriveCommand(this, controller));
+
+    driveController.setTolerance(Constants.POSE_TOLERANCE);
   }
 
   @Override
@@ -85,10 +91,25 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     drivebase.stopMotors();
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    return kinematics.toChassisSpeeds(drivebase.getWheelSpeeds());
+  }
+
+  public double getLinearVelocity() {
+    ChassisSpeeds chassisSpeeds = getChassisSpeeds();
+    return Math.sqrt(
+        Math.pow(chassisSpeeds.vxMetersPerSecond, 2)
+            + Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
+  }
+
   public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
     final var wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds);
 
     setWheelSpeeds(wheelSpeeds);
+  }
+
+  public MecanumDriveWheelSpeeds getWheelSpeeds() {
+    return drivebase.getWheelSpeeds();
   }
 
   public void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {

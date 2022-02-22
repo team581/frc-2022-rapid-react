@@ -44,4 +44,21 @@ public class AlignWithLimelightCommandFactory {
     return new DynamicTrajectoryFollowCommand(
         trajectorySupplier, visionTarget::getRobotPose, rotationSupplier, driveSubsystem);
   }
+
+  /**
+   * Generates a {@link Command command} to align with a {@link LimelightVisionTarget Limelight
+   * vision target} by following a generated trajectory. The trajectory will rotate the robot to
+   * always face the vision target.
+   *
+   * @param visionTarget The vision target to use for determining the robot's position
+   * @param goal The goal position relative to the vision target
+   * @return A command that will move the robot to the goal position
+   */
+  public Command generateCommand(LimelightVisionTarget visionTarget, Pose2d goal) {
+    final Supplier<Trajectory> trajectorySupplier =
+        () -> trajectoryGenerator.generateTrajectory(visionTarget, goal);
+
+    return new DynamicTrajectoryFollowCommand(
+        trajectorySupplier, visionTarget::getRobotPose, () -> new Rotation2d(0), driveSubsystem);
+  }
 }

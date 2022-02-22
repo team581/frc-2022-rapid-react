@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.groups.trajectories.BeelineCommand;
 import frc.robot.commands.util.AlignWithLimelightCommandFactory;
 import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -27,11 +28,8 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
     addCommands(
         new UseVisionTargetCommand(limelight, limelight.loadingBay),
         new WaitForVisionTargetCommand(limelight),
-        // TODO: This "invert current angle" thing is untested
-        commandFactory.generateCommand(
-            limelight.loadingBay,
-            GOAL,
-            () -> limelight.loadingBay.getRobotPose().getRotation().unaryMinus()),
+        commandFactory.generateCommand(limelight.loadingBay, GOAL),
+        new BeelineCommand(drive, limelight.loadingBay, GOAL),
         new InstantCommand(drive::stopMotors));
   }
 }
