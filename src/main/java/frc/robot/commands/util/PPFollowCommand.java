@@ -7,6 +7,7 @@ package frc.robot.commands.util;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
+import lib.pathplanner.PPCommand;
 
 /**
  * A command that follows the provided {@link PathPlannerTrajectory trajectory} using the {@link
@@ -14,8 +15,7 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class PPFollowCommand extends SequentialCommandGroup {
   public PPFollowCommand(DriveSubsystem driveSubsystem, PathPlannerTrajectory trajectory) {
-    final var commandFactory = new TrajectoryCommandFactory(driveSubsystem);
 
-    addCommands(commandFactory.createPPCommand(trajectory, driveSubsystem::getPose));
+    addCommands(new PPCommand(trajectory, driveSubsystem));
   }
 }

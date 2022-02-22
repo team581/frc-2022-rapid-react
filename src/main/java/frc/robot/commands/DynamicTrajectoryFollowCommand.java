@@ -4,35 +4,30 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
-import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import java.util.function.Consumer;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.Wheel;
 import java.util.function.Supplier;
 
 /**
  * An edit of {@link MecanumControllerCommand} that allows for dynamically providing {@link
  * Trajectory}s rather than just providing a single trajectory once during instantiation.
+ *
+ * <p>Additional edits have been made to make integrating with our {@link DriveSubsystem drive
+ * subsystem} easier and less verbose.
  */
-public class DynamicMecanumControllerCommand extends CommandBase {
+public class DynamicTrajectoryFollowCommand extends CommandBase {
   private final Timer timer = new Timer();
   private Trajectory trajectory;
   private final Supplier<Pose2d> pose;
-  private final MecanumDriveKinematics kinematics;
-  private final HolonomicDriveController controller;
   private final Supplier<Rotation2d> desiredRotation;
-  private final double maxWheelVelocityMetersPerSecond;
-  private final Consumer<MecanumDriveWheelSpeeds> outputWheelSpeeds;
   private final Supplier<Trajectory> trajectorySupplier;
+  private final DriveSubsystem driveSubsystem;
 
   /**
    * Constructs a new DynamicMecanumControllerCommand that when executed will follow the provided
@@ -45,41 +40,22 @@ public class DynamicMecanumControllerCommand extends CommandBase {
    *     the command. Called once during initialization.
    * @param pose A function that supplies the robot pose - use one of the odometry classes to
    *     provide this.
-   * @param kinematics The kinematics for the robot drivetrain.
-   * @param xController The Trajectory Tracker PID controller for the robot's x position.
-   * @param yController The Trajectory Tracker PID controller for the robot's y position.
-   * @param thetaController The Trajectory Tracker PID controller for angle for the robot.
    * @param desiredRotation The angle that the robot should be facing. This is sampled at each time
    *     step.
-   * @param maxWheelVelocityMetersPerSecond The maximum velocity of a drivetrain wheel.
-   * @param outputWheelSpeeds A MecanumDriveWheelSpeeds object containing the output wheel speeds.
-   * @param requirements The subsystems to require.
    */
-  public DynamicMecanumControllerCommand(
+  public DynamicTrajectoryFollowCommand(
       Supplier<Trajectory> trajectorySupplier,
       Supplier<Pose2d> pose,
-      MecanumDriveKinematics kinematics,
-      PIDController xController,
-      PIDController yController,
-      ProfiledPIDController thetaController,
       Supplier<Rotation2d> desiredRotation,
-      double maxWheelVelocityMetersPerSecond,
-      Consumer<MecanumDriveWheelSpeeds> outputWheelSpeeds,
-      Subsystem... requirements) {
+      DriveSubsystem driveSubsystem) {
     trajectory = null;
     this.trajectorySupplier = trajectorySupplier;
     this.pose = pose;
-    this.kinematics = kinematics;
-
-    controller = new HolonomicDriveController(xController, yController, thetaController);
+    this.driveSubsystem = driveSubsystem;
 
     this.desiredRotation = desiredRotation;
 
-    this.maxWheelVelocityMetersPerSecond = maxWheelVelocityMetersPerSecond;
-
-    this.outputWheelSpeeds = outputWheelSpeeds;
-
-    addRequirements(requirements);
+    addRequirements(driveSubsystem);
   }
 
   @Override
@@ -96,12 +72,12 @@ public class DynamicMecanumControllerCommand extends CommandBase {
     final var desiredState = trajectory.sample(curTime);
 
     final var targetChassisSpeeds =
-        controller.calculate(pose.get(), desiredState, desiredRotation.get());
-    final var targetWheelSpeeds = kinematics.toWheelSpeeds(targetChassisSpeeds);
+        driveSubsystem.driveController.calculate(pose.get(), desiredState, desiredRotation.get());
+    final var targetWheelSpeeds = driveSubsystem.kinematics.toWheelSpeeds(targetChassisSpeeds);
 
-    targetWheelSpeeds.desaturate(maxWheelVelocityMetersPerSecond);
+    targetWheelSpeeds.desaturate(Wheel.MAX_WHEEL_VELOCITY);
 
-    outputWheelSpeeds.accept(targetWheelSpeeds);
+    driveSubsystem.setWheelSpeeds(targetWheelSpeeds);
   }
 
   @Override

@@ -5,9 +5,9 @@
 package frc.robot.commands.groups.trajectories;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.util.TrajectoryCommandFactory;
 import frc.robot.paths.PPPaths;
 import frc.robot.subsystems.DriveSubsystem;
+import lib.pathplanner.PPCommand;
 
 /**
  * A command that follows the SimplePath created with PathPlanner using the robot's odometry for
@@ -15,8 +15,7 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class SimplePathCommand extends SequentialCommandGroup {
   public SimplePathCommand(DriveSubsystem driveSubsystem) {
-    final var commandFactory = new TrajectoryCommandFactory(driveSubsystem);
 
-    addCommands(commandFactory.createPPCommand(PPPaths.simplePath, driveSubsystem::getPose));
+    addCommands(new PPCommand(PPPaths.simplePath, driveSubsystem));
   }
 }

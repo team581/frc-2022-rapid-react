@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -40,10 +41,14 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   private final Gyro gyro = new Gyro();
 
   // Used for following trajectories
-  public final PIDController xPositionPid = new PIDController(1, 0, 0);
-  public final PIDController yPositionPid = new PIDController(1, 0, 0);
-  public final ProfiledPIDController thetaPositionPid =
-      new ProfiledPIDController(1, 0, 0, Constants.MAX_ROTATION);
+  public final HolonomicDriveController driveController =
+      new HolonomicDriveController(
+          // X controller
+          new PIDController(1, 0, 0),
+          // Y controller
+          new PIDController(1, 0, 0),
+          // Theta controller
+          new ProfiledPIDController(1, 0, 0, Constants.MAX_ROTATION));
 
   public final MecanumDriveKinematics kinematics =
       new MecanumDriveKinematics(

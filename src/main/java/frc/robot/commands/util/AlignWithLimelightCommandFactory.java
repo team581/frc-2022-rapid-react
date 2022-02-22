@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.DynamicTrajectoryFollowCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.util.LimelightTrajectoryGenerator;
 import frc.robot.vision.targets.LimelightVisionTarget;
@@ -16,12 +17,12 @@ import java.util.function.Supplier;
 /** Create commands to align with a vision target using the Limelight. */
 public class AlignWithLimelightCommandFactory {
   private final LimelightTrajectoryGenerator trajectoryGenerator;
-  private final TrajectoryCommandFactory commandFactory;
+  private final DriveSubsystem driveSubsystem;
 
   /** Creates a new AlignWithLimelightCommandFactory. */
   public AlignWithLimelightCommandFactory(DriveSubsystem driveSubsystem) {
     trajectoryGenerator = new LimelightTrajectoryGenerator(driveSubsystem);
-    commandFactory = new TrajectoryCommandFactory(driveSubsystem);
+    this.driveSubsystem = driveSubsystem;
   }
 
   /**
@@ -40,7 +41,7 @@ public class AlignWithLimelightCommandFactory {
     final Supplier<Trajectory> trajectorySupplier =
         () -> trajectoryGenerator.generateTrajectory(visionTarget, goal);
 
-    return commandFactory.createDynamicCommand(
-        trajectorySupplier, visionTarget::getRobotPose, rotationSupplier);
+    return new DynamicTrajectoryFollowCommand(
+        trajectorySupplier, visionTarget::getRobotPose, rotationSupplier, driveSubsystem);
   }
 }
