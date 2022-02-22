@@ -30,6 +30,9 @@ import io.github.oblarg.oblog.Loggable;
  * odometry, and trajectory helpers.
  */
 public class DriveSubsystem extends SubsystemBase implements Loggable {
+  private final ProfiledPIDController thetaController =
+      new ProfiledPIDController(1, 0, 0, Constants.MAX_ROTATION);
+
   private static final class Constants {
     // Max of 1 rotation per second and max acceleration of 0.5 rotations
     // per second squared
@@ -51,8 +54,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
           new PIDController(1, 0, 0),
           // Y controller
           new PIDController(1, 0, 0),
-          // Theta controller
-          new ProfiledPIDController(1, 0, 0, Constants.MAX_ROTATION));
+          thetaController);
 
   public final MecanumDriveKinematics kinematics =
       new MecanumDriveKinematics(
@@ -73,6 +75,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     setDefaultCommand(new TeleopDriveCommand(this, controller));
 
     driveController.setTolerance(Constants.POSE_TOLERANCE);
+
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
