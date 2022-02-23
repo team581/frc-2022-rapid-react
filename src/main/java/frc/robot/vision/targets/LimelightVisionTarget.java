@@ -74,8 +74,8 @@ public abstract class LimelightVisionTarget {
   /**
    * A pose where the vision target is the origin (vision target centric) except also kinda robot
    * centric. This value is not a pose, it's more like the error between the vision target and your
-   * robot. For example, if you are orbiting around the hub while maintaining the distance directly
-   * between the robot and the hub, this pose will not change.
+   * robot. For example, if you are orbiting around the vision target while maintaining the distance
+   * directly between the robot and the vision target, this pose will not change.
    *
    * <p>You can assume that the data in NetworkTables is for this vision target.
    */
