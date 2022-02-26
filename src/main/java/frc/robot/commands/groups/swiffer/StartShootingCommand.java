@@ -15,6 +15,8 @@ public class StartShootingCommand extends SequentialCommandGroup {
   public StartShootingCommand(
       // gives the subsystem to use
       SwifferSubsystem swiffer) {
+    // makes it where one command can use the subsystem at a time
+    addRequirements(swiffer);
     addCommands(
         new InstantCommand(
             // creating an instant command that starts shooting (swiffer is the command that is
