@@ -18,6 +18,7 @@ import frc.robot.commands.groups.trajectories.SimplePathCommand;
 import frc.robot.commands.groups.vision.LoadingBayAlignCommand;
 import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.SwifferSubsystem;
 import frc.robot.subsystems.UpperHubLimelightSubsystem;
 import frc.robot.util.ControllerUtil;
@@ -40,6 +41,7 @@ public class RobotContainer implements Loggable {
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
   private final SwifferSubsystem swifferSubsystem = new SwifferSubsystem();
+  private final LifterSubsystem lifterSubsystem = new LifterSubsystem();
 
   private final Command autoCommand =
       new SequentialCommandGroup(
@@ -79,10 +81,10 @@ public class RobotContainer implements Loggable {
 
     // Swiffer
     rightTrigger
-        .whenPressed(new StartSnarfingCommand(swifferSubsystem))
+        .whenPressed(new StartSnarfingCommand(swifferSubsystem, lifterSubsystem))
         .whenReleased(new StopSwifferCommand(swifferSubsystem));
     leftTrigger
-        .whenPressed(new StartShootingCommand(swifferSubsystem))
+        .whenPressed(new StartShootingCommand(swifferSubsystem, lifterSubsystem))
         .whenReleased(new StopSwifferCommand(swifferSubsystem));
   }
 
