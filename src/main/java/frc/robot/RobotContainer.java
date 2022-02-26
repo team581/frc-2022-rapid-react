@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.RefreshAllianceWithFmsCommand;
 import frc.robot.commands.VelocityControlTestCommand;
+import frc.robot.commands.groups.swiffer.StartShootingCommand;
+import frc.robot.commands.groups.swiffer.StartSnarfingCommand;
+import frc.robot.commands.groups.swiffer.StopSwifferCommand;
 import frc.robot.commands.groups.trajectories.SimplePathCommand;
 import frc.robot.commands.groups.vision.LoadingBayAlignCommand;
 import frc.robot.subsystems.CargoLimelightSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.SnarferSubsystem;
+import frc.robot.subsystems.SwifferSubsystem;
 import frc.robot.subsystems.UpperHubLimelightSubsystem;
 import frc.robot.util.ControllerUtil;
 import io.github.oblarg.oblog.Loggable;
@@ -37,8 +39,7 @@ public class RobotContainer implements Loggable {
   private final UpperHubLimelightSubsystem upperLimelightSubsystem =
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final SnarferSubsystem snarferSubsystem = new SnarferSubsystem();
+  private final SwifferSubsystem swifferSubsystem = new SwifferSubsystem();
 
   private final Command autoCommand =
       new SequentialCommandGroup(
@@ -76,12 +77,13 @@ public class RobotContainer implements Loggable {
     // Testing autonomous
     yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
 
-    // Snarfer
-    leftTrigger.whenPressed(snarferSubsystem::start).whenReleased(snarferSubsystem::stop);
-    xButton.whenPressed(snarferSubsystem::spit).whenReleased(snarferSubsystem::stop);
-
-    // Shooter
-    rightTrigger.whenPressed(shooterSubsystem::start).whenReleased(shooterSubsystem::stop);
+    // Swiffer
+    rightTrigger
+        .whenPressed(new StartSnarfingCommand(swifferSubsystem))
+        .whenReleased(new StopSwifferCommand(swifferSubsystem));
+    leftTrigger
+        .whenPressed(new StartShootingCommand(swifferSubsystem))
+        .whenReleased(new StopSwifferCommand(swifferSubsystem));
   }
 
   /**
