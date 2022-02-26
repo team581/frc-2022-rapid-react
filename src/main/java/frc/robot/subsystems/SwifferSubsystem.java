@@ -5,20 +5,23 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SwifferSubsystem extends SubsystemBase {
 
-  private final TalonFX motor = new TalonFX(Constants.Port)
+  private static class Constants {
+    // TODO: Update port number
+    private static final int PORT = 0;
+  }
+
+  private final TalonFX motor = new TalonFX(Constants.PORT);
 
   /** Creates a new SwifferSubsystem. */
   public SwifferSubsystem() {}
 
   @Override
-
-  public void periodic(){
+  public void periodic() {
     // This method will be called once per scheduler run
   }
 
