@@ -28,13 +28,13 @@ public class SwifferSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void snarfs() {
+  public void startSnarfing() {
     // setting the motor power to 0.1.  0.1 for 10% of the volts
     // TODO: Tune this value
     motor.set(TalonFXControlMode.PercentOutput, 0.1);
   }
 
-  public void shoot() {
+  public void startShooting() {
     // setting the motor power to -0.1 because were reversing the shooting. 0.1 for 10% of the volts
     // TODO: Tune this value
     motor.set(TalonFXControlMode.PercentOutput, -0.1);
