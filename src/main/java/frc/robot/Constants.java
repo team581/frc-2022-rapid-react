@@ -13,6 +13,27 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  /** The robot the code should target. */
+  public enum TargetRobot {
+    /** The 2022 competition robot. */
+    COMP_BOT,
+    /** The 2020 test bot. */
+    TEST_2020_BOT,
+  }
+
+  public enum Env {
+    /** Running during developent. This does not include test matches at comps! */
+    DEVELOPMENT,
+    /** Running in an actual competition.. */
+    PRODUCTION,
+  }
+
+  // Change this depending on which robot you are targeting for deployment
+  public static final TargetRobot TARGET_ROBOT = TargetRobot.TEST_2020_BOT;
+
+  // Change this depending on what your environment is
+  public static final Env ENV = Env.DEVELOPMENT;
+
   public static final int CONTROLLER_PORT = 0;
 
   private Constants() {}
