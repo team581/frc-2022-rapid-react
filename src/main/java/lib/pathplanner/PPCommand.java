@@ -8,8 +8,8 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.drive.Wheel;
+import frc.robot.drive.DriveSubsystem;
+import frc.robot.drive.Wheel;
 
 /**
  * A command that uses a {@link HolonomicDriveController} to follow a trajectory {@link
