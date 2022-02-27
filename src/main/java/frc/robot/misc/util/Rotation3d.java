@@ -9,9 +9,9 @@ public class Rotation3d {
   public final double yaw;
   public final double roll;
 
-  public Rotation3d(double pitch, double yaw, double roll) {
-    this.pitch = pitch;
-    this.yaw = yaw;
-    this.roll = roll;
+  public Rotation3d(Number pitch, Number yaw, Number roll) {
+    this.pitch = pitch.doubleValue();
+    this.yaw = yaw.doubleValue();
+    this.roll = roll.doubleValue();
   }
 }

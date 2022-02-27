@@ -195,8 +195,7 @@ public class Limelight {
    * roll).
    */
   public Position3d getPosition3d() {
-    // TODO: Check if this is actually a double array or if it's a number array
-    final var raw = table.getEntry("pos3d").getDoubleArray(new double[] {0, 0, 0, 0, 0, 0});
+    final var raw = table.getEntry("camtran").getNumberArray(new Number[] {0, 0, 0, 0, 0, 0});
 
     final var translation = new Vector3d(raw[0], raw[1], raw[2]);
     final var rotation = new Rotation3d(raw[3], raw[4], raw[5]);

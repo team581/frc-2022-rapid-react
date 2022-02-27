@@ -9,9 +9,9 @@ public class Vector3d {
   public final double y;
   public final double z;
 
-  public Vector3d(double x, double y, double z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+  public Vector3d(Number x, Number y, Number z) {
+    this.x = x.doubleValue();
+    this.y = y.doubleValue();
+    this.z = z.doubleValue();
   }
 }
