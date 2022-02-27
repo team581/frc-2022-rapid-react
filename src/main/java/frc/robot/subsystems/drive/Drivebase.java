@@ -16,7 +16,6 @@ import io.github.oblarg.oblog.Loggable;
  * <p>Allows you to control all the wheels as a group.
  */
 public class Drivebase implements Loggable {
-  // TODO: Update max velocity and acceleration of the robot
   public static final class Constants {
     /** The robot's maximum velocity in meters per second. */
     public static final double MAX_VELOCITY = 4.5;
