@@ -136,7 +136,8 @@ public class Wheel implements Loggable {
     return encoderRotationsToMeters(nativeDistance);
   }
 
-  public void resetEncoder() {
+  /** Zeroes the encoder position. */
+  public void zeroEncoder() {
     motor.setSelectedSensorPosition(0);
   }
 

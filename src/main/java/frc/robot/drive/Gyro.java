@@ -5,11 +5,12 @@
 package frc.robot.drive;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 
 public class Gyro {
-  public final AHRS sensor = new AHRS(SPI.Port.kMXP);
+  private final AHRS sensor = new AHRS(SPI.Port.kMXP);
 
   /** Creates a new Gyro. */
   public Gyro() {
@@ -24,5 +25,10 @@ public class Gyro {
   /** Returns the turn rate of the robot in radians/second. */
   public double getTurnRate() {
     return Units.degreesToRadians(-sensor.getRate());
+  }
+
+  /** @see AHRS#getRotation2d() */
+  public Rotation2d getRotation() {
+    return sensor.getRotation2d();
   }
 }

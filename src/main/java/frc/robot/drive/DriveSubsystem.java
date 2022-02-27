@@ -4,6 +4,8 @@
 
 package frc.robot.drive;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -67,7 +69,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
           drivebase.rearRight.positionToCenterOfRobot);
 
   private final MecanumDriveOdometry odometry =
-      new MecanumDriveOdometry(kinematics, gyro.sensor.getRotation2d());
+      new MecanumDriveOdometry(kinematics, gyro.getRotation());
 
   public final TrajectoryConfig trajectoryConfig =
       new TrajectoryConfig(Drivebase.Constants.MAX_VELOCITY, Drivebase.Constants.MAX_ACCELERATION)
@@ -87,8 +89,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    odometry.update(gyro.sensor.getRotation2d(), drivebase.getWheelSpeeds());
-    field.setRobotPose(odometry.getPoseMeters());
+    updateOdometry();
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
@@ -134,12 +135,21 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     field.getObject("traj").setTrajectory(trajectory);
   }
 
-  public void resetOdometry() {
-    drivebase.resetEncoders();
-    odometry.resetPosition(getPose(), gyro.sensor.getRotation2d());
+  /** Updates odometry using sensor data. */
+  private void updateOdometry() {
+    odometry.update(gyro.getRotation(), drivebase.getWheelSpeeds());
+    field.setRobotPose(odometry.getPoseMeters());
   }
 
-  public void resetOdometry(Pose2d pose, Rotation2d rotation) {
-    odometry.resetPosition(pose, rotation);
+  /** Resets sensors to prepare for following a trajectory using its initial state. */
+  public void resetSensorsForTrajectory(PathPlannerState initialTrajectoryState) {
+    drivebase.zeroEncoders();
+    // TODO: This maybe should incorporate the inital state's start rotation
+    odometry.resetPosition(initialTrajectoryState.poseMeters, gyro.getRotation());
+  }
+
+  /** Resets sensors to prepare for following a trajectory. */
+  public void resetSensorsForTrajectory(PathPlannerTrajectory trajectory) {
+    resetSensorsForTrajectory(trajectory.getInitialState());
   }
 }
