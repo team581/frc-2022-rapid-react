@@ -7,9 +7,9 @@ package lib.limelight;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.util.Position3d;
-import frc.robot.util.Rotation3d;
-import frc.robot.util.Vector3d;
+import frc.robot.misc.util.Position3d;
+import frc.robot.misc.util.Rotation3d;
+import frc.robot.misc.util.Vector3d;
 import java.util.ArrayList;
 import java.util.List;
 

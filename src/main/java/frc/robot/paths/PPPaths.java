@@ -6,7 +6,7 @@ package frc.robot.paths;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import frc.robot.subsystems.drive.Drivebase;
+import frc.robot.drive.Drivebase;
 
 /**
  * Stores {@link PathPlannerTrajectory PathPlanner paths}.
