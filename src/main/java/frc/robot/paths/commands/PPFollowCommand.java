@@ -5,6 +5,7 @@
 package frc.robot.paths.commands;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.drive.DriveSubsystem;
 import lib.pathplanner.PPCommand;
@@ -15,7 +16,9 @@ import lib.pathplanner.PPCommand;
  */
 public class PPFollowCommand extends SequentialCommandGroup {
   public PPFollowCommand(DriveSubsystem driveSubsystem, PathPlannerTrajectory trajectory) {
-
-    addCommands(new PPCommand(trajectory, driveSubsystem));
+    addCommands(
+        new InstantCommand(
+            () -> driveSubsystem.resetSensorsForTrajectory(trajectory), driveSubsystem),
+        new PPCommand(trajectory, driveSubsystem));
   }
 }

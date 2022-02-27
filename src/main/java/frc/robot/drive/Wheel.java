@@ -62,7 +62,19 @@ public class Wheel implements Loggable {
    *
    * <p>Setpoint: target velocity in meters/second
    */
-  private final PIDController velocityPid = new PIDController(3, 0, 0);
+  // TODO: Experiment with different values for max velocity error and max control effort
+  // Remember to check and uncheck "Convert Gains to Encoder Counts" to trigger a refresh and fix
+  // the Kp value. Consider rerunning both the quasistatic ramp rate test and the dynamic step
+  // voltage test with the robot travelling with 12.0V of energy. This may be unnecessary since the
+  // Falcon 500 motors have a pretty linear output of speed:voltage. When recording test results
+  // make a note of what voltages were used.
+  //
+  // Error=1.2m/s MaxControlEffort=7.0V -> Kp = 2.7182 (DEFAULT)
+  // Error=0.3m/s MaxControlEffort=12.0V -> Kp = 7.2692
+  // Error=0.3m/s MaxControlEffort=7.0V -> Kp = 6.5871
+  // Error=0.3m/s MaxControlEffort=7.0V -> Kp = 6.5871
+  // Error=0.8m/s MaxControlEffort=7.0V -> Kp = 3.9486
+  private final PIDController velocityPid = new PIDController(2.7182, 0, 0);
 
   /**
    * This wheel's name.
@@ -124,13 +136,14 @@ public class Wheel implements Loggable {
     return encoderRotationsToMeters(nativeDistance);
   }
 
-  public void resetEncoder() {
+  /** Zeroes the encoder position. */
+  public void zeroEncoder() {
     motor.setSelectedSensorPosition(0);
   }
 
   /** Converts a velocity in meters/second to a voltage. */
   private double velocityToVoltage(double velocity) {
-    final var rawVoltage = FEEDFORWARD.calculate(velocity) + velocityPid.calculate(getVelocity());
+    final var rawVoltage = FEEDFORWARD.calculate(velocity) + velocityPid.calculate(velocity);
 
     return MathUtil.clamp(rawVoltage, -Constants.MAX_MOTOR_VOLTAGE, Constants.MAX_MOTOR_VOLTAGE);
   }

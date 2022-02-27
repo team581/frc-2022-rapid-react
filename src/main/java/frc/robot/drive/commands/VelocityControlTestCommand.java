@@ -25,7 +25,7 @@ public class VelocityControlTestCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveSubsystem.setChassisSpeeds(new ChassisSpeeds(1.5, 0, 0));
+    driveSubsystem.setChassisSpeeds(new ChassisSpeeds(1, 0, 1));
   }
 
   // Called once the command ends or is interrupted.

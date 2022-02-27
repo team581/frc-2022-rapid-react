@@ -34,7 +34,7 @@ public class Drivebase implements Loggable {
     frontRight.motor.setInverted(true);
     rearRight.motor.setInverted(true);
 
-    resetEncoders();
+    zeroEncoders();
   }
 
   public void setCartesianPercentages(
@@ -70,10 +70,10 @@ public class Drivebase implements Loggable {
     drive.stopMotor();
   }
 
-  public void resetEncoders() {
-    frontLeft.resetEncoder();
-    frontRight.resetEncoder();
-    rearLeft.resetEncoder();
-    rearRight.resetEncoder();
+  public void zeroEncoders() {
+    frontLeft.zeroEncoder();
+    frontRight.zeroEncoder();
+    rearLeft.zeroEncoder();
+    rearRight.zeroEncoder();
   }
 }

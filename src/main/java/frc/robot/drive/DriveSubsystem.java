@@ -4,6 +4,8 @@
 
 package frc.robot.drive;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -13,9 +15,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.ControllerUtil;
 import frc.robot.drive.commands.TeleopDriveCommand;
@@ -41,6 +46,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     private static final Pose2d POSE_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(5));
   }
 
+  private final Field2d field = new Field2d();
+
   // Components of the drive subsystem to reduce how huge this file is
   private final Drivebase drivebase = new Drivebase();
   private final Gyro gyro = new Gyro();
@@ -62,7 +69,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
           drivebase.rearRight.positionToCenterOfRobot);
 
   private final MecanumDriveOdometry odometry =
-      new MecanumDriveOdometry(kinematics, gyro.sensor.getRotation2d());
+      new MecanumDriveOdometry(kinematics, gyro.getRotation());
 
   public final TrajectoryConfig trajectoryConfig =
       new TrajectoryConfig(Drivebase.Constants.MAX_VELOCITY, Drivebase.Constants.MAX_ACCELERATION)
@@ -75,13 +82,14 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     driveController.setTolerance(Constants.POSE_TOLERANCE);
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    SmartDashboard.putData(field);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    odometry.update(gyro.sensor.getRotation2d(), drivebase.getWheelSpeeds());
+    updateOdometry();
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
@@ -122,8 +130,26 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     return odometry.getPoseMeters();
   }
 
-  public void resetOdometry() {
-    drivebase.resetEncoders();
-    odometry.resetPosition(getPose(), gyro.sensor.getRotation2d());
+  public void setCurrentTrajectory(Trajectory trajectory) {
+    // TODO: Seems like this doesn't work
+    field.getObject("traj").setTrajectory(trajectory);
+  }
+
+  /** Updates odometry using sensor data. */
+  private void updateOdometry() {
+    odometry.update(gyro.getRotation(), drivebase.getWheelSpeeds());
+    field.setRobotPose(odometry.getPoseMeters());
+  }
+
+  /** Resets sensors to prepare for following a trajectory using its initial state. */
+  public void resetSensorsForTrajectory(PathPlannerState initialTrajectoryState) {
+    drivebase.zeroEncoders();
+    // TODO: This maybe should incorporate the inital state's start rotation
+    odometry.resetPosition(initialTrajectoryState.poseMeters, gyro.getRotation());
+  }
+
+  /** Resets sensors to prepare for following a trajectory. */
+  public void resetSensorsForTrajectory(PathPlannerTrajectory trajectory) {
+    resetSensorsForTrajectory(trajectory.getInitialState());
   }
 }

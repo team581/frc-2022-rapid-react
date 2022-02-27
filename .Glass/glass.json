@@ -1,0 +1,127 @@
+{
+  "NetworkTables": {
+    "Shuffleboard": {
+      "RobotContainer": {
+        "DriveSubsystem": {
+          "Drivebase": {
+            "Wheel frontRight": {
+              "open": true
+            },
+            "Wheel rearLeft": {
+              "open": true
+            },
+            "Wheel rearRight": {
+              "open": true
+            },
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/CargoLimelightSubsystem": "Subsystem",
+      "/LiveWindow/Ungrouped/MecanumDrive[1]": "MecanumDrive",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/LiveWindow/Ungrouped/MecanumDrive[1]": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/LiveWindow/Ungrouped/Scheduler": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Settings": {
+    "mode": "Client",
+    "serverTeam": "581"
+  },
+  "NetworkTables View": {
+    "visible": false
+  },
+  "Plots": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "antialiased": true,
+          "axis": [
+            {
+              "autoFit": true,
+              "label": "meters/second"
+            }
+          ],
+          "crosshairs": true,
+          "height": 657,
+          "legendLocation": 9,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/RobotContainer/DriveSubsystem/Drivebase/Wheel frontLeft/getVelocity",
+              "name": "FL vel"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/RobotContainer/DriveSubsystem/Drivebase/Wheel rearLeft/getVelocity",
+              "name": "RL vel"
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/RobotContainer/DriveSubsystem/Drivebase/Wheel frontRight/getVelocity",
+              "name": "FR vel"
+            },
+            {
+              "color": [
+                0.7686275243759155,
+                0.30588236451148987,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/RobotContainer/DriveSubsystem/Drivebase/Wheel rearRight/getVelocity",
+              "name": "RR vel"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "wheel velocities"
+      }
+    }
+  }
+}
