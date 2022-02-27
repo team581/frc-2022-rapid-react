@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LifterSubsystem extends SubsystemBase {
@@ -28,8 +28,8 @@ public class LifterSubsystem extends SubsystemBase {
 
   // this part tells what type of motor or switch your using
   private final TalonFX motor = new TalonFX(Constants.MOTOR_PORT);
-  private final Relay upperLimitSwitch = new Relay(Constants.UPPER_LIMIT_SWITCH);
-  private final Relay lowwerLimitSwitch = new Relay(Constants.LOWER_LIMIT_SWITCH);
+  private final DigitalInput upperLimitSwitch = new DigitalInput(Constants.UPPER_LIMIT_SWITCH);
+  private final DigitalInput lowerLimitSwitch = new DigitalInput(Constants.LOWER_LIMIT_SWITCH);
 
   /** Creates a new LifterSubsystem. */
   public LifterSubsystem() {}
@@ -41,8 +41,8 @@ public class LifterSubsystem extends SubsystemBase {
 
   /** Gets the position of the lifter */
   public Position getPosition() {
-    final var isUp = upperLimitSwitch.get() == Relay.Value.kOn;
-    final var isDown = lowwerLimitSwitch.get() == Relay.Value.kOn;
+    final var isUp = upperLimitSwitch.get();
+    final var isDown = lowerLimitSwitch.get();
 
     // figuring out where the position is
     if (isUp) {
