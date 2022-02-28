@@ -13,6 +13,9 @@ import frc.robot.controller.ControllerUtil;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.gyro.GyroSubsystem;
+import frc.robot.lifter.LifterIOReal;
+import frc.robot.lifter.LifterIOReplay;
+import frc.robot.lifter.LifterIOSim;
 import frc.robot.lifter.LifterSubsystem;
 import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
@@ -43,7 +46,7 @@ public class RobotContainer implements Loggable {
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
   private final SwifferSubsystem swifferSubsystem = new SwifferSubsystem();
-  private final LifterSubsystem lifterSubsystem = new LifterSubsystem();
+  private final LifterSubsystem lifterSubsystem;
 
   private final Command autoCommand =
       new SequentialCommandGroup(
@@ -54,6 +57,24 @@ public class RobotContainer implements Loggable {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    if (Constants.getMode() == Constants.Mode.REPLAY) {
+      lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
+    } else {
+      switch (Constants.getRobot()) {
+        case COMP_BOT:
+          lifterSubsystem = new LifterSubsystem(new LifterIOReal());
+          break;
+        case TEST_2020_BOT:
+          lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
+          break;
+        case SIM_BOT:
+          lifterSubsystem = new LifterSubsystem(new LifterIOSim());
+          break;
+        default:
+          throw new IllegalStateException("Unknown target robot");
+      }
+    }
   }
 
   /**

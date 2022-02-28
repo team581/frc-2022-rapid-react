@@ -31,18 +31,15 @@ public class Robot extends LoggedRobot implements Loggable {
    */
   @Override
   public void robotInit() {
+    final var isReplay = Constants.getMode() == Constants.Mode.REPLAY;
+
     // Run as fast as possible during replay
-    setUseTiming(isReal());
+    setUseTiming(!isReplay);
     // Log & replay "SmartDashboard" values (no tables are logged by default).
     LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
     Logger.getInstance().recordMetadata("ProjectName", "MyProject"); // Set a metadata value
 
-    if (isReal()) {
-      // Log to USB stick (name will be selected automatically)
-      Logger.getInstance().addDataReceiver(new ByteLogReceiver("/media/sda1/"));
-      // Provide log data over the network, viewable in Advantage Scope.
-      Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
-    } else {
+    if (isReplay) {
       // Prompt the user for a file path on the command line
       final String path = ByteLogReplay.promptForPath();
       // Read log file for replay
@@ -50,6 +47,14 @@ public class Robot extends LoggedRobot implements Loggable {
       // Save replay results to a new log with the "_sim" suffix
       Logger.getInstance()
           .addDataReceiver(new ByteLogReceiver(ByteLogReceiver.addPathSuffix(path, "_sim")));
+    } else {
+      // Log to USB stick (name will be selected automatically)
+      Logger.getInstance()
+          .addDataReceiver(
+              new ByteLogReceiver(
+                  Constants.getMode() == Constants.Mode.SIM ? "./" : "/media/sda1/"));
+      // Provide log data over the network, viewable in Advantage Scope.
+      Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
     }
 
     // Start logging! No more data receivers, replay sources, or metadata values may be added.
