@@ -61,6 +61,9 @@ public class RobotContainer implements Loggable {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // TODO: Instantiate all buttons in a `Controller` class which will be subclassed by
+    // `DriverController` and `CopilotController`
+
     final var aButton = new JoystickButton(controller, XboxController.Button.kA.value);
     final var bButton = new JoystickButton(controller, XboxController.Button.kB.value);
     final var xButton = new JoystickButton(controller, XboxController.Button.kX.value);
