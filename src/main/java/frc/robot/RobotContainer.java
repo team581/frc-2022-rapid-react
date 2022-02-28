@@ -12,16 +12,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.controller.ControllerUtil;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.drive.commands.VelocityControlTestCommand;
-import frc.robot.gyro.GyroSubsystem;
-import frc.robot.lifter.LifterIOReal;
-import frc.robot.lifter.LifterIOReplay;
-import frc.robot.lifter.LifterIOSim;
-import frc.robot.lifter.LifterSubsystem;
+import frc.robot.gyro.*;
+import frc.robot.lifter.*;
 import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
 import frc.robot.misc.commands.RefreshAllianceWithFmsCommand;
 import frc.robot.paths.commands.SimplePathCommand;
-import frc.robot.swiffer.SwifferSubsystem;
+import frc.robot.swiffer.*;
 import frc.robot.swiffer.commands.StartShootingCommand;
 import frc.robot.swiffer.commands.StartSnarfingCommand;
 import frc.robot.swiffer.commands.StopSwifferCommand;
@@ -45,7 +42,7 @@ public class RobotContainer implements Loggable {
   private final UpperHubLimelightSubsystem upperLimelightSubsystem =
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
-  private final SwifferSubsystem swifferSubsystem = new SwifferSubsystem();
+  private final SwifferSubsystem swifferSubsystem;
   private final LifterSubsystem lifterSubsystem;
 
   private final Command autoCommand =
@@ -60,16 +57,20 @@ public class RobotContainer implements Loggable {
 
     if (Constants.getMode() == Constants.Mode.REPLAY) {
       lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
+      swifferSubsystem = new SwifferSubsystem(new SwifferIOReplay());
     } else {
       switch (Constants.getRobot()) {
         case COMP_BOT:
           lifterSubsystem = new LifterSubsystem(new LifterIOReal());
+          swifferSubsystem = new SwifferSubsystem(new SwifferIOReal());
           break;
         case TEST_2020_BOT:
           lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
+          swifferSubsystem = new SwifferSubsystem(new SwifferIOReplay());
           break;
         case SIM_BOT:
           lifterSubsystem = new LifterSubsystem(new LifterIOSim());
+          swifferSubsystem = new SwifferSubsystem(new SwifferIOSim());
           break;
         default:
           throw new IllegalStateException("Unknown target robot");

@@ -2,24 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.lifter;
+package frc.robot.swiffer;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 
-public class LifterIOReal implements LifterIO {
+public class SwifferIOReal implements SwifferIO {
   private final TalonFX motor;
-  private final DigitalInput upperLimitSwitch;
-  private final DigitalInput lowerLimitSwitch;
 
-  public LifterIOReal() {
+  public SwifferIOReal() {
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        motor = new TalonFX(1);
-        upperLimitSwitch = new DigitalInput(0);
-        lowerLimitSwitch = new DigitalInput(1);
+        motor = new TalonFX(2);
         break;
       default:
         throw new IllegalStateException(
@@ -32,10 +27,6 @@ public class LifterIOReal implements LifterIO {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
-
-    inputs.upperLimitSwitchActive = upperLimitSwitch.get();
-
-    inputs.lowerLimitSwitchActive = lowerLimitSwitch.get();
   }
 
   @Override
