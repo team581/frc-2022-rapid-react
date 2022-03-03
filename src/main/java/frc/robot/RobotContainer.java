@@ -66,7 +66,7 @@ public class RobotContainer implements Loggable {
         case TEST_2020_BOT:
           lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
           swifferSubsystem = new SwifferSubsystem(new SwifferIOReplay());
-          gyroSubsystem = new GyroSubsystem(new GyroIONavx());
+          gyroSubsystem = new GyroSubsystem(new GyroIOAdis16470());
           break;
         case SIM_BOT:
           lifterSubsystem = new LifterSubsystem(new LifterIOSim());
