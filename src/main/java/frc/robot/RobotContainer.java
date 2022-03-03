@@ -37,18 +37,15 @@ public class RobotContainer implements Loggable {
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
   private final ControllerUtil controllerUtil = new ControllerUtil(controller);
 
-  private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem(controllerUtil, gyroSubsystem);
+  private final GyroSubsystem gyroSubsystem;
+  private final DriveSubsystem driveSubsystem;
   private final UpperHubLimelightSubsystem upperLimelightSubsystem =
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
   private final SwifferSubsystem swifferSubsystem;
   private final LifterSubsystem lifterSubsystem;
 
-  private final Command autoCommand =
-      new SequentialCommandGroup(
-          new RefreshAllianceWithFmsCommand(cargoLimelightSubsystem),
-          new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
+  private final Command autoCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,24 +55,35 @@ public class RobotContainer implements Loggable {
     if (Constants.getMode() == Constants.Mode.REPLAY) {
       lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
       swifferSubsystem = new SwifferSubsystem(new SwifferIOReplay());
+      gyroSubsystem = new GyroSubsystem(new GyroIOReplay());
     } else {
       switch (Constants.getRobot()) {
         case COMP_BOT:
           lifterSubsystem = new LifterSubsystem(new LifterIOReal());
           swifferSubsystem = new SwifferSubsystem(new SwifferIOReal());
+          gyroSubsystem = new GyroSubsystem(new GyroIONavx());
           break;
         case TEST_2020_BOT:
           lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
           swifferSubsystem = new SwifferSubsystem(new SwifferIOReplay());
+          gyroSubsystem = new GyroSubsystem(new GyroIONavx());
           break;
         case SIM_BOT:
           lifterSubsystem = new LifterSubsystem(new LifterIOSim());
           swifferSubsystem = new SwifferSubsystem(new SwifferIOSim());
+          gyroSubsystem = new GyroSubsystem(new GyroIOSim());
           break;
         default:
           throw new IllegalStateException("Unknown target robot");
       }
     }
+
+    driveSubsystem = new DriveSubsystem(controllerUtil, gyroSubsystem);
+
+    autoCommand =
+        new SequentialCommandGroup(
+            new RefreshAllianceWithFmsCommand(cargoLimelightSubsystem),
+            new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
   }
 
   /**

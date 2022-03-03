@@ -4,37 +4,40 @@
 
 package frc.robot.gyro;
 
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.gyro.GyroIO.Inputs;
+import org.littletonrobotics.junction.Logger;
 
 public class GyroSubsystem extends SubsystemBase {
-  private final AHRS sensor = new AHRS(SPI.Port.kMXP);
+  private final GyroIO io;
+  private final Inputs inputs = new Inputs();
 
   /** Creates a new GyroSubsystem. */
-  public GyroSubsystem() {
-    sensor.calibrate();
+  public GyroSubsystem(GyroIO io) {
+    this.io = io;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    io.updateInputs(inputs);
+    Logger.getInstance().processInputs("Gyro", inputs);
   }
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    sensor.reset();
+    io.zeroHeading();
   }
 
   /** Returns the turn rate of the robot in radians/second. */
-  public double getTurnRate() {
-    return Units.degreesToRadians(-sensor.getRate());
+  public Rotation2d getTurnRate() {
+    return new Rotation2d(inputs.turnRateRadiansPerSecond);
   }
 
-  /** @see AHRS#getRotation2d() */
+  /** Get the heading of the robot. */
   public Rotation2d getRotation() {
-    return sensor.getRotation2d();
+    return new Rotation2d(inputs.rotationRadians);
   }
 }
