@@ -93,7 +93,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
-    drivebase.setCartesianPercentages(xPercentage, yPercentage, thetaPercentage);
+    drivebase.setCartesianPercentages(
+        xPercentage, yPercentage, thetaPercentage, gyro.getRotation());
   }
 
   /** Stops all the motors. */

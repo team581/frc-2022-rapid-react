@@ -4,6 +4,7 @@
 
 package frc.robot.drive;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -40,6 +41,11 @@ public class Drivebase implements Loggable {
   public void setCartesianPercentages(
       double xPercentage, double yPercentage, double thetaPercentage) {
     drive.driveCartesian(-yPercentage, xPercentage, thetaPercentage);
+  }
+
+  public void setCartesianPercentages(
+      double xPercentage, double yPercentage, double thetaPercentage, Rotation2d currentRotation) {
+    drive.driveCartesian(-yPercentage, xPercentage, thetaPercentage, currentRotation.getDegrees());
   }
 
   public void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
