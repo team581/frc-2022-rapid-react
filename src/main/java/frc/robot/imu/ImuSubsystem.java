@@ -2,19 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.gyro;
+package frc.robot.imu;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.gyro.GyroIO.Inputs;
+import frc.robot.imu.ImuIO.Inputs;
+
 import org.littletonrobotics.junction.Logger;
 
-public class GyroSubsystem extends SubsystemBase {
-  private final GyroIO io;
+public class ImuSubsystem extends SubsystemBase {
+  private final ImuIO io;
   private final Inputs inputs = new Inputs();
 
-  /** Creates a new GyroSubsystem. */
-  public GyroSubsystem(GyroIO io) {
+  /** Creates a new ImuSubsystem. */
+  public ImuSubsystem(ImuIO io) {
     this.io = io;
   }
 
@@ -23,7 +24,7 @@ public class GyroSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Gyro", inputs);
+    Logger.getInstance().processInputs("Imu", inputs);
   }
 
   /** Zeroes the heading of the robot. */
