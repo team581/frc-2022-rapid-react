@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.ControllerUtil;
 import frc.robot.drive.commands.TeleopDriveCommand;
+import frc.robot.gyro.GyroSubsystem;
 import io.github.oblarg.oblog.Loggable;
 
 /**
@@ -50,7 +51,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
 
   // Components of the drive subsystem to reduce how huge this file is
   private final Drivebase drivebase = new Drivebase();
-  private final Gyro gyro = new Gyro();
+  private final GyroSubsystem gyro;
 
   // Used for following trajectories
   public final HolonomicDriveController driveController =
@@ -68,15 +69,18 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
           drivebase.rearLeft.positionToCenterOfRobot,
           drivebase.rearRight.positionToCenterOfRobot);
 
-  private final MecanumDriveOdometry odometry =
-      new MecanumDriveOdometry(kinematics, gyro.getRotation());
+  private final MecanumDriveOdometry odometry;
 
   public final TrajectoryConfig trajectoryConfig =
       new TrajectoryConfig(Drivebase.Constants.MAX_VELOCITY, Drivebase.Constants.MAX_ACCELERATION)
           .setKinematics(kinematics);
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem(ControllerUtil controller) {
+  public DriveSubsystem(ControllerUtil controller, GyroSubsystem gyroSubsystem) {
+    gyro = gyroSubsystem;
+
+    odometry = new MecanumDriveOdometry(kinematics, gyro.getRotation());
+
     setDefaultCommand(new TeleopDriveCommand(this, controller));
 
     driveController.setTolerance(Constants.POSE_TOLERANCE);

@@ -2,19 +2,25 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.drive;
+package frc.robot.gyro;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Gyro {
+public class GyroSubsystem extends SubsystemBase {
   private final AHRS sensor = new AHRS(SPI.Port.kMXP);
 
-  /** Creates a new Gyro. */
-  public Gyro() {
+  /** Creates a new GyroSubsystem. */
+  public GyroSubsystem() {
     sensor.calibrate();
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
   }
 
   /** Zeroes the heading of the robot. */

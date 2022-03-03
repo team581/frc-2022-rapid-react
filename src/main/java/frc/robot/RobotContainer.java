@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.controller.ControllerUtil;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.drive.commands.VelocityControlTestCommand;
+import frc.robot.gyro.GyroSubsystem;
 import frc.robot.lifter.LifterSubsystem;
 import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
@@ -36,7 +37,8 @@ public class RobotContainer implements Loggable {
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
   private final ControllerUtil controllerUtil = new ControllerUtil(controller);
 
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem(controllerUtil);
+  private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem(controllerUtil, gyroSubsystem);
   private final UpperHubLimelightSubsystem upperLimelightSubsystem =
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
