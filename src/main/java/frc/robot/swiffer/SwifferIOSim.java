@@ -4,14 +4,6 @@
 
 package frc.robot.swiffer;
 
-public class SwifferIOSim implements SwifferIO {
-  @Override
-  public void updateInputs(Inputs inputs) {
-    // Intentionally left empty
-  }
-
-  @Override
-  public void setMotorPercentage(double volts) {
-    // Intentionally left empty
-  }
+public class SwifferIOSim extends SwifferIOReplay implements SwifferIO {
+  // TODO: Implement
 }
