@@ -10,15 +10,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.controller.ControllerUtil;
-import frc.robot.drive.DriveSubsystem;
+import frc.robot.drive.*;
 import frc.robot.drive.commands.VelocityControlTestCommand;
-import frc.robot.gyro.GyroSubsystem;
-import frc.robot.lifter.LifterSubsystem;
+import frc.robot.drive.wheel.*;
+import frc.robot.imu.*;
+import frc.robot.lifter.*;
 import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
 import frc.robot.misc.commands.RefreshAllianceWithFmsCommand;
 import frc.robot.paths.commands.SimplePathCommand;
-import frc.robot.swiffer.SwifferSubsystem;
+import frc.robot.swiffer.*;
 import frc.robot.swiffer.commands.StartShootingCommand;
 import frc.robot.swiffer.commands.StartSnarfingCommand;
 import frc.robot.swiffer.commands.StopSwifferCommand;
@@ -37,23 +38,84 @@ public class RobotContainer implements Loggable {
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
   private final ControllerUtil controllerUtil = new ControllerUtil(controller);
 
-  private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem(controllerUtil, gyroSubsystem);
+  private final ImuSubsystem imuSubsystem;
+  private final DriveSubsystem driveSubsystem;
   private final UpperHubLimelightSubsystem upperLimelightSubsystem =
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
-  private final SwifferSubsystem swifferSubsystem = new SwifferSubsystem();
-  private final LifterSubsystem lifterSubsystem = new LifterSubsystem();
+  private final SwifferSubsystem swifferSubsystem;
+  private final LifterSubsystem lifterSubsystem;
 
-  private final Command autoCommand =
-      new SequentialCommandGroup(
-          new RefreshAllianceWithFmsCommand(cargoLimelightSubsystem),
-          new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
+  private final Command autoCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the button bindings
+    if (Constants.getMode() == Constants.Mode.REPLAY) {
+      lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
+      swifferSubsystem = new SwifferSubsystem(new SwifferIOReplay());
+      imuSubsystem = new ImuSubsystem(new ImuIOReplay());
+      driveSubsystem =
+          new DriveSubsystem(
+              controllerUtil,
+              imuSubsystem,
+              new WheelIOReplay(),
+              new WheelIOReplay(),
+              new WheelIOReplay(),
+              new WheelIOReplay());
+    } else {
+      switch (Constants.getRobot()) {
+        case COMP_BOT:
+          lifterSubsystem = new LifterSubsystem(new LifterIOReal());
+          swifferSubsystem = new SwifferSubsystem(new SwifferIOReal());
+          imuSubsystem = new ImuSubsystem(new ImuIONavx());
+          driveSubsystem =
+              new DriveSubsystem(
+                  controllerUtil,
+                  imuSubsystem,
+                  new WheelIOReal(Corner.FRONT_LEFT),
+                  new WheelIOReal(Corner.FRONT_RIGHT),
+                  new WheelIOReal(Corner.REAR_LEFT),
+                  new WheelIOReal(Corner.REAR_RIGHT));
+          break;
+        case TEST_2020_BOT:
+          lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
+          swifferSubsystem = new SwifferSubsystem(new SwifferIOReplay());
+          imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
+          driveSubsystem =
+              new DriveSubsystem(
+                  controllerUtil,
+                  imuSubsystem,
+                  new WheelIOReal(Corner.FRONT_LEFT),
+                  new WheelIOReal(Corner.FRONT_RIGHT),
+                  new WheelIOReal(Corner.REAR_LEFT),
+                  new WheelIOReal(Corner.REAR_RIGHT));
+          break;
+        case SIM_BOT:
+          lifterSubsystem = new LifterSubsystem(new LifterIOSim());
+          swifferSubsystem = new SwifferSubsystem(new SwifferIOSim());
+          imuSubsystem = new ImuSubsystem(new ImuIOSim());
+          driveSubsystem =
+              new DriveSubsystem(
+                  controllerUtil,
+                  imuSubsystem,
+                  new WheelIOSim(Corner.FRONT_LEFT),
+                  new WheelIOSim(Corner.FRONT_RIGHT),
+                  new WheelIOSim(Corner.REAR_LEFT),
+                  new WheelIOSim(Corner.REAR_RIGHT));
+          break;
+        default:
+          throw new IllegalStateException("Unknown target robot");
+      }
+    }
+
+    // Configure the button bindings. You must call this after the subsystems are defined since they
+    // are used to add command requirements.
     configureButtonBindings();
+
+    autoCommand =
+        new SequentialCommandGroup(
+            new RefreshAllianceWithFmsCommand(cargoLimelightSubsystem),
+            new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
   }
 
   /**

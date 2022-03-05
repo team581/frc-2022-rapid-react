@@ -23,6 +23,7 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/CargoLimelightSubsystem": "Subsystem",
       "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/ImuSubsystem": "Subsystem",
       "/LiveWindow/LifterSubsystem": "Subsystem",
       "/LiveWindow/ShooterSubsystem": "Subsystem",
       "/LiveWindow/SnarferSubsystem": "Subsystem",
@@ -36,8 +37,10 @@
       "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[1]": "Gyro",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
-      "/LiveWindow/UpperHubLimelightSubsystem": "Subsystem"
+      "/LiveWindow/UpperHubLimelightSubsystem": "Subsystem",
+      "/SmartDashboard/Field": "Field2d"
     }
   },
   "NetworkTables": {

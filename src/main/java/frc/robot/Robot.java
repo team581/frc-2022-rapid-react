@@ -4,11 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.Logger;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
+import org.littletonrobotics.junction.io.ByteLogReceiver;
+import org.littletonrobotics.junction.io.ByteLogReplay;
+import org.littletonrobotics.junction.io.LogSocketServer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,7 +20,7 @@ import io.github.oblarg.oblog.Logger;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot implements Loggable {
+public class Robot extends LoggedRobot implements Loggable {
   private Command autonomousCommand;
 
   private RobotContainer robotContainer;
@@ -27,10 +31,41 @@ public class Robot extends TimedRobot implements Loggable {
    */
   @Override
   public void robotInit() {
+    final var isReplay = Constants.getMode() == Constants.Mode.REPLAY;
+
+    // Run as fast as possible during replay
+    setUseTiming(!isReplay);
+    // Log & replay "SmartDashboard" values (no tables are logged by default).
+    LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
+    Logger.getInstance().recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+
+    if (isReplay) {
+      // Prompt the user for a file path on the command line
+      System.out.println(
+          "If prompted, please enter the filename of the .rlog file to use as a replay");
+      final String path = ByteLogReplay.promptForPath();
+      // Read log file for replay
+      Logger.getInstance().setReplaySource(new ByteLogReplay(path));
+      // Save replay results to a new log with the "_sim" suffix
+      Logger.getInstance()
+          .addDataReceiver(new ByteLogReceiver(ByteLogReceiver.addPathSuffix(path, "_sim")));
+    } else {
+      // Log to USB stick (name will be selected automatically)
+      Logger.getInstance()
+          .addDataReceiver(
+              new ByteLogReceiver(
+                  Constants.getMode() == Constants.Mode.SIM ? "./" : "/media/sda1/"));
+      // Provide log data over the network, viewable in Advantage Scope.
+      Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
+    }
+
+    // Start logging! No more data receivers, replay sources, or metadata values may be added.
+    Logger.getInstance().start();
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
-    Logger.configureLoggingAndConfig(this, false);
+    io.github.oblarg.oblog.Logger.configureLoggingAndConfig(this, false);
 
     if (Constants.ENV == Constants.Env.DEVELOPMENT) {
       // This pushes lots of data to NetworkTables and can cause lag or network congestion
@@ -53,7 +88,7 @@ public class Robot extends TimedRobot implements Loggable {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    Logger.updateEntries();
+    io.github.oblarg.oblog.Logger.updateEntries();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

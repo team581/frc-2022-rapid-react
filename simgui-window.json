@@ -14,16 +14,16 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "1580,533",
-      "Size": "281,190"
+      "Size": "336,164"
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "1115,1071",
+      "Pos": "765,836",
       "Size": "976,239"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
-      "Pos": "524,209",
+      "Pos": "248,173",
       "Size": "357,950"
     },
     "###NetworkTables": {
@@ -49,7 +49,7 @@
     "###Timing": {
       "Collapsed": "0",
       "Pos": "1549,242",
-      "Size": "162,142"
+      "Size": "169,142"
     },
     "Debug##Default": {
       "Collapsed": "0",
@@ -58,7 +58,7 @@
     },
     "Robot State": {
       "Collapsed": "0",
-      "Pos": "1433,560",
+      "Pos": "807,531",
       "Size": "109,114"
     }
   }
