@@ -52,6 +52,10 @@ public final class Constants {
       return TargetRobot.SIM_BOT;
     }
 
+    if (TARGET_ROBOT == TargetRobot.SIM_BOT && RobotBase.isReal()) {
+      System.out.println("WARNING: You are trying to run a simulation with a real robot!");
+    }
+
     return TARGET_ROBOT;
   }
 
