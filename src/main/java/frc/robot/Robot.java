@@ -41,6 +41,8 @@ public class Robot extends LoggedRobot implements Loggable {
 
     if (isReplay) {
       // Prompt the user for a file path on the command line
+      System.out.println(
+          "If prompted, please enter the filename of the .rlog file to use as a replay");
       final String path = ByteLogReplay.promptForPath();
       // Read log file for replay
       Logger.getInstance().setReplaySource(new ByteLogReplay(path));
