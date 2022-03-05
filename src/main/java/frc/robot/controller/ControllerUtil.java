@@ -25,7 +25,7 @@ public class ControllerUtil {
 
   /** The rotation across the robot's x-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getXPercentage() {
-    return joystickScale(xLimiter.calculate(controller.getRightX()));
+    return joystickScale(xLimiter.calculate(controller.getLeftX()));
   }
 
   /** The translation across the robot's y-axis as a percentage (<code>-1 <= x <= 1</code>) */
@@ -35,6 +35,6 @@ public class ControllerUtil {
 
   /** The rotation about the robot's z-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getThetaPercentage() {
-    return joystickScale(thetaLimiter.calculate(controller.getLeftX()));
+    return joystickScale(thetaLimiter.calculate(controller.getRightX()));
   }
 }
