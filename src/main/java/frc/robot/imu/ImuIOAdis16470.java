@@ -6,12 +6,13 @@ package frc.robot.imu;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import frc.robot.Constants;
 
 public class ImuIOAdis16470 implements ImuIO {
   private final ADIS16470_IMU sensor;
 
   public ImuIOAdis16470() {
-    switch (frc.robot.Constants.getRobot()) {
+    switch (Constants.getRobot()) {
       case TEST_2020_BOT:
       case SIM_BOT:
         sensor = new ADIS16470_IMU();

@@ -7,7 +7,6 @@ package frc.robot.imu;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.imu.ImuIO.Inputs;
-
 import org.littletonrobotics.junction.Logger;
 
 public class ImuSubsystem extends SubsystemBase {

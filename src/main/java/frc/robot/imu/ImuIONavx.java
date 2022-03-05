@@ -6,12 +6,13 @@ package frc.robot.imu;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.I2C.Port;
+import frc.robot.Constants;
 
 public class ImuIONavx implements ImuIO {
   private final AHRS sensor;
 
   public ImuIONavx() {
-    switch (frc.robot.Constants.getRobot()) {
+    switch (Constants.getRobot()) {
       case TEST_2020_BOT:
       case SIM_BOT:
         sensor = new AHRS(Port.kMXP);
