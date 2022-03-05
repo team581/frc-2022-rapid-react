@@ -146,6 +146,8 @@ public class RobotContainer implements Loggable {
     // Testing autonomous
     yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
 
+    xButton.whenActive(imuSubsystem::zeroHeading);
+
     // Swiffer
     rightTrigger
         .whenPressed(new StartSnarfingCommand(swifferSubsystem, lifterSubsystem))
