@@ -36,7 +36,7 @@ public class TeleopDriveCommand extends CommandBase {
     final var y = controller.getYPercentage();
     final var theta = controller.getThetaPercentage();
 
-    driveSubsystem.driveTeleop(x, y, theta);
+    driveSubsystem.driveTeleop(x, -y, theta);
   }
 
   // Called once the command ends or is interrupted.

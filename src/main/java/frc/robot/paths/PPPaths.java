@@ -15,8 +15,8 @@ import frc.robot.drive.Drivebase;
  */
 public class PPPaths {
   private static final class Constants {
-    public static final double MAX_VELOCITY = Drivebase.Constants.MAX_VELOCITY;
-    public static final double MAX_ACCELERATION = Drivebase.Constants.MAX_ACCELERATION;
+    public static final double MAX_VELOCITY = Drivebase.MAX_VELOCITY;
+    public static final double MAX_ACCELERATION = Drivebase.MAX_ACCELERATION;
   }
 
   private PPPaths() {}

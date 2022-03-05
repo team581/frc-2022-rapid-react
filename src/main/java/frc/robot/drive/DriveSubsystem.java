@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.ControllerUtil;
 import frc.robot.drive.commands.TeleopDriveCommand;
+import frc.robot.drive.wheel.WheelIO;
 import frc.robot.imu.ImuSubsystem;
 import io.github.oblarg.oblog.Loggable;
 
@@ -50,7 +51,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   private final Field2d field = new Field2d();
 
   // Components of the drive subsystem to reduce how huge this file is
-  private final Drivebase drivebase = new Drivebase();
+  private final Drivebase drivebase;
   private final ImuSubsystem imu;
 
   // Used for following trajectories
@@ -62,24 +63,33 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
           new PIDController(1, 0, 0),
           thetaController);
 
-  public final MecanumDriveKinematics kinematics =
-      new MecanumDriveKinematics(
-          drivebase.frontLeft.positionToCenterOfRobot,
-          drivebase.frontRight.positionToCenterOfRobot,
-          drivebase.rearLeft.positionToCenterOfRobot,
-          drivebase.rearRight.positionToCenterOfRobot);
+  public final MecanumDriveKinematics kinematics;
 
   private final MecanumDriveOdometry odometry;
 
-  public final TrajectoryConfig trajectoryConfig =
-      new TrajectoryConfig(Drivebase.Constants.MAX_VELOCITY, Drivebase.Constants.MAX_ACCELERATION)
-          .setKinematics(kinematics);
+  public final TrajectoryConfig trajectoryConfig;
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem(ControllerUtil controller, ImuSubsystem imuSubsystem) {
+  public DriveSubsystem(
+      ControllerUtil controller,
+      ImuSubsystem imuSubsystem,
+      WheelIO frontLeftIO,
+      WheelIO frontRightIO,
+      WheelIO rearLeftIO,
+      WheelIO rearRightIO) {
     imu = imuSubsystem;
+    drivebase = new Drivebase(frontLeftIO, frontRightIO, rearLeftIO, rearRightIO);
 
+    kinematics =
+        new MecanumDriveKinematics(
+            drivebase.frontLeft.positionToCenterOfRobot,
+            drivebase.frontRight.positionToCenterOfRobot,
+            drivebase.rearLeft.positionToCenterOfRobot,
+            drivebase.rearRight.positionToCenterOfRobot);
     odometry = new MecanumDriveOdometry(kinematics, imu.getRotation());
+    trajectoryConfig =
+        new TrajectoryConfig(Drivebase.MAX_VELOCITY, Drivebase.MAX_ACCELERATION)
+            .setKinematics(kinematics);
 
     setDefaultCommand(new TeleopDriveCommand(this, controller));
 
@@ -94,11 +104,11 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     // This method will be called once per scheduler run
 
     updateOdometry();
+    drivebase.periodic();
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
-    drivebase.setCartesianPercentages(
-        xPercentage, yPercentage, thetaPercentage, imu.getRotation());
+    drivebase.setCartesianPercentages(xPercentage, yPercentage, thetaPercentage, imu.getRotation());
   }
 
   /** Stops all the motors. */
