@@ -16,7 +16,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class LifterSubsystem extends SubsystemBase {
 
-  /** The gearing of a wheel. For example, 10.71:1 would be 10.71. */
+  /** The gearing of the lifter. For example, 10.71:1 would be 10.71. */
   private static final double GEARING;
 
   private static final double MAX_MOTOR_VOLTAGE;
