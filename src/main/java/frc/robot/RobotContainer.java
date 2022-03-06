@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.controller.ControllerUtil;
+import frc.robot.controller.ButtonController;
+import frc.robot.controller.DriveController;
 import frc.robot.drive.*;
 import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.drive.wheel.*;
@@ -34,8 +34,10 @@ import frc.robot.vision.commands.LoadingBayAlignCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);
-  private final ControllerUtil controllerUtil = new ControllerUtil(controller);
+  private final ButtonController copilotController =
+      new ButtonController(new XboxController(Constants.DRIVER_CONTROLLER_PORT));
+  private final DriveController driverController =
+      new DriveController(new XboxController(Constants.DRIVER_CONTROLLER_PORT));
 
   private final ImuSubsystem imuSubsystem;
   private final DriveSubsystem driveSubsystem;
@@ -55,7 +57,7 @@ public class RobotContainer {
       imuSubsystem = new ImuSubsystem(new ImuIOReplay());
       driveSubsystem =
           new DriveSubsystem(
-              controllerUtil,
+              driverController,
               imuSubsystem::getRotation,
               new WheelIOReplay(),
               new WheelIOReplay(),
@@ -69,7 +71,7 @@ public class RobotContainer {
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
           driveSubsystem =
               new DriveSubsystem(
-                  controllerUtil,
+                  driverController,
                   imuSubsystem::getRotation,
                   new WheelIOReal(Corner.FRONT_LEFT),
                   new WheelIOReal(Corner.FRONT_RIGHT),
@@ -82,7 +84,7 @@ public class RobotContainer {
           imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
           driveSubsystem =
               new DriveSubsystem(
-                  controllerUtil,
+                  driverController,
                   imuSubsystem::getRotation,
                   new WheelIOReal(Corner.FRONT_LEFT),
                   new WheelIOReal(Corner.FRONT_RIGHT),
@@ -95,7 +97,7 @@ public class RobotContainer {
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
           driveSubsystem =
               new DriveSubsystem(
-                  controllerUtil,
+                  driverController,
                   imuSubsystem::getRotation,
                   new WheelIOSim(Corner.FRONT_LEFT),
                   new WheelIOSim(Corner.FRONT_RIGHT),
@@ -124,34 +126,26 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // TODO: Instantiate all buttons in a `Controller` class which will be subclassed by
-    // `DriverController` and `CopilotController`
-
-    final var aButton = new JoystickButton(controller, XboxController.Button.kA.value);
-    final var bButton = new JoystickButton(controller, XboxController.Button.kB.value);
-    final var xButton = new JoystickButton(controller, XboxController.Button.kX.value);
-    final var yButton = new JoystickButton(controller, XboxController.Button.kY.value);
-
-    final var leftTrigger = new JoystickButton(controller, XboxController.Axis.kLeftTrigger.value);
-    final var rightTrigger =
-        new JoystickButton(controller, XboxController.Axis.kRightTrigger.value);
-
-    // Align for shooting
-    aButton.whenHeld(new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
-
     // Testing PathPlanner
-    bButton.whenHeld(new SimplePathCommand(driveSubsystem));
+    driverController.bButton.whenHeld(new SimplePathCommand(driveSubsystem));
 
     // Testing autonomous
-    yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
+    driverController.yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
 
-    xButton.whenActive(imuSubsystem::zeroHeading);
+    // Resetting field oriented control
+    driverController.xButton.whenActive(imuSubsystem::zeroHeading);
+
+    // Align for shooting
+    copilotController.aButton.whenHeld(
+        new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
 
     // Swiffer
-    rightTrigger
+    copilotController
+        .rightTrigger
         .whenPressed(new StartSnarfingCommand(swifferSubsystem, lifterSubsystem))
         .whenReleased(new StopSwifferCommand(swifferSubsystem));
-    leftTrigger
+    copilotController
+        .leftTrigger
         .whenPressed(new StartShootingCommand(swifferSubsystem, lifterSubsystem))
         .whenReleased(new StopSwifferCommand(swifferSubsystem));
   }

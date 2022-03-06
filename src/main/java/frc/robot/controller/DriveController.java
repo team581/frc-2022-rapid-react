@@ -7,14 +7,15 @@ package frc.robot.controller;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 
-public class ControllerUtil {
+public class DriveController extends ButtonController {
   private final XboxController controller;
-  // TODO: Fine-tune these values
   private final SlewRateLimiter xLimiter = new SlewRateLimiter(7);
   private final SlewRateLimiter yLimiter = new SlewRateLimiter(7);
   private final SlewRateLimiter thetaLimiter = new SlewRateLimiter(7);
 
-  public ControllerUtil(XboxController controller) {
+  public DriveController(XboxController controller) {
+    super(controller);
+
     this.controller = controller;
   }
 

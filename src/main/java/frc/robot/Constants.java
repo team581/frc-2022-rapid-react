@@ -71,7 +71,8 @@ public final class Constants {
     throw new IllegalStateException("Unknown target robot");
   }
 
-  public static final int CONTROLLER_PORT = 0;
+  public static final int DRIVER_CONTROLLER_PORT = 0;
+  public static final int COPILOT_CONTROLLER_PORT = 1;
 
   public static final double LOOP_TIME_SECONDS = 0.02;
 

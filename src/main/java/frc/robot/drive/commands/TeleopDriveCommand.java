@@ -6,15 +6,15 @@ package frc.robot.drive.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.controller.ControllerUtil;
+import frc.robot.controller.DriveController;
 import frc.robot.drive.DriveSubsystem;
 
 public class TeleopDriveCommand extends CommandBase {
   private final DriveSubsystem driveSubsystem;
-  private final ControllerUtil controller;
+  private final DriveController controller;
 
   /** Creates a new TeleopDriveCommand. */
-  public TeleopDriveCommand(DriveSubsystem driveSubsystem, ControllerUtil controller) {
+  public TeleopDriveCommand(DriveSubsystem driveSubsystem, DriveController controller) {
     this.driveSubsystem = driveSubsystem;
     this.controller = controller;
 

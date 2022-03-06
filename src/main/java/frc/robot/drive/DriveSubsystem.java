@@ -20,7 +20,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.controller.ControllerUtil;
+import frc.robot.controller.DriveController;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import frc.robot.drive.wheel.WheelIO;
 import java.util.function.Supplier;
@@ -66,7 +66,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(
-      ControllerUtil controller,
+      DriveController controller,
       Supplier<Rotation2d> rotationSupplier,
       WheelIO frontLeftIO,
       WheelIO frontRightIO,
