@@ -19,14 +19,12 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.ControllerUtil;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import frc.robot.drive.wheel.WheelIO;
-import io.github.oblarg.oblog.Loggable;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * A high-level interface for the drivetrain.
@@ -34,7 +32,7 @@ import java.util.function.Supplier;
  * <p>Allows you to control all the wheels as a group (via {@link Drivebase}) as well as kinematics,
  * odometry, and trajectory helpers.
  */
-public class DriveSubsystem extends SubsystemBase implements Loggable {
+public class DriveSubsystem extends SubsystemBase {
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(1, 0, 0, Constants.MAX_ROTATION);
 
@@ -93,15 +91,22 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     driveController.setTolerance(Constants.POSE_TOLERANCE);
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    SmartDashboard.putData(field);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    updateOdometry();
     drivebase.periodic();
+
+    odometry.update(rotationSupplier.get(), drivebase.getWheelSpeeds());
+
+    final var pose = getPose();
+    // The robot's position
+    Logger.getInstance()
+        .recordOutput(
+            "Drive/RobotPose",
+            new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
@@ -143,15 +148,19 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     return odometry.getPoseMeters();
   }
 
-  public void setCurrentTrajectory(Trajectory trajectory) {
-    // TODO: Seems like this doesn't work
-    field.getObject("traj").setTrajectory(trajectory);
-  }
-
-  /** Updates odometry using sensor data. */
-  private void updateOdometry() {
-    odometry.update(imu.getRotation(), drivebase.getWheelSpeeds());
-    field.setRobotPose(odometry.getPoseMeters());
+  /**
+   * Used for showing a ghost robot of the expected position while following a trajectory. For
+   * comparing with the actual position.
+   */
+  public void logTrajectoryPose(Trajectory.State state) {
+    Logger.getInstance()
+        .recordOutput(
+            "Drive/ExpectedRobotPose",
+            new double[] {
+              state.poseMeters.getX(),
+              state.poseMeters.getY(),
+              state.poseMeters.getRotation().getRadians()
+            });
   }
 
   /** Resets sensors to prepare for following a trajectory using its initial state. */

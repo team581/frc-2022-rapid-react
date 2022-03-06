@@ -71,6 +71,8 @@ public class DynamicTrajectoryFollowCommand extends CommandBase {
 
     final var desiredState = trajectory.sample(curTime);
 
+    driveSubsystem.logTrajectoryPose(desiredState);
+
     final var targetChassisSpeeds =
         driveSubsystem.driveController.calculate(pose.get(), desiredState, desiredRotation.get());
     final var targetWheelSpeeds = driveSubsystem.kinematics.toWheelSpeeds(targetChassisSpeeds);

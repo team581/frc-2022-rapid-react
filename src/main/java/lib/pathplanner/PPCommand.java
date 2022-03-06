@@ -50,6 +50,8 @@ public class PPCommand extends CommandBase {
     double curTime = timer.get();
     var desiredState = (PathPlannerState) trajectory.sample(curTime);
 
+    driveSubsystem.logTrajectoryPose(desiredState);
+
     var targetChassisSpeeds =
         driveSubsystem.driveController.calculate(
             driveSubsystem.getPose(), desiredState, desiredState.holonomicRotation);
