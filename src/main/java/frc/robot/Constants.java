@@ -74,8 +74,6 @@ public final class Constants {
   public static final int DRIVER_CONTROLLER_PORT = 0;
   public static final int COPILOT_CONTROLLER_PORT = 1;
 
-  public static final double LOOP_TIME_SECONDS = 0.02;
-
   static {
     System.out.println("SPECIFIED ROBOT: " + TARGET_ROBOT);
     System.out.println("RESOLVED ROBOT: " + getRobot());
