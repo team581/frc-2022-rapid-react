@@ -6,21 +6,25 @@ package frc.robot.lifter.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.lifter.LifterSubsystem;
+import frc.robot.lifter.Position;
 
-/** Start lifting and knowing when to stop at the top. */
-public class StartLiftingCommand extends CommandBase {
+/** A command to move the lifter to a desired position. */
+public class LifterCommand extends CommandBase {
   private final LifterSubsystem lifter;
+  private final Position goalPosition;
 
-  /** Creates a new StartLiftingCommand. */
-  public StartLiftingCommand(LifterSubsystem lifter) {
+  /** Creates a new LifterCommand. */
+  public LifterCommand(LifterSubsystem lifter, Position goalPosition) {
     this.lifter = lifter;
+    this.goalPosition = goalPosition;
+
     addRequirements(lifter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    lifter.startLifting();
+    lifter.setDesiredPosition(goalPosition);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -29,15 +33,11 @@ public class StartLiftingCommand extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    // once at the end just stop
-    lifter.stop();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // finished once the lifter is fully up
-    return lifter.getPosition() == LifterSubsystem.Position.UP;
+    return lifter.atPosition(goalPosition);
   }
 }
