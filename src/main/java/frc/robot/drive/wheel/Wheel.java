@@ -130,6 +130,9 @@ public class Wheel {
     Logger.getInstance().processInputs(loggerName, inputs);
     Logger.getInstance().recordOutput(loggerName + "/VelocityMetersPerSecond", getVelocity());
     Logger.getInstance().recordOutput(loggerName + "/DistanceMeters", getDistance());
+    Logger.getInstance()
+        .recordOutput(loggerName + "/DesiredVelocityMetersPerSecond", getDesiredVelocity());
+    Logger.getInstance().recordOutput(loggerName + "/DesiredAppliedVolts", getDesiredVoltage());
   }
 
   /**
@@ -137,7 +140,17 @@ public class Wheel {
    * Wheel#setDesiredVelocity(double)}.
    */
   public void doVelocityControlLoop() {
-    io.setVoltage(velocityToVoltage(velocityPid.getSetpoint()));
+    io.setVoltage(getDesiredVoltage());
+  }
+
+  /** Get the desired motor voltage. */
+  private double getDesiredVoltage() {
+    return velocityToVoltage(getDesiredVelocity());
+  }
+
+  /** Get the desired velocity in meters/second. */
+  private double getDesiredVelocity() {
+    return velocityPid.getSetpoint();
   }
 
   /**
