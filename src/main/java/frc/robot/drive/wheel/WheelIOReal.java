@@ -99,8 +99,9 @@ public class WheelIOReal implements WheelIO {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
-    inputs.positionRadians = sensorUnitsToRadians(motor.getSelectedSensorPosition());
-    inputs.velocityRadiansPerSecond = sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
+    inputs.beforeGearingPositionRadians = sensorUnitsToRadians(motor.getSelectedSensorPosition());
+    inputs.beforeGearingVelocityRadiansPerSecond =
+        sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
   }
 
   @Override

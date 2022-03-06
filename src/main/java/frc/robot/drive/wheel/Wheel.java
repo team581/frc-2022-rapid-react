@@ -59,9 +59,11 @@ public class Wheel {
     }
   }
 
-  /** Converts the wheel's rotation (in radians) to a distance travelled in meters. */
+  /**
+   * Converts the wheel's rotation before gearing (in radians) to a distance travelled in meters.
+   */
   private static double wheelRotationToMeters(double radians) {
-    return (radians * (WHEEL_DIAMETER / 2)) / GEARING;
+    return radians * (WHEEL_DIAMETER / 2);
   }
 
   /**
@@ -164,14 +166,14 @@ public class Wheel {
 
   /** Get this wheel's velocity in meters/second. */
   public double getVelocity() {
-    final var radiansPerSecond = inputs.velocityRadiansPerSecond;
+    final var radiansPerSecond = inputs.beforeGearingVelocityRadiansPerSecond / GEARING;
 
     return wheelRotationToMeters(radiansPerSecond);
   }
 
   /** Get the distance in meters this wheel's encoder has travelled since last being reset. */
   public double getDistance() {
-    final var radians = inputs.positionRadians;
+    final var radians = inputs.beforeGearingPositionRadians / GEARING;
 
     return wheelRotationToMeters(radians);
   }
