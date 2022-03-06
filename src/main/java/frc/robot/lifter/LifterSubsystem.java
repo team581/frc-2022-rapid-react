@@ -19,6 +19,8 @@ public class LifterSubsystem extends SubsystemBase {
   private final LifterIO io;
   private final Inputs inputs = new Inputs();
 
+  private Position desiredPosition = Position.INVALID;
+
   /** Creates a new LifterSubsystem. */
   public LifterSubsystem(LifterIO io) {
     this.io = io;
@@ -31,6 +33,7 @@ public class LifterSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Lifter", inputs);
     Logger.getInstance().recordOutput("Lifter/Position", getPosition().toString());
+    Logger.getInstance().recordOutput("Lifter/DesiredPosition", desiredPosition.toString());
   }
 
   /** Gets the position of the lifter */
@@ -58,11 +61,13 @@ public class LifterSubsystem extends SubsystemBase {
   public void startLifting() {
     // TODO: Tune this value
     io.setMotorPercentage(0.1);
+    desiredPosition = Position.UP;
   }
 
   public void startLowering() {
     // TODO: Tune this value
     io.setMotorPercentage(-0.1);
+    desiredPosition = Position.DOWN;
   }
 
   public void stop() {
