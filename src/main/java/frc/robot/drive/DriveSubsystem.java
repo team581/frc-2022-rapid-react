@@ -5,7 +5,6 @@
 package frc.robot.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -164,7 +163,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /** Resets sensors to prepare for following a trajectory using its initial state. */
-  public void resetSensorsForTrajectory(PathPlannerState initialTrajectoryState) {
+  public void resetSensorsForTrajectory(Trajectory.State initialTrajectoryState) {
     drivebase.zeroEncoders();
     // TODO: This maybe should incorporate the inital state's start rotation
     odometry.resetPosition(initialTrajectoryState.poseMeters, rotationSupplier.get());
