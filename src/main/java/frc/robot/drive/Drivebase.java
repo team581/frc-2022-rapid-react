@@ -11,14 +11,13 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import frc.robot.Constants;
 import frc.robot.drive.wheel.Wheel;
 import frc.robot.drive.wheel.WheelIO;
-import io.github.oblarg.oblog.Loggable;
 
 /**
  * This class should only be used within {@link DriveSubsystem}.
  *
  * <p>Allows you to control all the wheels as a group.
  */
-public class Drivebase implements Loggable {
+public class Drivebase {
   /** The robot's maximum velocity in meters per second. */
   public static final double MAX_VELOCITY;
   /** The robot's maximum acceleration in meters per second squared. */

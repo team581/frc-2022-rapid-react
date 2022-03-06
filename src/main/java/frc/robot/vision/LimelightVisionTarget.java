@@ -7,7 +7,6 @@ package frc.robot.vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import io.github.oblarg.oblog.annotations.Log;
 
 /** A vision target for the Limelight. */
 public abstract class LimelightVisionTarget {
@@ -78,7 +77,6 @@ public abstract class LimelightVisionTarget {
    *
    * <p>You can assume that the data in NetworkTables is for this vision target.
    */
-  @Log
   public Pose2d getRobotPose() {
     final var x = getStrafeDistance();
     final var y = getDistance();

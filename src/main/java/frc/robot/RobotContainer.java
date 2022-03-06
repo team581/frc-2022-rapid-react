@@ -24,7 +24,6 @@ import frc.robot.swiffer.commands.StartShootingCommand;
 import frc.robot.swiffer.commands.StartSnarfingCommand;
 import frc.robot.swiffer.commands.StopSwifferCommand;
 import frc.robot.vision.commands.LoadingBayAlignCommand;
-import io.github.oblarg.oblog.Loggable;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -32,7 +31,7 @@ import io.github.oblarg.oblog.Loggable;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer implements Loggable {
+public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final XboxController controller = new XboxController(Constants.CONTROLLER_PORT);

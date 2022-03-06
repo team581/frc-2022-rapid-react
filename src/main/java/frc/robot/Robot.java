@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import io.github.oblarg.oblog.Loggable;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
@@ -20,7 +19,7 @@ import org.littletonrobotics.junction.io.LogSocketServer;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot implements Loggable {
+public class Robot extends LoggedRobot {
   private Command autonomousCommand;
 
   private RobotContainer robotContainer;
@@ -62,10 +61,9 @@ public class Robot extends LoggedRobot implements Loggable {
     // Start logging! No more data receivers, replay sources, or metadata values may be added.
     Logger.getInstance().start();
 
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // Instantiate our RobotContainer. This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
-    io.github.oblarg.oblog.Logger.configureLoggingAndConfig(this, false);
 
     if (Constants.ENV == Constants.Env.DEVELOPMENT) {
       // This pushes lots of data to NetworkTables and can cause lag or network congestion
@@ -87,8 +85,6 @@ public class Robot extends LoggedRobot implements Loggable {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-
-    io.github.oblarg.oblog.Logger.updateEntries();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

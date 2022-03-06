@@ -49,8 +49,6 @@ wpi.java.debugJni = false
 def includeDesktopSupport = true
 
 repositories {
-	maven { url 'https://jitpack.io' }
-
 	maven {
 		url = uri("https://maven.pkg.github.com/Mechanical-Advantage/AdvantageKit")
 		credentials {
@@ -68,7 +66,6 @@ repositories {
 dependencies {
 	implementation wpi.java.deps.wpilib()
 	implementation wpi.java.vendor.java()
-	implementation 'com.github.Oblarg:Oblog:4.0.9'
 
 	roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
 	roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
