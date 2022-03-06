@@ -25,8 +25,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.ControllerUtil;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import frc.robot.drive.wheel.WheelIO;
-import frc.robot.imu.ImuSubsystem;
 import io.github.oblarg.oblog.Loggable;
+import java.util.function.Supplier;
 
 /**
  * A high-level interface for the drivetrain.
@@ -48,11 +48,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     private static final Pose2d POSE_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(5));
   }
 
-  private final Field2d field = new Field2d();
-
-  // Components of the drive subsystem to reduce how huge this file is
   private final Drivebase drivebase;
-  private final ImuSubsystem imu;
+  private final Supplier<Rotation2d> rotationSupplier;
 
   // Used for following trajectories
   public final HolonomicDriveController driveController =
@@ -72,12 +69,12 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(
       ControllerUtil controller,
-      ImuSubsystem imuSubsystem,
+      Supplier<Rotation2d> rotationSupplier,
       WheelIO frontLeftIO,
       WheelIO frontRightIO,
       WheelIO rearLeftIO,
       WheelIO rearRightIO) {
-    imu = imuSubsystem;
+    this.rotationSupplier = rotationSupplier;
     drivebase = new Drivebase(frontLeftIO, frontRightIO, rearLeftIO, rearRightIO);
 
     kinematics =
@@ -86,7 +83,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
             drivebase.frontRight.positionToCenterOfRobot,
             drivebase.rearLeft.positionToCenterOfRobot,
             drivebase.rearRight.positionToCenterOfRobot);
-    odometry = new MecanumDriveOdometry(kinematics, imu.getRotation());
+    odometry = new MecanumDriveOdometry(kinematics, rotationSupplier.get());
     trajectoryConfig =
         new TrajectoryConfig(Drivebase.MAX_VELOCITY, Drivebase.MAX_ACCELERATION)
             .setKinematics(kinematics);
@@ -108,7 +105,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
-    drivebase.setCartesianPercentages(xPercentage, yPercentage, thetaPercentage, imu.getRotation());
+    drivebase.setCartesianPercentages(
+        xPercentage, yPercentage, thetaPercentage, rotationSupplier.get());
   }
 
   /** Stops all the motors. */
@@ -160,7 +158,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
   public void resetSensorsForTrajectory(PathPlannerState initialTrajectoryState) {
     drivebase.zeroEncoders();
     // TODO: This maybe should incorporate the inital state's start rotation
-    odometry.resetPosition(initialTrajectoryState.poseMeters, imu.getRotation());
+    odometry.resetPosition(initialTrajectoryState.poseMeters, rotationSupplier.get());
   }
 
   /** Resets sensors to prepare for following a trajectory. */

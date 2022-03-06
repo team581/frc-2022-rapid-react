@@ -57,7 +57,7 @@ public class RobotContainer implements Loggable {
       driveSubsystem =
           new DriveSubsystem(
               controllerUtil,
-              imuSubsystem,
+              imuSubsystem::getRotation,
               new WheelIOReplay(),
               new WheelIOReplay(),
               new WheelIOReplay(),
@@ -71,7 +71,7 @@ public class RobotContainer implements Loggable {
           driveSubsystem =
               new DriveSubsystem(
                   controllerUtil,
-                  imuSubsystem,
+                  imuSubsystem::getRotation,
                   new WheelIOReal(Corner.FRONT_LEFT),
                   new WheelIOReal(Corner.FRONT_RIGHT),
                   new WheelIOReal(Corner.REAR_LEFT),
@@ -84,7 +84,7 @@ public class RobotContainer implements Loggable {
           driveSubsystem =
               new DriveSubsystem(
                   controllerUtil,
-                  imuSubsystem,
+                  imuSubsystem::getRotation,
                   new WheelIOReal(Corner.FRONT_LEFT),
                   new WheelIOReal(Corner.FRONT_RIGHT),
                   new WheelIOReal(Corner.REAR_LEFT),
@@ -97,7 +97,7 @@ public class RobotContainer implements Loggable {
           driveSubsystem =
               new DriveSubsystem(
                   controllerUtil,
-                  imuSubsystem,
+                  imuSubsystem::getRotation,
                   new WheelIOSim(Corner.FRONT_LEFT),
                   new WheelIOSim(Corner.FRONT_RIGHT),
                   new WheelIOSim(Corner.REAR_LEFT),
