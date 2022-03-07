@@ -81,9 +81,10 @@ public class LifterSubsystem extends SubsystemBase {
         .recordOutput("Lifter/DesiredPositionRadians", positionPid.getGoal().position);
 
     final var state = positionPid.getSetpoint();
-    Logger.getInstance().recordOutput("Lifter/MotionProfile/DesiredVelocityMeters", state.velocity);
     Logger.getInstance()
-        .recordOutput("Lifter/MotionProfile/DesiredPositionRadians", state.position);
+        .recordOutput("Lifter/MotionProfiledPid/DesiredVelocityMeters", state.velocity);
+    Logger.getInstance()
+        .recordOutput("Lifter/MotionProfiledPid/DesiredPositionRadians", state.position);
 
     doPositionControlLoop();
   }
