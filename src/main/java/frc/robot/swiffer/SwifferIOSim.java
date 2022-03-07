@@ -4,6 +4,7 @@
 
 package frc.robot.swiffer;
 
-public class SwifferIOSim extends SwifferIOReplay implements SwifferIO {
+// Talon FX already has a good built-in simulation system, so we can just extend the real IO class
+public class SwifferIOSim extends SwifferIOReal implements SwifferIO {
   // TODO: Implement
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.lifter;
 
-public class LifterIOSim extends LifterIOReplay implements LifterIO {
+// Talon FX already has a good built-in simulation system, so we can just extend the real IO class
+public class LifterIOSim extends LifterIOReal implements LifterIO {
   // TODO: Implement
 }

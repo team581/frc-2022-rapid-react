@@ -4,22 +4,38 @@
 
 package frc.robot.swiffer;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import frc.robot.Constants;
 
 public class SwifferIOReal implements SwifferIO {
-  private final TalonFX motor;
+  private static class Constants {
+    public static final double SENSOR_RESOLUTION = 2048;
+    // 2048 per rotation, so we divide by 1 rotation to get the units per radian
+    public static final double SENSOR_UNITS_PER_RADIAN = SENSOR_RESOLUTION / (2 * Math.PI);
+  }
+
+  /** Converts sensor units to radians. */
+  private static double sensorUnitsToRadians(double sensorUnits) {
+    return sensorUnits / Constants.SENSOR_UNITS_PER_RADIAN;
+  }
+
+  private final WPI_TalonFX motor;
 
   public SwifferIOReal() {
-    switch (Constants.getRobot()) {
+    switch (frc.robot.Constants.getRobot()) {
       case SIM_BOT:
-        motor = new TalonFX(2);
+        motor = new WPI_TalonFX(2);
         break;
       default:
         throw new IllegalStateException(
             "The currently configured robot doesn't support this subsystem");
     }
+
+    // TODO: These values probably need to be tuned - see tuning instructions
+    // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
+    motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
+    motor.configVelocityMeasurementWindow(1);
   }
 
   @Override
@@ -27,10 +43,17 @@ public class SwifferIOReal implements SwifferIO {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
+    inputs.beforeGearingAngularVelocityRadiansPerSecond =
+        sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
   }
 
   @Override
-  public void setMotorPercentage(double percentage) {
-    motor.set(TalonFXControlMode.PercentOutput, percentage);
+  public void setVoltage(double volts) {
+    motor.setVoltage(volts);
+  }
+
+  @Override
+  public void zeroEncoder() {
+    motor.setSelectedSensorPosition(0);
   }
 }

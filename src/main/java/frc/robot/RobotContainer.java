@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -17,12 +16,13 @@ import frc.robot.imu.*;
 import frc.robot.lifter.*;
 import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
+import frc.robot.misc.commands.LifterDownAndSnarfCommand;
+import frc.robot.misc.commands.LifterUpAndSwifferShootCommand;
+import frc.robot.misc.commands.LifterUpAndSwifferStopCommand;
 import frc.robot.misc.commands.RefreshAllianceWithFmsCommand;
 import frc.robot.paths.commands.SimplePathCommand;
 import frc.robot.swiffer.*;
-import frc.robot.swiffer.commands.StartShootingCommand;
-import frc.robot.swiffer.commands.StartSnarfingCommand;
-import frc.robot.swiffer.commands.StopSwifferCommand;
+import frc.robot.swiffer.commands.SwifferStopCommand;
 import frc.robot.vision.commands.LoadingBayAlignCommand;
 
 /**
@@ -34,10 +34,10 @@ import frc.robot.vision.commands.LoadingBayAlignCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final ButtonController copilotController =
-      new ButtonController(new XboxController(Constants.DRIVER_CONTROLLER_PORT));
   private final DriveController driverController =
       new DriveController(new XboxController(Constants.DRIVER_CONTROLLER_PORT));
+  private final ButtonController copilotController =
+      new ButtonController(new XboxController(Constants.COPILOT_CONTROLLER_PORT));
 
   private final ImuSubsystem imuSubsystem;
   private final DriveSubsystem driveSubsystem;
@@ -111,7 +111,8 @@ public class RobotContainer {
 
     // Configure the button bindings. You must call this after the subsystems are defined since they
     // are used to add command requirements.
-    configureButtonBindings();
+    configureDriverButtonBindings();
+    configureCopilotButtonBindings();
 
     autoCommand =
         new ParallelCommandGroup(
@@ -119,13 +120,7 @@ public class RobotContainer {
             new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
+  private void configureDriverButtonBindings() {
     // Testing PathPlanner
     driverController.bButton.whenHeld(new SimplePathCommand(driveSubsystem));
 
@@ -134,20 +129,24 @@ public class RobotContainer {
 
     // Resetting field oriented control
     driverController.xButton.whenActive(imuSubsystem::zeroHeading);
+  }
 
+  private void configureCopilotButtonBindings() {
     // Align for shooting
     copilotController.aButton.whenHeld(
         new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
 
-    // Swiffer
+    // Snarfing
     copilotController
         .rightTrigger
-        .whenPressed(new StartSnarfingCommand(swifferSubsystem, lifterSubsystem))
-        .whenReleased(new StopSwifferCommand(swifferSubsystem));
+        .whenPressed(new LifterDownAndSnarfCommand(swifferSubsystem, lifterSubsystem))
+        .whenReleased(new LifterUpAndSwifferStopCommand(swifferSubsystem, lifterSubsystem));
+
+    // Shooting
     copilotController
         .leftTrigger
-        .whenPressed(new StartShootingCommand(swifferSubsystem, lifterSubsystem))
-        .whenReleased(new StopSwifferCommand(swifferSubsystem));
+        .whenPressed(new LifterUpAndSwifferShootCommand(swifferSubsystem, lifterSubsystem))
+        .whenReleased(new SwifferStopCommand(swifferSubsystem));
   }
 
   /**

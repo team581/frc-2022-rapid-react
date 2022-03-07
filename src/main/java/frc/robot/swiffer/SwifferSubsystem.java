@@ -4,17 +4,67 @@
 
 package frc.robot.swiffer;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.swiffer.SwifferIO.Inputs;
+import frc.robot.swiffer.commands.SwifferStopCommand;
 import org.littletonrobotics.junction.Logger;
 
 public class SwifferSubsystem extends SubsystemBase {
+  /** The gearing of the flywheel. For example, 10.71:1 would be 10.71. */
+  private static final double GEARING;
+
+  private static final double MAX_MOTOR_VOLTAGE;
+  private static final double TOLERANCE_RPM;
+  private static final SimpleMotorFeedforward FEEDFORWARD;
+
+  static {
+    switch (Constants.getRobot()) {
+      case SIM_BOT:
+        GEARING = 1;
+        MAX_MOTOR_VOLTAGE = 12;
+        TOLERANCE_RPM = 0;
+        FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
+        break;
+      default:
+        throw new IllegalStateException(
+            "The currently configured robot doesn't support this subsystem");
+    }
+  }
+
+  private final PIDController rpmPid;
+
   private final SwifferIO io;
   private final Inputs inputs = new Inputs();
+
+  private SwifferMode desiredMode;
+  private double desiredVoltage = 0;
 
   /** Creates a new SwifferSubsystem. */
   public SwifferSubsystem(SwifferIO io) {
     this.io = io;
+
+    switch (Constants.getRobot()) {
+      case SIM_BOT:
+        rpmPid = new PIDController(1, 0, 0);
+        break;
+      default:
+        throw new IllegalStateException(
+            "The currently configured robot doesn't support this subsystem");
+    }
+
+    // Flywheel should be stopped when the match starts
+    setDesiredMode(SwifferMode.STOPPED);
+
+    // Stop the flywheel when it's not in use
+    setDefaultCommand(
+        new SwifferStopCommand(this)
+            .perpetually()
+            .withName("Perpetual" + SwifferStopCommand.class.getSimpleName()));
+    rpmPid.setTolerance(TOLERANCE_RPM);
   }
 
   @Override
@@ -23,19 +73,44 @@ public class SwifferSubsystem extends SubsystemBase {
 
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Swiffer", inputs);
+    Logger.getInstance().recordOutput("Swiffer/DesiredMode", getDesiredMode().toString());
+    Logger.getInstance().recordOutput("Swiffer/DesiredRpm", getDesiredRpm());
+    Logger.getInstance().recordOutput("Swiffer/DesiredAppliedVolts", desiredVoltage);
+
+    doVelocityControlLoop();
   }
 
-  public void startSnarfing() {
-    // TODO: Tune this value
-    io.setMotorPercentage(0.1);
+  /** Set the desired mode of the flywheel to the one provided. */
+  public void setDesiredMode(SwifferMode mode) {
+    desiredMode = mode;
+    rpmPid.setSetpoint(mode.rpm);
   }
 
-  public void startShooting() {
-    // TODO: Tune this value
-    io.setMotorPercentage(-0.1);
+  public boolean atGoal(SwifferMode mode) {
+    return mode == getDesiredMode() && rpmPid.atSetpoint();
   }
 
-  public void stop() {
-    io.setMotorPercentage(0);
+  private SwifferMode getDesiredMode() {
+    return desiredMode;
+  }
+
+  private double getDesiredRpm() {
+    return rpmPid.getSetpoint();
+  }
+
+  private double getRpm() {
+    final var angularVelocityRadiansPerSecond =
+        inputs.beforeGearingAngularVelocityRadiansPerSecond / GEARING;
+
+    return angularVelocityRadiansPerSecond * 60;
+  }
+
+  private void doVelocityControlLoop() {
+    final var rawVoltage = rpmPid.calculate(getRpm()) + FEEDFORWARD.calculate(getDesiredRpm());
+    final var clampedVoltage = MathUtil.clamp(rawVoltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE);
+
+    desiredVoltage = clampedVoltage;
+
+    io.setVoltage(clampedVoltage);
   }
 }
