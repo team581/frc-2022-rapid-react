@@ -38,9 +38,9 @@ public class LifterCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // This exits the command when the lifter is at the desired position
-    // This does not turn off the lifter, it will continue to maintain the desired position set by this command
-    // Arguably this command should never be "finished", but it's more convenient to do it like this
+    // This exits the command when the lifter is at the desired position. This does not turn off the
+    // lifter, it will continue to maintain the desired position set by this command. Arguably this
+    // command should never be "finished", but it's more convenient to do it like this.
     return lifter.atPosition(goalPosition);
   }
 }
