@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.drive.wheel.Wheel;
 import frc.robot.drive.wheel.WheelIO;
@@ -18,7 +18,7 @@ import frc.robot.drive.wheel.WheelIO;
  *
  * <p>Allows you to control all the wheels as a group.
  */
-public class Drivebase implements Subsystem {
+public class Drivebase extends SubsystemBase {
   /** The robot's maximum velocity in meters per second. */
   public static final double MAX_VELOCITY;
   /** The robot's maximum acceleration in meters per second squared. */

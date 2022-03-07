@@ -9,7 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.drive.Drivebase;
@@ -17,7 +17,7 @@ import frc.robot.drive.wheel.WheelIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
 /** This class should only be used within {@link DriveSubsystem} and {@link Drivebase}. */
-public class Wheel implements Subsystem {
+public class Wheel extends SubsystemBase {
   /** The maximum velocity of a wheel in meters/second. */
   public static final double MAX_WHEEL_VELOCITY;
 

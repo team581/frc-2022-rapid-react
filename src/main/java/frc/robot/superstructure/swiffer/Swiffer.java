@@ -7,12 +7,12 @@ package frc.robot.superstructure.swiffer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.superstructure.swiffer.SwifferIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
-public class Swiffer implements Subsystem {
+public class Swiffer extends SubsystemBase {
   /** The gearing of the flywheel. For example, 10.71:1 would be 10.71. */
   private static final double GEARING;
 
