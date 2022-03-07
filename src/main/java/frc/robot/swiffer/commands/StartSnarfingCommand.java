@@ -7,8 +7,8 @@ package frc.robot.swiffer.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.lifter.LifterSubsystem;
 import frc.robot.lifter.LifterPosition;
+import frc.robot.lifter.LifterSubsystem;
 import frc.robot.lifter.commands.LifterCommand;
 import frc.robot.swiffer.SwifferSubsystem;
 
