@@ -5,11 +5,11 @@
 package frc.robot.misc.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.lifter.LifterPosition;
-import frc.robot.lifter.LifterSubsystem;
-import frc.robot.lifter.commands.LifterCommand;
-import frc.robot.swiffer.SwifferSubsystem;
-import frc.robot.swiffer.commands.SwifferSnarfCommand;
+import frc.robot.superstructure.lifter.LifterPosition;
+import frc.robot.superstructure.lifter.LifterSubsystem;
+import frc.robot.superstructure.lifter.commands.LifterCommand;
+import frc.robot.superstructure.swiffer.SwifferSubsystem;
+import frc.robot.superstructure.swiffer.commands.SwifferSnarfCommand;
 
 /** Lowers the swiffer while snarfing. Once finished the swiffer will stop and be lifted up. */
 public class LifterDownAndSnarfCommand extends SequentialCommandGroup {

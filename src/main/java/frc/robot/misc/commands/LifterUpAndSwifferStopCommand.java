@@ -5,11 +5,11 @@
 package frc.robot.misc.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.lifter.LifterPosition;
-import frc.robot.lifter.LifterSubsystem;
-import frc.robot.lifter.commands.LifterCommand;
-import frc.robot.swiffer.SwifferSubsystem;
-import frc.robot.swiffer.commands.SwifferStopCommand;
+import frc.robot.superstructure.lifter.LifterPosition;
+import frc.robot.superstructure.lifter.LifterSubsystem;
+import frc.robot.superstructure.lifter.commands.LifterCommand;
+import frc.robot.superstructure.swiffer.SwifferSubsystem;
+import frc.robot.superstructure.swiffer.commands.SwifferStopCommand;
 
 /** Lift the swiffer up and stop the flywheel. */
 public class LifterUpAndSwifferStopCommand extends ParallelCommandGroup {

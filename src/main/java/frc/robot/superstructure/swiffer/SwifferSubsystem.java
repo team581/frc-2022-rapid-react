@@ -2,15 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.swiffer;
+package frc.robot.superstructure.swiffer;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.swiffer.SwifferIO.Inputs;
-import frc.robot.swiffer.commands.SwifferStopCommand;
+import frc.robot.superstructure.swiffer.SwifferIO.Inputs;
+import frc.robot.superstructure.swiffer.commands.SwifferStopCommand;
+
 import org.littletonrobotics.junction.Logger;
 
 public class SwifferSubsystem extends SubsystemBase {

@@ -13,7 +13,6 @@ import frc.robot.drive.*;
 import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.drive.wheel.*;
 import frc.robot.imu.*;
-import frc.robot.lifter.*;
 import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
 import frc.robot.misc.commands.LifterDownAndSnarfCommand;
@@ -21,8 +20,9 @@ import frc.robot.misc.commands.LifterUpAndSwifferShootCommand;
 import frc.robot.misc.commands.LifterUpAndSwifferStopCommand;
 import frc.robot.misc.commands.RefreshAllianceWithFmsCommand;
 import frc.robot.paths.commands.SimplePathCommand;
-import frc.robot.swiffer.*;
-import frc.robot.swiffer.commands.SwifferStopCommand;
+import frc.robot.superstructure.lifter.*;
+import frc.robot.superstructure.swiffer.*;
+import frc.robot.superstructure.swiffer.commands.SwifferStopCommand;
 import frc.robot.vision.commands.LoadingBayAlignCommand;
 
 /**
