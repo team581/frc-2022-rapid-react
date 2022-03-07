@@ -47,7 +47,10 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
     this.driverModePipeline = driverModePipeline;
 
     // Enable driver mode when other commands aren't using vision processing
-    setDefaultCommand(new UseDriverModeCommand(this).perpetually());
+    setDefaultCommand(
+        new UseDriverModeCommand(this)
+            .perpetually()
+            .withName("Perpetual" + UseDriverModeCommand.class.getSimpleName()));
   }
 
   @Override

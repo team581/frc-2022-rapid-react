@@ -60,7 +60,10 @@ public class SwifferSubsystem extends SubsystemBase {
     setDesiredMode(SwifferMode.STOPPED);
 
     // Stop the flywheel when it's not in use
-    setDefaultCommand(new SwifferStopCommand(this).perpetually());
+    setDefaultCommand(
+        new SwifferStopCommand(this)
+            .perpetually()
+            .withName("Perpetual" + SwifferStopCommand.class.getSimpleName()));
     rpmPid.setTolerance(TOLERANCE_RPM);
   }
 
