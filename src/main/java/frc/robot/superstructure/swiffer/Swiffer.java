@@ -2,18 +2,17 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.swiffer;
+package frc.robot.superstructure.swiffer;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
-import frc.robot.swiffer.SwifferIO.Inputs;
-import frc.robot.swiffer.commands.SwifferStopCommand;
+import frc.robot.superstructure.swiffer.SwifferIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
-public class SwifferSubsystem extends SubsystemBase {
+public class Swiffer implements Subsystem {
   /** The gearing of the flywheel. For example, 10.71:1 would be 10.71. */
   private static final double GEARING;
 
@@ -43,8 +42,8 @@ public class SwifferSubsystem extends SubsystemBase {
   private SwifferMode desiredMode;
   private double desiredVoltage = 0;
 
-  /** Creates a new SwifferSubsystem. */
-  public SwifferSubsystem(SwifferIO io) {
+  /** Creates a new Swiffer. */
+  public Swiffer(SwifferIO io) {
     this.io = io;
 
     switch (Constants.getRobot()) {
@@ -59,11 +58,6 @@ public class SwifferSubsystem extends SubsystemBase {
     // Flywheel should be stopped when the match starts
     setDesiredMode(SwifferMode.STOPPED);
 
-    // Stop the flywheel when it's not in use
-    setDefaultCommand(
-        new SwifferStopCommand(this)
-            .perpetually()
-            .withName("Perpetual" + SwifferStopCommand.class.getSimpleName()));
     rpmPid.setTolerance(TOLERANCE_RPM);
   }
 

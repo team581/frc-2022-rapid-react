@@ -2,19 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.lifter.commands;
+package frc.robot.superstructure.lifter.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.lifter.LifterPosition;
-import frc.robot.lifter.LifterSubsystem;
+import frc.robot.superstructure.lifter.Lifter;
+import frc.robot.superstructure.lifter.LifterPosition;
 
 /** A command to move the lifter to a desired position. */
 public class LifterCommand extends CommandBase {
-  private final LifterSubsystem lifter;
+  private final Lifter lifter;
   private final LifterPosition goalPosition;
 
   /** Creates a new LifterCommand. */
-  public LifterCommand(LifterSubsystem lifter, LifterPosition goalPosition) {
+  public LifterCommand(Lifter lifter, LifterPosition goalPosition) {
     this.lifter = lifter;
     this.goalPosition = goalPosition;
 

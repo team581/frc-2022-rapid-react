@@ -2,16 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.swiffer.commands;
+package frc.robot.superstructure.swiffer.commands;
 
-import frc.robot.swiffer.SwifferMode;
-import frc.robot.swiffer.SwifferSubsystem;
+import frc.robot.superstructure.swiffer.Swiffer;
+import frc.robot.superstructure.swiffer.SwifferMode;
 
 public class SwifferStopCommand extends SwifferCommand {
-  private final SwifferSubsystem swiffer;
+  private final Swiffer swiffer;
 
   /** Creates a new StopSwifferCommand. */
-  public SwifferStopCommand(SwifferSubsystem swiffer) {
+  public SwifferStopCommand(Swiffer swiffer) {
     super(swiffer, SwifferMode.STOPPED);
 
     this.swiffer = swiffer;

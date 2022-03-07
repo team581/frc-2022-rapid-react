@@ -13,16 +13,16 @@ import frc.robot.drive.*;
 import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.drive.wheel.*;
 import frc.robot.imu.*;
-import frc.robot.lifter.*;
 import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
-import frc.robot.misc.commands.LifterDownAndSnarfCommand;
-import frc.robot.misc.commands.LifterUpAndSwifferShootCommand;
-import frc.robot.misc.commands.LifterUpAndSwifferStopCommand;
 import frc.robot.misc.commands.RefreshAllianceWithFmsCommand;
 import frc.robot.paths.commands.SimplePathCommand;
-import frc.robot.swiffer.*;
-import frc.robot.swiffer.commands.SwifferStopCommand;
+import frc.robot.superstructure.SuperstructureSubsystem;
+import frc.robot.superstructure.commands.LifterDownAndSnarfCommand;
+import frc.robot.superstructure.commands.LifterUpAndSwifferShootCommand;
+import frc.robot.superstructure.commands.LifterUpAndSwifferStopCommand;
+import frc.robot.superstructure.lifter.*;
+import frc.robot.superstructure.swiffer.*;
 import frc.robot.vision.commands.LoadingBayAlignCommand;
 
 /**
@@ -44,16 +44,17 @@ public class RobotContainer {
   private final UpperHubLimelightSubsystem upperLimelightSubsystem =
       new UpperHubLimelightSubsystem();
   private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
-  private final SwifferSubsystem swifferSubsystem;
-  private final LifterSubsystem lifterSubsystem;
+  private final Swiffer swiffer;
+  private final Lifter lifter;
+  private final SuperstructureSubsystem superstructureSubsystem;
 
   private final Command autoCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     if (Constants.getMode() == Constants.Mode.REPLAY) {
-      lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
-      swifferSubsystem = new SwifferSubsystem(new SwifferIOReplay());
+      lifter = new Lifter(new LifterIOReplay());
+      swiffer = new Swiffer(new SwifferIOReplay());
       imuSubsystem = new ImuSubsystem(new ImuIOReplay());
       driveSubsystem =
           new DriveSubsystem(
@@ -66,8 +67,8 @@ public class RobotContainer {
     } else {
       switch (Constants.getRobot()) {
         case COMP_BOT:
-          lifterSubsystem = new LifterSubsystem(new LifterIOReal());
-          swifferSubsystem = new SwifferSubsystem(new SwifferIOReal());
+          lifter = new Lifter(new LifterIOReal());
+          swiffer = new Swiffer(new SwifferIOReal());
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
           driveSubsystem =
               new DriveSubsystem(
@@ -79,8 +80,8 @@ public class RobotContainer {
                   new WheelIOReal(Corner.REAR_RIGHT));
           break;
         case TEST_2020_BOT:
-          lifterSubsystem = new LifterSubsystem(new LifterIOReplay());
-          swifferSubsystem = new SwifferSubsystem(new SwifferIOReplay());
+          lifter = new Lifter(new LifterIOReplay());
+          swiffer = new Swiffer(new SwifferIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
           driveSubsystem =
               new DriveSubsystem(
@@ -92,8 +93,8 @@ public class RobotContainer {
                   new WheelIOReal(Corner.REAR_RIGHT));
           break;
         case SIM_BOT:
-          lifterSubsystem = new LifterSubsystem(new LifterIOSim());
-          swifferSubsystem = new SwifferSubsystem(new SwifferIOSim());
+          lifter = new Lifter(new LifterIOSim());
+          swiffer = new Swiffer(new SwifferIOSim());
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
           driveSubsystem =
               new DriveSubsystem(
@@ -108,6 +109,8 @@ public class RobotContainer {
           throw new IllegalStateException("Unknown target robot");
       }
     }
+
+    superstructureSubsystem = new SuperstructureSubsystem(swiffer, lifter);
 
     // Configure the button bindings. You must call this after the subsystems are defined since they
     // are used to add command requirements.
@@ -139,14 +142,14 @@ public class RobotContainer {
     // Snarfing
     copilotController
         .rightTrigger
-        .whenPressed(new LifterDownAndSnarfCommand(swifferSubsystem, lifterSubsystem))
-        .whenReleased(new LifterUpAndSwifferStopCommand(swifferSubsystem, lifterSubsystem));
+        .whenPressed(new LifterDownAndSnarfCommand(superstructureSubsystem))
+        .whenReleased(new LifterUpAndSwifferStopCommand(superstructureSubsystem));
 
     // Shooting
     copilotController
         .leftTrigger
-        .whenPressed(new LifterUpAndSwifferShootCommand(swifferSubsystem, lifterSubsystem))
-        .whenReleased(new SwifferStopCommand(swifferSubsystem));
+        .whenPressed(new LifterUpAndSwifferShootCommand(superstructureSubsystem))
+        .whenReleased(new LifterUpAndSwifferStopCommand(superstructureSubsystem));
   }
 
   /**
