@@ -24,6 +24,10 @@ public class Robot extends LoggedRobot {
 
   private RobotContainer robotContainer;
 
+  public Robot() {
+    super(Constants.PERIOD_SECONDS);
+  }
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.

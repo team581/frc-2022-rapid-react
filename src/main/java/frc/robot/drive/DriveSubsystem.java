@@ -32,8 +32,6 @@ import org.littletonrobotics.junction.Logger;
  * odometry, and trajectory helpers.
  */
 public class DriveSubsystem extends SubsystemBase {
-  private final ProfiledPIDController thetaController =
-      new ProfiledPIDController(1, 0, 0, Constants.MAX_ROTATION);
 
   private static final class Constants {
     // Max of 1 rotation per second and max acceleration of 0.5 rotations
@@ -45,6 +43,10 @@ public class DriveSubsystem extends SubsystemBase {
     private static final Pose2d POSE_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(5));
   }
 
+  private final ProfiledPIDController thetaController =
+      new ProfiledPIDController(
+          1, 0, 0, Constants.MAX_ROTATION, frc.robot.Constants.PERIOD_SECONDS);
+
   private final Drivebase drivebase;
   private final Supplier<Rotation2d> rotationSupplier;
 
@@ -52,9 +54,9 @@ public class DriveSubsystem extends SubsystemBase {
   public final HolonomicDriveController driveController =
       new HolonomicDriveController(
           // X controller
-          new PIDController(1, 0, 0),
+          new PIDController(1, 0, 0, frc.robot.Constants.PERIOD_SECONDS),
           // Y controller
-          new PIDController(1, 0, 0),
+          new PIDController(1, 0, 0, frc.robot.Constants.PERIOD_SECONDS),
           thetaController);
 
   public final MecanumDriveKinematics kinematics;

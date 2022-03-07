@@ -57,7 +57,7 @@ public class Lifter implements Subsystem {
 
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        positionPid = new ProfiledPIDController(1, 0, 0, CONSTRAINTS);
+        positionPid = new ProfiledPIDController(1, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
         break;
       default:
         throw new IllegalStateException(

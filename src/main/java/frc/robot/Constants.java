@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -73,6 +74,9 @@ public final class Constants {
 
   public static final int DRIVER_CONTROLLER_PORT = 0;
   public static final int COPILOT_CONTROLLER_PORT = 1;
+
+  /** The number of seconds each iteration takes. WPILib default is 20ms. */
+  public static final double PERIOD_SECONDS = Units.millisecondsToSeconds(20);
 
   static {
     System.out.println("SPECIFIED ROBOT: " + TARGET_ROBOT);

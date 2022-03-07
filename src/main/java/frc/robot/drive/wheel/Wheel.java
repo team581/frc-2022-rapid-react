@@ -107,14 +107,14 @@ public class Wheel implements Subsystem {
         // Error=0.3m/s MaxControlEffort=7.0V -> Kp = 6.5871
         // Error=0.3m/s MaxControlEffort=7.0V -> Kp = 6.5871
         // Error=0.8m/s MaxControlEffort=7.0V -> Kp = 3.9486
-        velocityPid = new PIDController(2.7182, 0, 0);
+        velocityPid = new PIDController(2.7182, 0, 0, Constants.PERIOD_SECONDS);
         break;
       case COMP_BOT:
         // TODO: Run SysId on the comp bot
-        velocityPid = new PIDController(2.7182, 0, 0);
+        velocityPid = new PIDController(2.7182, 0, 0, Constants.PERIOD_SECONDS);
         break;
       case SIM_BOT:
-        velocityPid = new PIDController(1, 0, 0);
+        velocityPid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
         break;
       default:
         throw new IllegalStateException("Unknown target robot");

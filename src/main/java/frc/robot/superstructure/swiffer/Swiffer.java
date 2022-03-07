@@ -48,7 +48,7 @@ public class Swiffer implements Subsystem {
 
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        rpmPid = new PIDController(1, 0, 0);
+        rpmPid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
         break;
       default:
         throw new IllegalStateException(
