@@ -11,7 +11,12 @@ public class LifterIOReplay implements LifterIO {
   }
 
   @Override
-  public void setMotorPercentage(double volts) {
+  public void setVoltage(double volts) {
+    // Intentionally left empty
+  }
+
+  @Override
+  public void zeroEncoder() {
     // Intentionally left empty
   }
 }

@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.lifter.LifterSubsystem;
-import frc.robot.lifter.commands.StartLoweringCommand;
+import frc.robot.lifter.Position;
+import frc.robot.lifter.commands.LifterCommand;
 import frc.robot.swiffer.SwifferSubsystem;
 
 /** A command that starts the snarfer and waits for it to speed up. */
@@ -21,7 +22,7 @@ public class StartSnarfingCommand extends ParallelCommandGroup {
     addRequirements(swiffer);
     addCommands(
         // runs everything in parallel
-        new StartLoweringCommand(lifter),
+        new LifterCommand(lifter, Position.DOWN),
         sequence(
             new InstantCommand(
                 // creating an instant command that starts snarfing (swiffer is the command that is

@@ -12,29 +12,35 @@ public interface LifterIO {
     public double appliedVolts = 0;
     public double currentAmps = 0;
     public double tempCelcius = 0;
-    public boolean upperLimitSwitchActive = false;
-    public boolean lowerLimitSwitchActive = false;
+    public double beforeGearingPositionRadians = 0;
+    public double beforeGearingVelocityRadiansPerSecond = 0;
 
     public void toLog(LogTable table) {
       table.put("AppliedVolts", appliedVolts);
       table.put("CurrentAmps", currentAmps);
       table.put("TempCelcius", tempCelcius);
-      table.put("UpperLimitSwitchActive", upperLimitSwitchActive);
-      table.put("LowerLimitSwitchActive", lowerLimitSwitchActive);
+      table.put("BeforeGearingPositionRadians", beforeGearingPositionRadians);
+      table.put("BeforeGearingVelocityRadiansPerSecond", beforeGearingVelocityRadiansPerSecond);
     }
 
     public void fromLog(LogTable table) {
       appliedVolts = table.getDouble("AppliedVolts", appliedVolts);
       currentAmps = table.getDouble("CurrentAmps", currentAmps);
       tempCelcius = table.getDouble("TempCelcius", tempCelcius);
-      upperLimitSwitchActive = table.getBoolean("UpperLimitSwitchActive", upperLimitSwitchActive);
-      lowerLimitSwitchActive = table.getBoolean("LowerLimitSwitchActive", lowerLimitSwitchActive);
+      beforeGearingPositionRadians =
+          table.getDouble("BeforeGearingPositionRadians", beforeGearingPositionRadians);
+      beforeGearingVelocityRadiansPerSecond =
+          table.getDouble(
+              "BeforeGearingVelocityRadiansPerSecond", beforeGearingVelocityRadiansPerSecond);
     }
   }
 
   /** Updates the set of loggable inputs. */
   public void updateInputs(Inputs inputs);
 
-  /** Sets the lifter's motor voltage as a percentage. */
-  public void setMotorPercentage(double percentage);
+  /** Sets the output voltage of the lifter's motor. */
+  public void setVoltage(double volts);
+
+  /** Zeroes the encoder position. */
+  public void zeroEncoder();
 }

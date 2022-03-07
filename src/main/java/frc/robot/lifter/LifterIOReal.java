@@ -4,22 +4,16 @@
 
 package frc.robot.lifter;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.DigitalInput;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.Constants;
 
 public class LifterIOReal implements LifterIO {
-  private final TalonFX motor;
-  private final DigitalInput upperLimitSwitch;
-  private final DigitalInput lowerLimitSwitch;
+  private final WPI_TalonFX motor;
 
   public LifterIOReal() {
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        motor = new TalonFX(1);
-        upperLimitSwitch = new DigitalInput(0);
-        lowerLimitSwitch = new DigitalInput(1);
+        motor = new WPI_TalonFX(1);
         break;
       default:
         throw new IllegalStateException(
@@ -32,14 +26,15 @@ public class LifterIOReal implements LifterIO {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
-
-    inputs.upperLimitSwitchActive = upperLimitSwitch.get();
-
-    inputs.lowerLimitSwitchActive = lowerLimitSwitch.get();
   }
 
   @Override
-  public void setMotorPercentage(double percentage) {
-    motor.set(TalonFXControlMode.PercentOutput, percentage);
+  public void setVoltage(double volts) {
+    motor.setVoltage(volts);
+  }
+
+  @Override
+  public void zeroEncoder() {
+    motor.setSelectedSensorPosition(0);
   }
 }

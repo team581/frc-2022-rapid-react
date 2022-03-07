@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.lifter.LifterSubsystem;
-import frc.robot.lifter.commands.StartLiftingCommand;
+import frc.robot.lifter.Position;
+import frc.robot.lifter.commands.LifterCommand;
 import frc.robot.swiffer.SwifferSubsystem;
 
 /** A command that shoots the stored cargo. */
@@ -20,7 +21,7 @@ public class StartShootingCommand extends SequentialCommandGroup {
     // makes it where one command can use the subsystem at a time
     addRequirements(swiffer);
     addCommands(
-        new StartLiftingCommand(lifter),
+        new LifterCommand(lifter, Position.UP),
         new InstantCommand(
             // creating an instant command that starts shooting (swiffer is the command that is
             // shooting)
