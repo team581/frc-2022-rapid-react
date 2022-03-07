@@ -36,7 +36,7 @@ public class Robot extends LoggedRobot {
     setUseTiming(!isReplay);
     // Log & replay "SmartDashboard" values (no tables are logged by default).
     LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
-    Logger.getInstance().recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+    Logger.getInstance().recordMetadata("ProjectName", "RapidReact");
 
     if (isReplay) {
       // Prompt the user for a file path on the command line
