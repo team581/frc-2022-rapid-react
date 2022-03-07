@@ -19,6 +19,12 @@ public class LifterSubsystem extends SubsystemBase {
   private static final double GEARING;
 
   private static final double MAX_MOTOR_VOLTAGE;
+
+  /** The maximum acceptable error in position (radians). */
+  private static final double POSITION_TOLERANCE;
+
+  private static final double VELOCITY_TOLERANCE;
+
   private static final ArmFeedforward FEEDFORWARD;
   private static final TrapezoidProfile.Constraints CONSTRAINTS;
 
@@ -27,6 +33,8 @@ public class LifterSubsystem extends SubsystemBase {
       case SIM_BOT:
         GEARING = 1;
         MAX_MOTOR_VOLTAGE = 12;
+        POSITION_TOLERANCE = Rotation2d.fromDegrees(0).getRadians();
+        VELOCITY_TOLERANCE = 0;
         FEEDFORWARD = new ArmFeedforward(0, 0, 0);
         CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
         break;
@@ -55,6 +63,8 @@ public class LifterSubsystem extends SubsystemBase {
         throw new IllegalStateException(
             "The currently configured robot doesn't support this subsystem");
     }
+
+    positionPid.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);
 
     // Lifter starts in the up position at match start
     setDesiredPosition(LifterPosition.UP);
