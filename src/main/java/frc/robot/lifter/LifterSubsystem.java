@@ -41,7 +41,7 @@ public class LifterSubsystem extends SubsystemBase {
   private final LifterIO io;
   private final Inputs inputs = new Inputs();
 
-  private LifterPosition desiredPosition = LifterPosition.DOWN;
+  private LifterPosition desiredPosition;
 
   /** Creates a new LifterSubsystem. */
   public LifterSubsystem(LifterIO io) {
@@ -55,6 +55,9 @@ public class LifterSubsystem extends SubsystemBase {
         throw new IllegalStateException(
             "The currently configured robot doesn't support this subsystem");
     }
+
+    // Lifter starts in the up position at match start
+    setDesiredPosition(LifterPosition.UP);
   }
 
   @Override
