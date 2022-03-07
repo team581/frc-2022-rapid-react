@@ -51,7 +51,7 @@ public class Lifter implements Subsystem {
 
   private LifterPosition desiredPosition;
 
-  /** Creates a new LifterSubsystem. */
+  /** Creates a new Lifter. */
   public Lifter(LifterIO io) {
     this.io = io;
 

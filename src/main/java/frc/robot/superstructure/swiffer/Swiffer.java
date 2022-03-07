@@ -42,7 +42,7 @@ public class Swiffer implements Subsystem {
   private SwifferMode desiredMode;
   private double desiredVoltage = 0;
 
-  /** Creates a new SwifferSubsystem. */
+  /** Creates a new Swiffer. */
   public Swiffer(SwifferIO io) {
     this.io = io;
 

@@ -12,7 +12,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
   public final Swiffer swiffer;
   public final Lifter lifter;
 
-  /** Creates a new Superstructure. */
+  /** Creates a new SuperstructureSubsystem. */
   public SuperstructureSubsystem(Swiffer swiffer, Lifter lifter) {
     this.swiffer = swiffer;
     this.lifter = lifter;
