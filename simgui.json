@@ -24,9 +24,12 @@
       "/LiveWindow/CargoLimelightSubsystem": "Subsystem",
       "/LiveWindow/DriveSubsystem": "Subsystem",
       "/LiveWindow/ImuSubsystem": "Subsystem",
+      "/LiveWindow/Lifter": "Subsystem",
       "/LiveWindow/LifterSubsystem": "Subsystem",
       "/LiveWindow/ShooterSubsystem": "Subsystem",
       "/LiveWindow/SnarferSubsystem": "Subsystem",
+      "/LiveWindow/SuperstructureSubsystem": "Subsystem",
+      "/LiveWindow/Swiffer": "Subsystem",
       "/LiveWindow/SwifferSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/MecanumDrive[1]": "MecanumDrive",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
@@ -44,6 +47,7 @@
       "/LiveWindow/Ungrouped/navX-Sensor[1]": "Gyro",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/LiveWindow/UpperHubLimelightSubsystem": "Subsystem",
+      "/LiveWindow/Wheel": "Subsystem",
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
