@@ -7,7 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.controller.ButtonController;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.*;
@@ -114,7 +114,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     autoCommand =
-        new SequentialCommandGroup(
+        new ParallelCommandGroup(
             new RefreshAllianceWithFmsCommand(cargoLimelightSubsystem),
             new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
   }
@@ -158,5 +158,12 @@ public class RobotContainer {
   // TODO: Move this method to a dedicated AutonomousChooser class
   public Command getAutonomousCommand() {
     return autoCommand;
+  }
+
+  /** The command to run on robot init. */
+  public Command getRobotInitCommand() {
+    // We do this on robot init just in case the robot reboots in the middle of a match and the data
+    // from autonomous init is missing
+    return new RefreshAllianceWithFmsCommand(cargoLimelightSubsystem);
   }
 }
