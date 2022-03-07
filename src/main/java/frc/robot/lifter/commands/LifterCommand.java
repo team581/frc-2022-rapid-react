@@ -5,8 +5,8 @@
 package frc.robot.lifter.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.lifter.LifterSubsystem;
 import frc.robot.lifter.LifterPosition;
+import frc.robot.lifter.LifterSubsystem;
 
 /** A command to move the lifter to a desired position. */
 public class LifterCommand extends CommandBase {
