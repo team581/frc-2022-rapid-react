@@ -6,13 +6,13 @@ package frc.robot.lifter;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public enum Position {
+public enum LifterPosition {
   UP(Rotation2d.fromDegrees(60)),
   DOWN(new Rotation2d(0));
 
   public final Rotation2d angle;
 
-  Position(Rotation2d angle) {
+  LifterPosition(Rotation2d angle) {
     this.angle = angle;
   }
 }

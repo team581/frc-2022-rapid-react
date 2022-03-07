@@ -15,7 +15,6 @@ import frc.robot.lifter.LifterIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
 public class LifterSubsystem extends SubsystemBase {
-
   /** The gearing of the lifter. For example, 10.71:1 would be 10.71. */
   private static final double GEARING;
 
@@ -42,7 +41,7 @@ public class LifterSubsystem extends SubsystemBase {
   private final LifterIO io;
   private final Inputs inputs = new Inputs();
 
-  private Position desiredPosition = Position.DOWN;
+  private LifterPosition desiredPosition = LifterPosition.DOWN;
 
   /** Creates a new LifterSubsystem. */
   public LifterSubsystem(LifterIO io) {
@@ -89,13 +88,13 @@ public class LifterSubsystem extends SubsystemBase {
   }
 
   /** Set the desired position of the lifter to the provided position. */
-  public void setDesiredPosition(Position position) {
+  public void setDesiredPosition(LifterPosition position) {
     desiredPosition = position;
     setDesiredPosition(position.angle);
   }
 
   /** Check if the lifter is at the provided position. */
-  public boolean atPosition(Position position) {
+  public boolean atPosition(LifterPosition position) {
     return desiredPosition == position && positionPid.atGoal();
   }
 
