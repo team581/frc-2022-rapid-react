@@ -4,7 +4,7 @@
 
 package frc.robot.drive.wheel;
 
-// Wheels already have a good built-in simulation system, so we can just extend the real IO class
+// Talon FX already has a good built-in simulation system, so we can just extend the real IO class
 public class WheelIOSim extends WheelIOReal implements WheelIO {
   public WheelIOSim(Corner corner) {
     super(corner);
