@@ -11,10 +11,17 @@ Our robot itself is still WIP, but these are highlights of what we've accomplish
 - ??? ball auto
 - Drivetrain
   - Mecanum drivetrain controlled with a holonomic drive controller during autonomous
-  - Per-wheel closed-loop velocity control via PID & feedforward
+  - Per-wheel closed-loop velocity control with feedforward and feedback via PID
+  - Full odometry via encoders and IMU
 - Vision
   - Two Limelight 2+s used for seeking cargo and aligning with the upper hub
   - Uses on-the-fly trajectory generation to plan the best route to the goal
+- Intake & shooter (AKA "Swiffer Picker Upper")
+  - Closed-loop velocity control for flywheel
+- Arm (AKA "lifter") for Swiffer Picker Upper
+  - Closed-loop position control with motion profiling, feedforward, and feedback via PID
+- Misc
+  - Mass data logging to USB + streamed to driver station via Advantage Kit
 
 ## Source code structure
 
