@@ -4,12 +4,12 @@
 
 package frc.robot.superstructure.swiffer.commands;
 
+import frc.robot.superstructure.swiffer.Swiffer;
 import frc.robot.superstructure.swiffer.SwifferMode;
-import frc.robot.superstructure.swiffer.SwifferSubsystem;
 
 public class SwifferSnarfCommand extends SwifferCommand {
   /** Creates a new SwifferSnarfCommand. */
-  public SwifferSnarfCommand(SwifferSubsystem swiffer) {
+  public SwifferSnarfCommand(Swiffer swiffer) {
     super(swiffer, SwifferMode.SNARFING);
   }
 

@@ -9,13 +9,12 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.superstructure.lifter.LifterIO.Inputs;
-
 import org.littletonrobotics.junction.Logger;
 
-public class LifterSubsystem extends SubsystemBase {
+public class Lifter implements Subsystem {
   /** The gearing of the lifter. For example, 10.71:1 would be 10.71. */
   private static final double GEARING;
 
@@ -53,7 +52,7 @@ public class LifterSubsystem extends SubsystemBase {
   private LifterPosition desiredPosition;
 
   /** Creates a new LifterSubsystem. */
-  public LifterSubsystem(LifterIO io) {
+  public Lifter(LifterIO io) {
     this.io = io;
 
     switch (Constants.getRobot()) {

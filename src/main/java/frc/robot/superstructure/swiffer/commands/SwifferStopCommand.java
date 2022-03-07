@@ -4,14 +4,14 @@
 
 package frc.robot.superstructure.swiffer.commands;
 
+import frc.robot.superstructure.swiffer.Swiffer;
 import frc.robot.superstructure.swiffer.SwifferMode;
-import frc.robot.superstructure.swiffer.SwifferSubsystem;
 
 public class SwifferStopCommand extends SwifferCommand {
-  private final SwifferSubsystem swiffer;
+  private final Swiffer swiffer;
 
   /** Creates a new StopSwifferCommand. */
-  public SwifferStopCommand(SwifferSubsystem swiffer) {
+  public SwifferStopCommand(Swiffer swiffer) {
     super(swiffer, SwifferMode.STOPPED);
 
     this.swiffer = swiffer;

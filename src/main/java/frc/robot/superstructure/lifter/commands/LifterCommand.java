@@ -5,16 +5,16 @@
 package frc.robot.superstructure.lifter.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.superstructure.lifter.Lifter;
 import frc.robot.superstructure.lifter.LifterPosition;
-import frc.robot.superstructure.lifter.LifterSubsystem;
 
 /** A command to move the lifter to a desired position. */
 public class LifterCommand extends CommandBase {
-  private final LifterSubsystem lifter;
+  private final Lifter lifter;
   private final LifterPosition goalPosition;
 
   /** Creates a new LifterCommand. */
-  public LifterCommand(LifterSubsystem lifter, LifterPosition goalPosition) {
+  public LifterCommand(Lifter lifter, LifterPosition goalPosition) {
     this.lifter = lifter;
     this.goalPosition = goalPosition;
 

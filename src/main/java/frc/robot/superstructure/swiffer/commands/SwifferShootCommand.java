@@ -5,14 +5,14 @@
 package frc.robot.superstructure.swiffer.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.superstructure.swiffer.Swiffer;
 import frc.robot.superstructure.swiffer.SwifferMode;
-import frc.robot.superstructure.swiffer.SwifferSubsystem;
 
 public class SwifferShootCommand extends SwifferCommand {
   private final Timer timer = new Timer();
 
   /** Creates a new SwifferShootCommand. */
-  public SwifferShootCommand(SwifferSubsystem swiffer) {
+  public SwifferShootCommand(Swiffer swiffer) {
     super(swiffer, SwifferMode.SHOOTING);
   }
 
