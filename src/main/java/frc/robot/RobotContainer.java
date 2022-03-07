@@ -34,10 +34,10 @@ import frc.robot.vision.commands.LoadingBayAlignCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  private final ButtonController copilotController =
-      new ButtonController(new XboxController(Constants.DRIVER_CONTROLLER_PORT));
   private final DriveController driverController =
       new DriveController(new XboxController(Constants.DRIVER_CONTROLLER_PORT));
+  private final ButtonController copilotController =
+      new ButtonController(new XboxController(Constants.COPILOT_CONTROLLER_PORT));
 
   private final ImuSubsystem imuSubsystem;
   private final DriveSubsystem driveSubsystem;
