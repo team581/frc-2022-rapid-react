@@ -9,7 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.drive.Drivebase;
@@ -17,7 +17,7 @@ import frc.robot.drive.wheel.WheelIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
 /** This class should only be used within {@link DriveSubsystem} and {@link Drivebase}. */
-public class Wheel {
+public class Wheel implements Subsystem {
   /** The maximum velocity of a wheel in meters/second. */
   public static final double MAX_WHEEL_VELOCITY;
 
@@ -123,10 +123,7 @@ public class Wheel {
     velocityPid.setSetpoint(0);
   }
 
-  /**
-   * Call this in the {@link SubsystemBase#periodic() periodic function} of a parent {@link
-   * SubsystemBase subsystem}.
-   */
+  @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs(loggerName, inputs);
