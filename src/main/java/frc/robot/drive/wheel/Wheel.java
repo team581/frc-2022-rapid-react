@@ -89,8 +89,8 @@ public class Wheel extends SubsystemBase {
   private final WheelIO io;
   private final Inputs inputs = new Inputs();
 
-  public Wheel(String name, WheelIO io, Translation2d positionToCenterOfRobot) {
-    this.loggerName = "Wheel/" + name;
+  public Wheel(Corner corner, WheelIO io, Translation2d positionToCenterOfRobot) {
+    this.loggerName = "Wheel/" + corner.toString();
     this.positionToCenterOfRobot = positionToCenterOfRobot;
     this.io = io;
 

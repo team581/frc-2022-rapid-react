@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.drive.wheel.Corner;
 import frc.robot.drive.wheel.Wheel;
 import frc.robot.drive.wheel.WheelIO;
 
@@ -55,16 +56,16 @@ public class Drivebase extends SubsystemBase {
       case COMP_BOT:
       case SIM_BOT:
         // TODO: These need to be measured
-        frontLeft = new Wheel("FrontLeft", frontLeftIO, new Translation2d(0.285, 0.285));
-        frontRight = new Wheel("FrontRight", frontRightIO, new Translation2d(0.285, -0.285));
-        rearLeft = new Wheel("RearLeft", rearLeftIO, new Translation2d(-0.285, 0.285));
-        rearRight = new Wheel("RearRight", rearRightIO, new Translation2d(-0.285, -0.285));
+        frontLeft = new Wheel(Corner.FRONT_LEFT, frontLeftIO, new Translation2d(0.285, 0.285));
+        frontRight = new Wheel(Corner.FRONT_RIGHT, frontRightIO, new Translation2d(0.285, -0.285));
+        rearLeft = new Wheel(Corner.REAR_LEFT, rearLeftIO, new Translation2d(-0.285, 0.285));
+        rearRight = new Wheel(Corner.REAR_RIGHT, rearRightIO, new Translation2d(-0.285, -0.285));
         break;
       case TEST_2020_BOT:
-        frontLeft = new Wheel("FrontLeft", frontLeftIO, new Translation2d(0.285, 0.285));
-        frontRight = new Wheel("FrontRight", frontRightIO, new Translation2d(0.285, -0.285));
-        rearLeft = new Wheel("RearLeft", rearLeftIO, new Translation2d(-0.285, 0.285));
-        rearRight = new Wheel("RearRight", rearRightIO, new Translation2d(-0.285, -0.285));
+        frontLeft = new Wheel(Corner.FRONT_LEFT, frontLeftIO, new Translation2d(0.285, 0.285));
+        frontRight = new Wheel(Corner.FRONT_RIGHT, frontRightIO, new Translation2d(0.285, -0.285));
+        rearLeft = new Wheel(Corner.REAR_LEFT, rearLeftIO, new Translation2d(-0.285, 0.285));
+        rearRight = new Wheel(Corner.REAR_RIGHT, rearRightIO, new Translation2d(-0.285, -0.285));
         break;
       default:
         throw new IllegalStateException("Unknown target robot");

@@ -6,8 +6,19 @@ package frc.robot.drive.wheel;
 
 /** The corner of a wheel. */
 public enum Corner {
-  FRONT_RIGHT,
-  FRONT_LEFT,
-  REAR_RIGHT,
-  REAR_LEFT
+  FRONT_RIGHT("FrontRight"),
+  FRONT_LEFT("FrontLeft"),
+  REAR_RIGHT("RearRight"),
+  REAR_LEFT("RearLeft");
+
+  private final String displayName;
+
+  private Corner(String displayName) {
+    this.displayName = displayName;
+  }
+
+  @Override
+  public String toString() {
+    return displayName;
+  }
 }
