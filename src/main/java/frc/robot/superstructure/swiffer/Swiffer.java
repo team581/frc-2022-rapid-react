@@ -7,15 +7,13 @@ package frc.robot.superstructure.swiffer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.superstructure.swiffer.SwifferIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
 public class Swiffer extends SubsystemBase {
-  /** The gearing of the flywheel. For example, 10.71:1 would be 10.71. */
-  private static final double GEARING;
-
   private static final double MAX_MOTOR_VOLTAGE;
   private static final double TOLERANCE_RPM;
   private static final SimpleMotorFeedforward FEEDFORWARD;
@@ -23,7 +21,6 @@ public class Swiffer extends SubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        GEARING = 1;
         MAX_MOTOR_VOLTAGE = 12;
         TOLERANCE_RPM = 0;
         FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
@@ -68,7 +65,8 @@ public class Swiffer extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Swiffer", inputs);
     Logger.getInstance().recordOutput("Swiffer/DesiredMode", getDesiredMode().toString());
-    Logger.getInstance().recordOutput("Swiffer/DesiredRpm", getDesiredRpm());
+    final var desiredRpm = Units.radiansPerSecondToRotationsPerMinute(getDesiredAngularVelocity());
+    Logger.getInstance().recordOutput("Swiffer/DesiredRpm", desiredRpm);
     Logger.getInstance().recordOutput("Swiffer/DesiredAppliedVolts", desiredVoltage);
 
     doVelocityControlLoop();
@@ -77,7 +75,7 @@ public class Swiffer extends SubsystemBase {
   /** Set the desired mode of the flywheel to the one provided. */
   public void setDesiredMode(SwifferMode mode) {
     desiredMode = mode;
-    rpmPid.setSetpoint(mode.rpm);
+    rpmPid.setSetpoint(mode.angularVelocity);
   }
 
   public boolean atGoal(SwifferMode mode) {
@@ -88,19 +86,15 @@ public class Swiffer extends SubsystemBase {
     return desiredMode;
   }
 
-  private double getDesiredRpm() {
+  /** Get the desired angular velocity in radians/second. */
+  private double getDesiredAngularVelocity() {
     return rpmPid.getSetpoint();
   }
 
-  private double getRpm() {
-    final var angularVelocityRadiansPerSecond =
-        inputs.beforeGearingAngularVelocityRadiansPerSecond / GEARING;
-
-    return angularVelocityRadiansPerSecond * 60;
-  }
-
   private void doVelocityControlLoop() {
-    final var rawVoltage = rpmPid.calculate(getRpm()) + FEEDFORWARD.calculate(getDesiredRpm());
+    final var rawVoltage =
+        rpmPid.calculate(inputs.angularVelocityRadiansPerSecond)
+            + FEEDFORWARD.calculate(getDesiredAngularVelocity());
     final var clampedVoltage = MathUtil.clamp(rawVoltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE);
 
     desiredVoltage = clampedVoltage;

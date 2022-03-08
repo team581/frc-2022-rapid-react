@@ -23,8 +23,6 @@ public class Wheel extends SubsystemBase {
 
   /** The wheel diameter in meters. */
   private static final double WHEEL_DIAMETER;
-  /** The gearing of a wheel. For example, 10.71:1 would be 10.71. */
-  private static final double GEARING;
 
   private static final double MAX_MOTOR_VOLTAGE;
 
@@ -33,14 +31,12 @@ public class Wheel extends SubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case TEST_2020_BOT:
-        GEARING = 10.71;
         WHEEL_DIAMETER = Units.inchesToMeters(5.97);
         MAX_WHEEL_VELOCITY = wheelRotationToMeters(1.011986826 * 2 * Math.PI);
         MAX_MOTOR_VOLTAGE = 12;
         FEEDFORWARD = new SimpleMotorFeedforward(0.61761, 2.3902, 0.17718);
         break;
       case COMP_BOT:
-        GEARING = 12.75;
         WHEEL_DIAMETER = Units.inchesToMeters(5.97);
         MAX_WHEEL_VELOCITY = wheelRotationToMeters(2 * Math.PI);
         MAX_MOTOR_VOLTAGE = 12;
@@ -48,7 +44,6 @@ public class Wheel extends SubsystemBase {
         FEEDFORWARD = new SimpleMotorFeedforward(0.61761, 2.3902, 0.17718);
         break;
       case SIM_BOT:
-        GEARING = 1;
         WHEEL_DIAMETER = Units.inchesToMeters(5.97);
         MAX_WHEEL_VELOCITY = 1;
         MAX_MOTOR_VOLTAGE = 12;
@@ -59,9 +54,7 @@ public class Wheel extends SubsystemBase {
     }
   }
 
-  /**
-   * Converts the wheel's rotation before gearing (in radians) to a distance travelled in meters.
-   */
+  /** Converts the wheel's rotation (in radians) to a distance travelled in meters. */
   private static double wheelRotationToMeters(double radians) {
     return radians * (WHEEL_DIAMETER / 2);
   }
@@ -163,16 +156,12 @@ public class Wheel extends SubsystemBase {
 
   /** Get this wheel's velocity in meters/second. */
   public double getVelocity() {
-    final var radiansPerSecond = inputs.beforeGearingVelocityRadiansPerSecond / GEARING;
-
-    return wheelRotationToMeters(radiansPerSecond);
+    return wheelRotationToMeters(inputs.velocityRadiansPerSecond);
   }
 
   /** Get the distance in meters this wheel's encoder has travelled since last being reset. */
   public double getDistance() {
-    final var radians = inputs.beforeGearingPositionRadians / GEARING;
-
-    return wheelRotationToMeters(radians);
+    return wheelRotationToMeters(inputs.positionRadians);
   }
 
   /** Zeroes the encoder position. */

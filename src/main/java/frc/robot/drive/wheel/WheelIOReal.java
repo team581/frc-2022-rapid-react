@@ -7,24 +7,15 @@ package frc.robot.drive.wheel;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import frc.robot.misc.io.Falcon500IO;
 
-public class WheelIOReal implements WheelIO {
-  private static class Constants {
-    public static final double SENSOR_RESOLUTION = 2048;
-    // 2048 per rotation, so we divide by 1 rotation to get the units per radian
-    public static final double SENSOR_UNITS_PER_RADIAN = SENSOR_RESOLUTION / (2 * Math.PI);
-  }
-
-  /** Converts sensor units to radians. */
-  private static double sensorUnitsToRadians(double sensorUnits) {
-    return sensorUnits / Constants.SENSOR_UNITS_PER_RADIAN;
-  }
-
+public class WheelIOReal extends Falcon500IO implements WheelIO {
   private final WPI_TalonFX motor;
 
   public WheelIOReal(Corner corner) {
     switch (frc.robot.Constants.getRobot()) {
       case COMP_BOT:
+        setGearing(12.75);
         switch (corner) {
           case FRONT_LEFT:
             motor = new WPI_TalonFX(14);
@@ -45,6 +36,7 @@ public class WheelIOReal implements WheelIO {
         }
         break;
       case TEST_2020_BOT:
+        setGearing(10.71);
         switch (corner) {
           case FRONT_LEFT:
             motor = new WPI_TalonFX(10);
@@ -65,6 +57,7 @@ public class WheelIOReal implements WheelIO {
         }
         break;
       case SIM_BOT:
+        setGearing(1);
         switch (corner) {
           case FRONT_LEFT:
             motor = new WPI_TalonFX(3);
@@ -99,9 +92,8 @@ public class WheelIOReal implements WheelIO {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
-    inputs.beforeGearingPositionRadians = sensorUnitsToRadians(motor.getSelectedSensorPosition());
-    inputs.beforeGearingVelocityRadiansPerSecond =
-        sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
+    inputs.positionRadians = sensorUnitsToRadians(motor.getSelectedSensorPosition());
+    inputs.velocityRadiansPerSecond = sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
   }
 
   @Override

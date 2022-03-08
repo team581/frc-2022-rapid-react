@@ -4,6 +4,7 @@
 
 package frc.robot.superstructure.swiffer;
 
+import edu.wpi.first.math.util.Units;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
@@ -12,21 +13,24 @@ public interface SwifferIO {
     public double appliedVolts = 0;
     public double currentAmps = 0;
     public double tempCelcius = 0;
-    public double beforeGearingAngularVelocityRadiansPerSecond = 0;
+    public double angularVelocityRadiansPerSecond = 0;
 
     public void toLog(LogTable table) {
       table.put("AppliedVolts", appliedVolts);
       table.put("CurrentAmps", currentAmps);
       table.put("TempCelcius", tempCelcius);
-      table.put("BeforeGearingRpm", beforeGearingAngularVelocityRadiansPerSecond);
+      table.put("Rpm", Units.radiansPerSecondToRotationsPerMinute(angularVelocityRadiansPerSecond));
     }
 
     public void fromLog(LogTable table) {
       appliedVolts = table.getDouble("AppliedVolts", appliedVolts);
       currentAmps = table.getDouble("CurrentAmps", currentAmps);
       tempCelcius = table.getDouble("TempCelcius", tempCelcius);
-      beforeGearingAngularVelocityRadiansPerSecond =
-          table.getDouble("BeforeGearingRpm", beforeGearingAngularVelocityRadiansPerSecond);
+      angularVelocityRadiansPerSecond =
+          Units.rotationsPerMinuteToRadiansPerSecond(
+              table.getDouble(
+                  "Rpm",
+                  Units.radiansPerSecondToRotationsPerMinute(angularVelocityRadiansPerSecond)));
     }
   }
 

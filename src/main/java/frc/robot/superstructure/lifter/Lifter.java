@@ -15,9 +15,6 @@ import frc.robot.superstructure.lifter.LifterIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
 public class Lifter extends SubsystemBase {
-  /** The gearing of the lifter. For example, 10.71:1 would be 10.71. */
-  private static final double GEARING;
-
   private static final double MAX_MOTOR_VOLTAGE;
 
   /** The maximum acceptable error in position (radians). */
@@ -31,7 +28,6 @@ public class Lifter extends SubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        GEARING = 1;
         MAX_MOTOR_VOLTAGE = 12;
         POSITION_TOLERANCE = Rotation2d.fromDegrees(0).getRadians();
         VELOCITY_TOLERANCE = 0;
@@ -119,6 +115,6 @@ public class Lifter extends SubsystemBase {
 
   /** Gets the actual position of the lifter. */
   private Rotation2d getPosition() {
-    return new Rotation2d(inputs.beforeGearingPositionRadians / GEARING);
+    return new Rotation2d(inputs.positionRadians);
   }
 }

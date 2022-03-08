@@ -4,16 +4,19 @@
 
 package frc.robot.superstructure.swiffer;
 
+import edu.wpi.first.math.util.Units;
+
 /** A mode that the swiffer flywheel can be in. */
 public enum SwifferMode {
   STOPPED(0),
   SNARFING(500),
   SHOOTING(250);
 
-  /** Rotations per minute. */
-  public final double rpm;
+  /** Angular velocity in radians/second. */
+  public final double angularVelocity;
 
+  /** @param rpm The desired rotations per minute (RPM) for this mode. */
   SwifferMode(double rpm) {
-    this.rpm = rpm;
+    this.angularVelocity = Units.rotationsPerMinuteToRadiansPerSecond(rpm);
   }
 }

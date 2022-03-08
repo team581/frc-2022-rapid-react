@@ -6,14 +6,15 @@ package frc.robot.superstructure.lifter;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-import frc.robot.Constants;
+import frc.robot.misc.io.Falcon500IO;
 
-public class LifterIOReal implements LifterIO {
+public class LifterIOReal extends Falcon500IO implements LifterIO {
   private final WPI_TalonFX motor;
 
   public LifterIOReal() {
-    switch (Constants.getRobot()) {
+    switch (frc.robot.Constants.getRobot()) {
       case SIM_BOT:
+        setGearing(1);
         motor = new WPI_TalonFX(1);
         break;
       default:
@@ -32,6 +33,8 @@ public class LifterIOReal implements LifterIO {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
+    inputs.positionRadians = sensorUnitsToRadians(motor.getSelectedSensorPosition());
+    inputs.velocityRadiansPerSecond = sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
   }
 
   @Override

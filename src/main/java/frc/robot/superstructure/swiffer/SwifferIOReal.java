@@ -6,25 +6,15 @@ package frc.robot.superstructure.swiffer;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-import frc.robot.Constants;
+import frc.robot.misc.io.Falcon500IO;
 
-public class SwifferIOReal implements SwifferIO {
-  private static class Constants {
-    public static final double SENSOR_RESOLUTION = 2048;
-    // 2048 per rotation, so we divide by 1 rotation to get the units per radian
-    public static final double SENSOR_UNITS_PER_RADIAN = SENSOR_RESOLUTION / (2 * Math.PI);
-  }
-
-  /** Converts sensor units to radians. */
-  private static double sensorUnitsToRadians(double sensorUnits) {
-    return sensorUnits / Constants.SENSOR_UNITS_PER_RADIAN;
-  }
-
+public class SwifferIOReal extends Falcon500IO implements SwifferIO {
   private final WPI_TalonFX motor;
 
   public SwifferIOReal() {
     switch (frc.robot.Constants.getRobot()) {
       case SIM_BOT:
+        setGearing(1);
         motor = new WPI_TalonFX(2);
         break;
       default:
@@ -43,7 +33,7 @@ public class SwifferIOReal implements SwifferIO {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
-    inputs.beforeGearingAngularVelocityRadiansPerSecond =
+    inputs.angularVelocityRadiansPerSecond =
         sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
   }
 
