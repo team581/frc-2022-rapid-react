@@ -23,6 +23,7 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/CargoLimelightSubsystem": "Subsystem",
       "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/Drivebase": "Subsystem",
       "/LiveWindow/ImuSubsystem": "Subsystem",
       "/LiveWindow/Lifter": "Subsystem",
       "/LiveWindow/LifterSubsystem": "Subsystem",
