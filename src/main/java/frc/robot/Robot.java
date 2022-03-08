@@ -41,6 +41,10 @@ public class Robot extends LoggedRobot {
     // Log & replay "SmartDashboard" values (no tables are logged by default).
     LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
     Logger.getInstance().recordMetadata("ProjectName", "RapidReact");
+    Logger.getInstance().recordMetadata("TargetRobot", Constants.getRobot().toString());
+    Logger.getInstance().recordMetadata("Env", Constants.ENV.toString());
+    Logger.getInstance().recordMetadata("Mode", Constants.getMode().toString());
+    Logger.getInstance().recordMetadata("PeriodSeconds", Double.toString(Constants.PERIOD_SECONDS));
 
     if (isReplay) {
       // Prompt the user for a file path on the command line
