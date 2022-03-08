@@ -73,12 +73,6 @@ public class Robot extends LoggedRobot {
       // This pushes lots of data to NetworkTables and can cause lag or network congestion
       setNetworkTablesFlushEnabled(true);
     }
-
-    final var robotInitCommand = robotContainer.getRobotInitCommand();
-
-    if (robotInitCommand != null) {
-      robotInitCommand.schedule();
-    }
   }
 
   /**

@@ -8,6 +8,8 @@ package frc.robot.limelight_cargo;
 // the WPILib BSD license file in the root directory of this project.
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.limelight_cargo.CargoVisionTarget.Color;
 import frc.robot.vision.LimelightSubsystemBase;
 
 public class CargoLimelightSubsystem extends LimelightSubsystemBase {
@@ -46,14 +48,16 @@ public class CargoLimelightSubsystem extends LimelightSubsystemBase {
   }
 
   /** Sets the {@link CargoVisionTarget}s in this class based on what our team's alliance is. */
-  public void setOurAlliance(CargoVisionTarget.Color ourAlliance) {
-    final var opponentAlliance =
-        ourAlliance == CargoVisionTarget.Color.RED
-            ? CargoVisionTarget.Color.BLUE
-            : CargoVisionTarget.Color.RED;
+  public void setAlliances(Alliance ourAlliance) {
+    if (ourAlliance == Alliance.Invalid) {
+      return;
+    }
 
-    ourCargoVisionTarget = getTargetForAlliance(ourAlliance);
-    opponentCargoVisionTarget = getTargetForAlliance(opponentAlliance);
+    final var ourAllianceColor = ourAlliance == Alliance.Blue ? Color.BLUE : Color.RED;
+    final var opponentAllianceColor = ourAlliance == Alliance.Blue ? Color.RED : Color.BLUE;
+
+    ourCargoVisionTarget = getTargetForAlliance(ourAllianceColor);
+    opponentCargoVisionTarget = getTargetForAlliance(opponentAllianceColor);
   }
 
   /** Gets the {@link CargoVisionTarget} instance for the provided alliance (red or blue). */
