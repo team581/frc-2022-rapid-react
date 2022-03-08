@@ -7,6 +7,7 @@ package frc.robot.drive.wheel;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.misc.io.Falcon500IO;
 
 public class WheelIOReal extends Falcon500IO implements WheelIO {
@@ -78,7 +79,7 @@ public class WheelIOReal extends Falcon500IO implements WheelIO {
         }
         break;
       default:
-        throw new IllegalStateException("Unknown target robot");
+        throw new UnknownTargetRobotException();
     }
 
     // TODO: These values probably need to be tuned - see tuning instructions

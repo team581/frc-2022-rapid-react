@@ -6,6 +6,7 @@ package frc.robot.superstructure.lifter;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.io.Falcon500IO;
 
 public class LifterIOReal extends Falcon500IO implements LifterIO {
@@ -18,8 +19,7 @@ public class LifterIOReal extends Falcon500IO implements LifterIO {
         motor = new WPI_TalonFX(1);
         break;
       default:
-        throw new IllegalStateException(
-            "The currently configured robot doesn't support this subsystem");
+        throw new UnsupportedSubsystemException(this);
     }
 
     // TODO: These values probably need to be tuned - see tuning instructions

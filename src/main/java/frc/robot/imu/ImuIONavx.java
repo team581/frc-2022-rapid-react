@@ -7,6 +7,7 @@ package frc.robot.imu;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.Constants;
+import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 
 public class ImuIONavx implements ImuIO {
   private final AHRS sensor;
@@ -18,8 +19,7 @@ public class ImuIONavx implements ImuIO {
         sensor = new AHRS(Port.kMXP);
         break;
       default:
-        throw new IllegalStateException(
-            "The currently configured robot doesn't support this subsystem");
+        throw new UnsupportedSubsystemException(this);
     }
   }
 

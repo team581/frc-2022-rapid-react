@@ -18,6 +18,7 @@ import frc.robot.fms.FmsSubsystem;
 import frc.robot.imu.*;
 import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
+import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.paths.commands.SimplePathCommand;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.commands.LifterDownAndSnarfCommand;
@@ -114,7 +115,7 @@ public class RobotContainer {
                   new WheelIOSim(Corner.REAR_RIGHT));
           break;
         default:
-          throw new IllegalStateException("Unknown target robot");
+          throw new UnknownTargetRobotException();
       }
     }
 

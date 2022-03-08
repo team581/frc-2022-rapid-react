@@ -4,10 +4,11 @@
 
 package frc.robot.imu;
 
+import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface ImuIO {
+public interface ImuIO extends SubsystemIO {
   public class Inputs implements LoggableInputs {
     public double tempCelcius = 0;
     public double rotationRadians = 0;

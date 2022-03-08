@@ -7,6 +7,7 @@ package frc.robot.imu;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import frc.robot.Constants;
+import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 
 public class ImuIOAdis16470 implements ImuIO {
   private final ADIS16470_IMU sensor;
@@ -18,8 +19,7 @@ public class ImuIOAdis16470 implements ImuIO {
         sensor = new ADIS16470_IMU();
         break;
       default:
-        throw new IllegalStateException(
-            "The currently configured robot doesn't support this subsystem");
+        throw new UnsupportedSubsystemException(this);
     }
   }
 

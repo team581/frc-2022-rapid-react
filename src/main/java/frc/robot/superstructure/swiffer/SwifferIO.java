@@ -5,10 +5,11 @@
 package frc.robot.superstructure.swiffer;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface SwifferIO {
+public interface SwifferIO extends SubsystemIO {
   public class Inputs implements LoggableInputs {
     public double appliedVolts = 0;
     public double currentAmps = 0;

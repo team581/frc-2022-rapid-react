@@ -6,6 +6,7 @@ package frc.robot.superstructure.swiffer;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.io.Falcon500IO;
 
 public class SwifferIOReal extends Falcon500IO implements SwifferIO {
@@ -18,8 +19,7 @@ public class SwifferIOReal extends Falcon500IO implements SwifferIO {
         motor = new WPI_TalonFX(2);
         break;
       default:
-        throw new IllegalStateException(
-            "The currently configured robot doesn't support this subsystem");
+        throw new UnsupportedSubsystemException(this);
     }
 
     // TODO: These values probably need to be tuned - see tuning instructions

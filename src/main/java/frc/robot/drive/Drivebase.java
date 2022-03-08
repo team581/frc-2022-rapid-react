@@ -13,6 +13,7 @@ import frc.robot.Constants;
 import frc.robot.drive.wheel.Corner;
 import frc.robot.drive.wheel.Wheel;
 import frc.robot.drive.wheel.WheelIO;
+import frc.robot.misc.exceptions.UnknownTargetRobotException;
 
 /**
  * This class should only be used within {@link DriveSubsystem}.
@@ -38,7 +39,7 @@ public class Drivebase extends SubsystemBase {
         MAX_ACCELERATION = 16;
         break;
       default:
-        throw new IllegalStateException("Unknown target robot");
+        throw new UnknownTargetRobotException();
     }
   }
 
@@ -68,7 +69,7 @@ public class Drivebase extends SubsystemBase {
         rearRight = new Wheel(Corner.REAR_RIGHT, rearRightIO, new Translation2d(-0.285, -0.285));
         break;
       default:
-        throw new IllegalStateException("Unknown target robot");
+        throw new UnknownTargetRobotException();
     }
 
     drive =

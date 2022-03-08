@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.superstructure.lifter.LifterIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
@@ -35,8 +36,7 @@ public class Lifter extends SubsystemBase {
         CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
         break;
       default:
-        throw new IllegalStateException(
-            "The currently configured robot doesn't support this subsystem");
+        throw new UnsupportedSubsystemException(Lifter.class);
     }
   }
 
@@ -56,8 +56,7 @@ public class Lifter extends SubsystemBase {
         positionPid = new ProfiledPIDController(1, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
         break;
       default:
-        throw new IllegalStateException(
-            "The currently configured robot doesn't support this subsystem");
+        throw new UnsupportedSubsystemException(this);
     }
 
     positionPid.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);

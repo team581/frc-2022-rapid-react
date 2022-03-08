@@ -14,6 +14,7 @@ import frc.robot.Constants;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.drive.Drivebase;
 import frc.robot.drive.wheel.WheelIO.Inputs;
+import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import org.littletonrobotics.junction.Logger;
 
 /** This class should only be used within {@link DriveSubsystem} and {@link Drivebase}. */
@@ -50,7 +51,7 @@ public class Wheel extends SubsystemBase {
         FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
         break;
       default:
-        throw new IllegalStateException("Unknown target robot");
+        throw new UnknownTargetRobotException();
     }
   }
 
@@ -110,7 +111,7 @@ public class Wheel extends SubsystemBase {
         velocityPid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
         break;
       default:
-        throw new IllegalStateException("Unknown target robot");
+        throw new UnknownTargetRobotException();
     }
 
     velocityPid.setSetpoint(0);

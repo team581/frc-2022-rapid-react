@@ -5,10 +5,11 @@
 package frc.robot.fms;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface FmsIO {
+public interface FmsIO extends SubsystemIO {
   public class Inputs implements LoggableInputs {
     public Alliance alliance = Alliance.Invalid;
 
