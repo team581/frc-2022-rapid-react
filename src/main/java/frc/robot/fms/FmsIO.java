@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface FmsIO {
-  public static class Inputs implements LoggableInputs {
+  public class Inputs implements LoggableInputs {
     public Alliance alliance = Alliance.Invalid;
 
     public void toLog(LogTable table) {

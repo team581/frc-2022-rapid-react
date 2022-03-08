@@ -8,7 +8,7 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface LifterIO {
-  public static class Inputs implements LoggableInputs {
+  public class Inputs implements LoggableInputs {
     public double appliedVolts = 0;
     public double currentAmps = 0;
     public double tempCelcius = 0;
