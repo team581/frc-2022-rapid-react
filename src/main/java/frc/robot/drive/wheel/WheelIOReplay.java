@@ -4,9 +4,11 @@
 
 package frc.robot.drive.wheel;
 
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+public class WheelIOReplay extends WheelIOSim implements WheelIO {
+  public WheelIOReplay(Corner corner) {
+    super(corner);
+  }
 
-public class WheelIOReplay implements WheelIO {
   @Override
   public void updateInputs(Inputs inputs) {
     // Intentionally left empty
@@ -20,11 +22,5 @@ public class WheelIOReplay implements WheelIO {
   @Override
   public void zeroEncoder() {
     // Intentionally left empty
-  }
-
-  @Override
-  public MotorController getMotorController() {
-    // Intentionally left empty
-    return null;
   }
 }

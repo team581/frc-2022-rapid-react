@@ -17,6 +17,7 @@ import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
 import frc.robot.match_metadata.MatchMetadataIOFms;
 import frc.robot.match_metadata.MatchMetadataIOReplay;
+import frc.robot.match_metadata.MatchMetadataIOSim;
 import frc.robot.match_metadata.MatchMetadataSubsystem;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.paths.commands.SimplePathCommand;
@@ -65,10 +66,10 @@ public class RobotContainer {
           new DriveSubsystem(
               driverController,
               imuSubsystem::getRotation,
-              new WheelIOReplay(),
-              new WheelIOReplay(),
-              new WheelIOReplay(),
-              new WheelIOReplay());
+              new WheelIOReplay(Corner.FRONT_LEFT),
+              new WheelIOReplay(Corner.FRONT_RIGHT),
+              new WheelIOReplay(Corner.REAR_LEFT),
+              new WheelIOReplay(Corner.REAR_RIGHT));
     } else {
       switch (Constants.getRobot()) {
         case COMP_BOT:
@@ -100,8 +101,7 @@ public class RobotContainer {
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
           break;
         case SIM_BOT:
-          // FMS will work even in simulation
-          matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
+          matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOSim());
           lifter = new Lifter(new LifterIOSim());
           swiffer = new Swiffer(new SwifferIOSim());
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
