@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.superstructure.lifter.LifterIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
@@ -29,14 +28,13 @@ public class Lifter extends SubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case SIM_BOT:
+      default:
         MAX_MOTOR_VOLTAGE = 12;
         POSITION_TOLERANCE = Rotation2d.fromDegrees(0).getRadians();
         VELOCITY_TOLERANCE = 0;
         FEEDFORWARD = new ArmFeedforward(0, 0, 0);
         CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
         break;
-      default:
-        throw new UnsupportedSubsystemException(Lifter.class);
     }
   }
 
@@ -53,10 +51,9 @@ public class Lifter extends SubsystemBase {
 
     switch (Constants.getRobot()) {
       case SIM_BOT:
+      default:
         positionPid = new ProfiledPIDController(1, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
         break;
-      default:
-        throw new UnsupportedSubsystemException(this);
     }
 
     positionPid.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);

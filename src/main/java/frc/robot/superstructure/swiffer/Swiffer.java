@@ -10,7 +10,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.superstructure.swiffer.SwifferIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
@@ -22,12 +21,11 @@ public class Swiffer extends SubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case SIM_BOT:
+      default:
         MAX_MOTOR_VOLTAGE = 12;
         TOLERANCE_RPM = 0;
         FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
         break;
-      default:
-        throw new UnsupportedSubsystemException(Swiffer.class);
     }
   }
 
@@ -45,10 +43,9 @@ public class Swiffer extends SubsystemBase {
 
     switch (Constants.getRobot()) {
       case SIM_BOT:
+      default:
         rpmPid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
         break;
-      default:
-        throw new UnsupportedSubsystemException(this);
     }
 
     // Flywheel should be stopped when the match starts
