@@ -73,8 +73,8 @@ public class RobotContainer {
       switch (Constants.getRobot()) {
         case COMP_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
-          lifter = new Lifter(new LifterIOFalcon500());
-          swiffer = new Swiffer(new SwifferIOFalcon500());
+          lifter = new Lifter(new LifterIOReplay());
+          swiffer = new Swiffer(new SwifferIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
           driveSubsystem =
               new DriveSubsystem(
