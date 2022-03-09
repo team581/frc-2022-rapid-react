@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.misc.io.Falcon500IO;
 
-public class WheelIOReal extends Falcon500IO implements WheelIO {
+public class WheelIOFalcon500 extends Falcon500IO implements WheelIO {
   private final WPI_TalonFX motor;
 
-  public WheelIOReal(Corner corner) {
+  public WheelIOFalcon500(Corner corner) {
     switch (frc.robot.Constants.getRobot()) {
       case COMP_BOT:
         setGearing(12.75);

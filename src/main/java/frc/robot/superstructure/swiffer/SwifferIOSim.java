@@ -4,7 +4,8 @@
 
 package frc.robot.superstructure.swiffer;
 
-// Talon FX already has a good built-in simulation system, so we can just extend the real IO class
-public class SwifferIOSim extends SwifferIOReal implements SwifferIO {
+// Talon FX already has a good built-in simulation system, so we can just extend the Falcon 500 IO
+// class
+public class SwifferIOSim extends SwifferIOFalcon500 implements SwifferIO {
   // TODO: Implement
 }

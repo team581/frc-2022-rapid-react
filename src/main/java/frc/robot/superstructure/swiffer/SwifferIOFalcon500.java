@@ -9,10 +9,10 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.io.Falcon500IO;
 
-public class SwifferIOReal extends Falcon500IO implements SwifferIO {
+public class SwifferIOFalcon500 extends Falcon500IO implements SwifferIO {
   private final WPI_TalonFX motor;
 
-  public SwifferIOReal() {
+  public SwifferIOFalcon500() {
     switch (frc.robot.Constants.getRobot()) {
       case SIM_BOT:
         setGearing(1);

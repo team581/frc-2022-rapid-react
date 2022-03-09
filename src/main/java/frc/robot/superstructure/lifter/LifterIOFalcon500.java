@@ -9,10 +9,10 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.io.Falcon500IO;
 
-public class LifterIOReal extends Falcon500IO implements LifterIO {
+public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
   private final WPI_TalonFX motor;
 
-  public LifterIOReal() {
+  public LifterIOFalcon500() {
     switch (frc.robot.Constants.getRobot()) {
       case SIM_BOT:
         setGearing(1);

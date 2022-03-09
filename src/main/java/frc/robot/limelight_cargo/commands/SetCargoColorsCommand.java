@@ -6,20 +6,21 @@ package frc.robot.limelight_cargo.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.fms.FmsSubsystem;
-import frc.robot.fms.commands.WaitUntilOurAllianceDefined;
 import frc.robot.limelight_cargo.CargoLimelightSubsystem;
+import frc.robot.match_metadata.MatchMetadataSubsystem;
+import frc.robot.match_metadata.commands.WaitUntilOurAllianceDefined;
 
 /** Sets the alliance colors for opponent and our cargo. */
 public class SetCargoColorsCommand extends SequentialCommandGroup {
   /** Creates a new SetCargoColorsCommand. */
   public SetCargoColorsCommand(
-      CargoLimelightSubsystem cargoLimelightSubsystem, FmsSubsystem fmsSubsystem) {
+      CargoLimelightSubsystem cargoLimelightSubsystem,
+      MatchMetadataSubsystem matchMetadataSubsystem) {
     addCommands(
         // Wait until our alliance is known
-        new WaitUntilOurAllianceDefined(fmsSubsystem),
+        new WaitUntilOurAllianceDefined(matchMetadataSubsystem),
         // Update the state in the subsystem
         new InstantCommand(
-            () -> cargoLimelightSubsystem.setAlliances(fmsSubsystem.getOurAlliance())));
+            () -> cargoLimelightSubsystem.setAlliances(matchMetadataSubsystem.getOurAlliance())));
   }
 }

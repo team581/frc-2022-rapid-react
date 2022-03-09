@@ -4,7 +4,8 @@
 
 package frc.robot.superstructure.lifter;
 
-// Talon FX already has a good built-in simulation system, so we can just extend the real IO class
-public class LifterIOSim extends LifterIOReal implements LifterIO {
+// Talon FX already has a good built-in simulation system, so we can just extend the Falcon 500 IO
+// class
+public class LifterIOSim extends LifterIOFalcon500 implements LifterIO {
   // TODO: Implement
 }
