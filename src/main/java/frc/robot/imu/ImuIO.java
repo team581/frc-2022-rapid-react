@@ -8,7 +8,7 @@ import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface ImuIO extends SubsystemIO {
+public interface ImuIO extends SubsystemIO<ImuIO.Inputs> {
   public class Inputs implements LoggableInputs {
     public double tempCelcius = 0;
     public double rotationRadians = 0;
@@ -27,9 +27,6 @@ public interface ImuIO extends SubsystemIO {
           table.getDouble("TurnRateRadiansPerSecond", turnRateRadiansPerSecond);
     }
   }
-
-  /** Updates the set of loggable inputs. */
-  public void updateInputs(Inputs inputs);
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading();

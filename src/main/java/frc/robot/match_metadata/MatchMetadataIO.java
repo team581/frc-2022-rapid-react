@@ -9,7 +9,7 @@ import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface MatchMetadataIO extends SubsystemIO {
+public interface MatchMetadataIO extends SubsystemIO<MatchMetadataIO.Inputs> {
   public class Inputs implements LoggableInputs {
     public Alliance alliance = Alliance.Invalid;
 
@@ -21,7 +21,4 @@ public interface MatchMetadataIO extends SubsystemIO {
       alliance = Alliance.valueOf(table.getString("Alliance", alliance.name()));
     }
   }
-
-  /** Updates the set of loggable inputs. */
-  public void updateInputs(Inputs inputs);
 }

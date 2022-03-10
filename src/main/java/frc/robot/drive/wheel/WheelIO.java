@@ -9,7 +9,7 @@ import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface WheelIO extends SubsystemIO {
+public interface WheelIO extends SubsystemIO<WheelIO.Inputs> {
   public class Inputs implements LoggableInputs {
     public double appliedVolts = 0;
     public double currentAmps = 0;
@@ -34,9 +34,6 @@ public interface WheelIO extends SubsystemIO {
           table.getDouble("VelocityRadiansPerSecond", velocityRadiansPerSecond);
     }
   }
-
-  /** Updates the set of loggable inputs. */
-  public void updateInputs(Inputs inputs);
 
   /** Sets the output voltage of the wheel's motor. */
   public void setVoltage(double outputVolts);

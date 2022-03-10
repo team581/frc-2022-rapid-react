@@ -4,5 +4,10 @@
 
 package frc.robot.misc;
 
+import org.littletonrobotics.junction.inputs.LoggableInputs;
+
 /** A subsystem's IO interface. */
-public interface SubsystemIO {}
+public interface SubsystemIO<T extends LoggableInputs> {
+  /** Updates the set of loggable inputs. */
+  public void updateInputs(T inputs);
+}
