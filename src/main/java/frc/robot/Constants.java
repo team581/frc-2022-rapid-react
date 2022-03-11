@@ -18,7 +18,7 @@ import frc.robot.misc.exceptions.UnknownTargetRobotException;
  */
 public final class Constants {
   // Change this depending on which robot you are targeting for deployment
-  private static final TargetRobot TARGET_ROBOT = TargetRobot.SIM_BOT;
+  private static final TargetRobot TARGET_ROBOT = TargetRobot.TEST_2020_BOT;
 
   // Change this depending on what your environment is
   public static final Env ENV = Env.DEVELOPMENT;

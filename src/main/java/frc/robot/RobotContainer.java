@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.controller.ButtonController;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.*;
 import frc.robot.drive.commands.VelocityControlTestCommand;
@@ -22,9 +21,6 @@ import frc.robot.match_metadata.MatchMetadataSubsystem;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.paths.commands.SimplePathCommand;
 import frc.robot.superstructure.SuperstructureSubsystem;
-import frc.robot.superstructure.commands.LifterDownAndSnarfCommand;
-import frc.robot.superstructure.commands.LifterUpAndSwifferShootCommand;
-import frc.robot.superstructure.commands.LifterUpAndSwifferStopCommand;
 import frc.robot.superstructure.lifter.*;
 import frc.robot.superstructure.swiffer.*;
 import frc.robot.vision.commands.LoadingBayAlignCommand;
@@ -40,8 +36,6 @@ public class RobotContainer {
 
   private final DriveController driverController =
       new DriveController(new XboxController(Constants.DRIVER_CONTROLLER_PORT));
-  private final ButtonController copilotController =
-      new ButtonController(new XboxController(Constants.COPILOT_CONTROLLER_PORT));
 
   private final MatchMetadataSubsystem matchMetadataSubsystem;
   private final ImuSubsystem imuSubsystem;
@@ -124,7 +118,6 @@ public class RobotContainer {
     // Configure the button bindings. You must call this after the subsystems are defined since they
     // are used to add command requirements.
     configureDriverButtonBindings();
-    configureCopilotButtonBindings();
 
     autoCommand =
         new ParallelCommandGroup(
@@ -140,24 +133,6 @@ public class RobotContainer {
 
     // Resetting field oriented control
     driverController.xButton.whenActive(imuSubsystem::zeroHeading);
-  }
-
-  private void configureCopilotButtonBindings() {
-    // Align for shooting
-    copilotController.aButton.whenHeld(
-        new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
-
-    // Snarfing
-    copilotController
-        .rightTrigger
-        .whenPressed(new LifterDownAndSnarfCommand(superstructureSubsystem))
-        .whenReleased(new LifterUpAndSwifferStopCommand(superstructureSubsystem));
-
-    // Shooting
-    copilotController
-        .leftTrigger
-        .whenPressed(new LifterUpAndSwifferShootCommand(superstructureSubsystem))
-        .whenReleased(new LifterUpAndSwifferStopCommand(superstructureSubsystem));
   }
 
   /**

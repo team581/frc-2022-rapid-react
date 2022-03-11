@@ -21,7 +21,7 @@ public class DriveController extends ButtonController {
 
   /** Scale a joystick value. */
   private static double joystickScale(double x) {
-    return Math.signum(x) * Math.pow(x, 2);
+    return (Math.signum(x) * Math.pow(x, 2)) / 4;
   }
 
   /** The rotation across the robot's x-axis as a percentage (<code>-1 <= x <= 1</code>) */

@@ -97,7 +97,7 @@ public class Drivebase extends SubsystemBase {
 
   public void setCartesianPercentages(
       double xPercentage, double yPercentage, double thetaPercentage, Rotation2d currentRotation) {
-    drive.driveCartesian(yPercentage, xPercentage, thetaPercentage, currentRotation.getDegrees());
+    drive.driveCartesian(yPercentage, xPercentage, thetaPercentage);
   }
 
   public void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
