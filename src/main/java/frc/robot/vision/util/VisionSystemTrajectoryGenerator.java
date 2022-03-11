@@ -8,14 +8,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.vision.LimelightVisionTarget;
+import frc.robot.vision.VisionTarget;
 import java.util.List;
 
 /**
- * A helper class for generating {@link Trajectory trajectories} to align with a {@link
- * LimelightVisionTarget Limelight vision target}.
+ * A helper class for generating {@link Trajectory trajectories} to align with a {@link VisionTarget
+ * vision target}.
  */
-public class LimelightTrajectoryGenerator {
+public class VisionSystemTrajectoryGenerator {
   private final DriveSubsystem driveSubsystem;
 
   /**
@@ -23,19 +23,19 @@ public class LimelightTrajectoryGenerator {
    *
    * @param driveSubsystem Your drive subsystem
    */
-  public LimelightTrajectoryGenerator(DriveSubsystem driveSubsystem) {
+  public VisionSystemTrajectoryGenerator(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
   }
 
   /**
    * Generates a trajectory to go from your current position to a provided goal position by using
-   * the Limelight to get your current position.
+   * the vision system to get your current position.
    *
    * @param target The vision target you want to align with
    * @param goal The goal position relative to the vision target
    * @return A trajectory that will move the robot to the goal position
    */
-  public Trajectory generateTrajectory(LimelightVisionTarget target, Pose2d goal) {
+  public Trajectory generateTrajectory(VisionTarget target, Pose2d goal) {
     return TrajectoryGenerator.generateTrajectory(
         target.getRobotPose(), List.of(), goal, driveSubsystem.trajectoryConfig);
   }

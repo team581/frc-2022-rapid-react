@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.vision.LimelightVisionTarget;
+import frc.robot.vision.VisionTarget;
 import java.util.function.Supplier;
 
 /** Drives in a straight line from your current position to the desired position. */
@@ -33,11 +33,10 @@ public class BeelineCommand extends CommandBase {
   }
 
   /**
-   * Creates a new BeelineCommand that uses the provided {@link LimelightVisionTarget vision target}
-   * for getting the robot pose. The robot will be kept facing the vision target the entire time.
+   * Creates a new BeelineCommand that uses the provided {@link VisionTarget vision target} for
+   * getting the robot pose. The robot will be kept facing the vision target the entire time.
    */
-  public BeelineCommand(
-      DriveSubsystem driveSubsystem, LimelightVisionTarget visionTarget, Pose2d goalPose) {
+  public BeelineCommand(DriveSubsystem driveSubsystem, VisionTarget visionTarget, Pose2d goalPose) {
     this(driveSubsystem, visionTarget::getRobotPose, goalPose, () -> new Rotation2d(0));
   }
 

@@ -4,14 +4,11 @@
 
 package lib.limelight;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.misc.util.Position3d;
 import frc.robot.misc.util.Rotation3d;
 import frc.robot.misc.util.Vector3d;
-import java.util.ArrayList;
-import java.util.List;
 
 /** A wrapper for the Limelight NetworkTables API. */
 public class Limelight {
@@ -119,11 +116,11 @@ public class Limelight {
   /**
    * Coordinate pairs (<code>(x, y)</code>) for the corners of the vision target. The length of the
    * returned list is not guaranteed. If you are trying to detect a rectangular vision target but
-   * only 3 corners are visible then the array will have 3 elements.
+   * only 3 corners are visible then the array will have 6 elements.
    *
    * <p>You must enable "send contours" in the "Output" tab to stream corner coordinates.
    */
-  public List<Pair<Double, Double>> getCorners() {
+  public double[] getCorners() {
     /**
      * Coordinate pairs for the vision target. The array is made up of x and y coordinates that
      * should be grouped together. For example, <code>[10, 20, 30, 40]</code> is an array of 2
@@ -131,14 +128,7 @@ public class Limelight {
      *
      * <p>You must enable "send contours" in the "Output" tab to stream corner coordinates.
      */
-    final var rawCorners = table.getEntry("tcornxy").getDoubleArray(new double[0]);
-    final var corners = new ArrayList<Pair<Double, Double>>();
-
-    for (var i = 0; i < rawCorners.length; i += 2) {
-      corners.add(new Pair<>(rawCorners[i], rawCorners[i + 1]));
-    }
-
-    return corners;
+    return table.getEntry("tcornxy").getDoubleArray(new double[0]);
   }
 
   /**
