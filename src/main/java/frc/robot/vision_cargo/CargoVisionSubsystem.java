@@ -2,17 +2,17 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.limelight_cargo;
+package frc.robot.vision_cargo;
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.limelight_cargo.CargoVisionTarget.Color;
-import frc.robot.vision.LimelightSubsystemBase;
+import frc.robot.vision.VisionSubsystemBase;
+import frc.robot.vision_cargo.CargoVisionTarget.Color;
 
-public class CargoLimelightSubsystem extends LimelightSubsystemBase {
+public class CargoVisionSubsystem extends VisionSubsystemBase {
   public enum Pipelines {
     RED_CARGO(0),
     BLUE_CARGO(1),
@@ -34,9 +34,9 @@ public class CargoLimelightSubsystem extends LimelightSubsystemBase {
   private CargoVisionTarget ourCargoVisionTarget;
   private CargoVisionTarget opponentCargoVisionTarget;
 
-  /** Creates a new CargoLimelightSubsystem. */
-  public CargoLimelightSubsystem() {
-    super("limelight-cargo", 0.0, Units.inchesToMeters(15.5), Pipelines.DRIVER_MODE.index);
+  /** Creates a new CargoVisionSubsystem. */
+  public CargoVisionSubsystem(CargoVisionIO io) {
+    super(io, 0.0, Units.inchesToMeters(15.5), Pipelines.DRIVER_MODE.index);
   }
 
   public CargoVisionTarget getOurCargoVisionTarget() {

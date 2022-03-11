@@ -9,9 +9,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.limelight_cargo.CargoLimelightSubsystem;
 import frc.robot.paths.commands.BeelineCommand;
-import frc.robot.vision.commands.util.AlignWithLimelightCommandFactory;
+import frc.robot.vision.commands.util.AlignWithVisionSystemCommandFactory;
+import frc.robot.vision_cargo.CargoVisionSubsystem;
 
 /** Aligns with the loading bay. */
 public class LoadingBayAlignCommand extends SequentialCommandGroup {
@@ -22,14 +22,14 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
   // position and then use those values as the goal pose
   private static final Pose2d GOAL = new Pose2d(0, 1, GOAL_ROTATION);
 
-  public LoadingBayAlignCommand(DriveSubsystem drive, CargoLimelightSubsystem limelight) {
-    final var commandFactory = new AlignWithLimelightCommandFactory(drive);
+  public LoadingBayAlignCommand(DriveSubsystem drive, CargoVisionSubsystem cargoVisionSubsystem) {
+    final var commandFactory = new AlignWithVisionSystemCommandFactory(drive);
 
     addCommands(
-        new UseVisionTargetCommand(limelight, limelight.loadingBay),
-        new WaitForVisionTargetCommand(limelight),
-        commandFactory.generateCommand(limelight.loadingBay, GOAL),
-        new BeelineCommand(drive, limelight.loadingBay, GOAL),
+        new UseVisionTargetCommand(cargoVisionSubsystem, cargoVisionSubsystem.loadingBay),
+        new WaitForVisionTargetCommand(cargoVisionSubsystem),
+        commandFactory.generateCommand(cargoVisionSubsystem.loadingBay, GOAL),
+        new BeelineCommand(drive, cargoVisionSubsystem.loadingBay, GOAL),
         new InstantCommand(drive::stopMotors));
   }
 }

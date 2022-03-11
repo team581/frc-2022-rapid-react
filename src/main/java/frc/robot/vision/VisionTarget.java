@@ -8,12 +8,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
-/** A vision target for the Limelight. */
-public abstract class LimelightVisionTarget {
+/** A vision target for the vision system. */
+public abstract class VisionTarget {
   /** The index of this vision target's pipeline. */
   public final int pipeline;
 
-  protected final LimelightSubsystemBase limelightSubsystem;
+  protected final VisionSubsystemBase visionSubsystem;
   /**
    * The height from the floor to this vision target, in meters.
    *
@@ -23,15 +23,15 @@ public abstract class LimelightVisionTarget {
    */
   private final double heightFromFloor;
 
-  protected LimelightVisionTarget(
-      LimelightSubsystemBase limelightSubsystem, double heightFromFloor, int pipeline) {
-    this.limelightSubsystem = limelightSubsystem;
+  protected VisionTarget(
+      VisionSubsystemBase visionSubsystem, double heightFromFloor, int pipeline) {
+    this.visionSubsystem = visionSubsystem;
     this.heightFromFloor = heightFromFloor;
     this.pipeline = pipeline;
   }
 
   /**
-   * Calculates the distance "as the crow flies" in meters between the Limelight and this vision
+   * Calculates the distance "as the crow flies" in meters between the camera and this vision
    * target.
    *
    * <p>This value can be used for calculating the y-axis error.
@@ -41,20 +41,19 @@ public abstract class LimelightVisionTarget {
    *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
    */
   private double getDistance() {
-    final var h1 = limelightSubsystem.heightFromFloor;
+    final var h1 = visionSubsystem.heightFromFloor;
     final var h2 = heightFromFloor;
 
-    final var a1 = limelightSubsystem.angleOfElevation;
-    final var a2 = Units.degreesToRadians(limelightSubsystem.limelight.getY());
+    final var a1 = visionSubsystem.angleOfElevation;
+    final var a2 = Units.degreesToRadians(visionSubsystem.getY());
 
     return (h2 - h1) / Math.tan(a1 + a2);
   }
 
   /**
-   * Calculates the strafe distance in meters between the Limelight and this vision target.
+   * Calculates the strafe distance in meters between the camera and this vision target.
    *
-   * <p>This is the x component of the Manhattan distance between the Limelight and this vision
-   * target.
+   * <p>This is the x component of the Manhattan distance between the camera and this vision target.
    *
    * <p>This value can be used for calculating the x-axis error.
    */
@@ -66,7 +65,7 @@ public abstract class LimelightVisionTarget {
   }
 
   private Rotation2d getRotation() {
-    return new Rotation2d(Units.degreesToRadians(limelightSubsystem.limelight.getX()));
+    return new Rotation2d(Units.degreesToRadians(visionSubsystem.getX()));
   }
 
   /**

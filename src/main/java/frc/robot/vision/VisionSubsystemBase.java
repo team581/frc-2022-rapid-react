@@ -5,22 +5,22 @@
 package frc.robot.vision;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.vision.VisionIO.Inputs;
 import frc.robot.vision.commands.UseDriverModeCommand;
 import lib.limelight.Limelight;
 
-public abstract class LimelightSubsystemBase extends SubsystemBase {
-  public final Limelight limelight;
-
+public abstract class VisionSubsystemBase extends SubsystemBase {
   /**
-   * The angle of elevation of this Limelight, in radians.
+   * The angle of elevation of the camera, in radians.
    *
    * @see
    *     <p>The <code>a1</code> angle in this diagram
    *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
    */
   public final double angleOfElevation;
+  // TODO: Consider refactoring this to be a Transform2d to the center of the robot
   /**
-   * The height from the floor to this Limelight, in meters.
+   * The height from the floor to the camera, in meters.
    *
    * @see
    *     <p>The <code>h1</code> distance in this diagram
@@ -31,17 +31,20 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
   private final int driverModePipeline;
   private boolean isDriverMode = false;
 
+  private final VisionIO io;
+  private final Inputs inputs = new Inputs();
+
   /**
-   * Creates a new LimelightSubsystemBase.
+   * Creates a new VisionSubsystemBase.
    *
-   * @param name The NetworkTables name of this Limelight
-   * @param angleOfElevation The Limelight's angle of elevation, in radians
-   * @param heightFromFloor The Limelight's height from the floor, in meters
+   * @param io The IO layer to use
+   * @param angleOfElevation The camera's angle of elevation, in radians
+   * @param heightFromFloor The camera's height from the floor, in meters
    * @param driverModePipeline The index of the pipeline to use when in driver mode
    */
-  protected LimelightSubsystemBase(
-      String name, double angleOfElevation, double heightFromFloor, int driverModePipeline) {
-    this.limelight = new Limelight(name);
+  protected VisionSubsystemBase(
+      VisionIO io, double angleOfElevation, double heightFromFloor, int driverModePipeline) {
+    this.io = io;
     this.angleOfElevation = angleOfElevation;
     this.heightFromFloor = heightFromFloor;
     this.driverModePipeline = driverModePipeline;
@@ -56,9 +59,11 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    io.updateInputs(inputs);
   }
 
-  /** Whether this Limelight is in driver mode. */
+  /** Whether this camera is in driver mode with vision processing disabled. */
   public boolean isDriverMode() {
     return isDriverMode;
   }
@@ -70,9 +75,9 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
    */
   public void useDriverMode() {
     isDriverMode = true;
-    limelight.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
-    limelight.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
-    limelight.setPipeline(driverModePipeline);
+    io.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
+    io.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
+    io.setPipeline(driverModePipeline);
   }
 
   /**
@@ -80,10 +85,22 @@ public abstract class LimelightSubsystemBase extends SubsystemBase {
    *
    * @see {@link frc.robot.vision.commands.UseVisionTargetCommand}
    */
-  public void useVisionTarget(LimelightVisionTarget target) {
+  public void useVisionTarget(VisionTarget target) {
     isDriverMode = false;
-    limelight.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
-    limelight.setStreamingMode(Limelight.StreamingMode.PIP_SECONDARY);
-    limelight.setPipeline(target.pipeline);
+    io.setCamMode(Limelight.CamMode.VISION_PROCESSOR);
+    io.setStreamingMode(Limelight.StreamingMode.PIP_SECONDARY);
+    io.setPipeline(target.pipeline);
+  }
+
+  public double getX() {
+    return inputs.tx;
+  }
+
+  public double getY() {
+    return inputs.ty;
+  }
+
+  public boolean hasTargets() {
+    return inputs.hasTargets;
   }
 }

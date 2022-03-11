@@ -5,13 +5,13 @@
 package frc.robot.vision.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.vision.LimelightSubsystemBase;
+import frc.robot.vision.VisionSubsystemBase;
 
-/** A command that sets the {@link LimelightSubsystemBase Limelight} to use driver mode. */
+/** A command that sets the {@link VisionSubsystemBase Limelight} to use driver mode. */
 public class UseDriverModeCommand extends InstantCommand {
-  private final LimelightSubsystemBase limelightSubsystem;
+  private final VisionSubsystemBase limelightSubsystem;
 
-  public UseDriverModeCommand(LimelightSubsystemBase limelightSubsystem) {
+  public UseDriverModeCommand(VisionSubsystemBase limelightSubsystem) {
     addRequirements(limelightSubsystem);
 
     this.limelightSubsystem = limelightSubsystem;

@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.misc.SubsystemIO;
 import java.util.ArrayList;
 import java.util.List;
+import lib.limelight.Limelight;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
@@ -62,4 +63,10 @@ public interface VisionIO extends SubsystemIO<VisionIO.Inputs> {
               table.getDoubleArray("Corners", translation2dListToCoordinateArray(corners)));
     }
   }
+
+  public void setCamMode(Limelight.CamMode camMode);
+
+  public void setStreamingMode(Limelight.StreamingMode streamingMode);
+
+  public void setPipeline(int pipeline);
 }

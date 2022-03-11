@@ -13,12 +13,7 @@ import frc.robot.drive.*;
 import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.drive.wheel.*;
 import frc.robot.imu.*;
-import frc.robot.limelight_cargo.CargoLimelightSubsystem;
-import frc.robot.limelight_upper.UpperHubLimelightSubsystem;
-import frc.robot.match_metadata.MatchMetadataIOFms;
-import frc.robot.match_metadata.MatchMetadataIOReplay;
-import frc.robot.match_metadata.MatchMetadataIOSim;
-import frc.robot.match_metadata.MatchMetadataSubsystem;
+import frc.robot.match_metadata.*;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.paths.commands.SimplePathCommand;
 import frc.robot.superstructure.SuperstructureSubsystem;
@@ -28,6 +23,8 @@ import frc.robot.superstructure.commands.LifterUpAndSwifferStopCommand;
 import frc.robot.superstructure.lifter.*;
 import frc.robot.superstructure.swiffer.*;
 import frc.robot.vision.commands.LoadingBayAlignCommand;
+import frc.robot.vision_cargo.*;
+import frc.robot.vision_upper.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -46,9 +43,8 @@ public class RobotContainer {
   private final MatchMetadataSubsystem matchMetadataSubsystem;
   private final ImuSubsystem imuSubsystem;
   private final DriveSubsystem driveSubsystem;
-  private final UpperHubLimelightSubsystem upperLimelightSubsystem =
-      new UpperHubLimelightSubsystem();
-  private final CargoLimelightSubsystem cargoLimelightSubsystem = new CargoLimelightSubsystem();
+  private final UpperHubVisionSubsystem upperVisionSubsystem;
+  private final CargoVisionSubsystem cargoVisionSubsystem;
   private final Swiffer swiffer;
   private final Lifter lifter;
   private final SuperstructureSubsystem superstructureSubsystem;
@@ -70,6 +66,8 @@ public class RobotContainer {
               new WheelIOReplay(Corner.FRONT_RIGHT),
               new WheelIOReplay(Corner.REAR_LEFT),
               new WheelIOReplay(Corner.REAR_RIGHT));
+      upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
+      cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
     } else {
       switch (Constants.getRobot()) {
         case COMP_BOT:
@@ -85,6 +83,8 @@ public class RobotContainer {
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
+          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
           break;
         case TEST_2020_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
@@ -99,6 +99,8 @@ public class RobotContainer {
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
+          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOLimelight());
           break;
         case SIM_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOSim());
@@ -113,6 +115,8 @@ public class RobotContainer {
                   new WheelIOSim(Corner.FRONT_RIGHT),
                   new WheelIOSim(Corner.REAR_LEFT),
                   new WheelIOSim(Corner.REAR_RIGHT));
+          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOSim());
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim());
           break;
         default:
           throw new UnknownTargetRobotException();
@@ -127,8 +131,7 @@ public class RobotContainer {
     configureCopilotButtonBindings();
 
     autoCommand =
-        new ParallelCommandGroup(
-            new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
+        new ParallelCommandGroup(new LoadingBayAlignCommand(driveSubsystem, cargoVisionSubsystem));
   }
 
   private void configureDriverButtonBindings() {
@@ -145,7 +148,7 @@ public class RobotContainer {
   private void configureCopilotButtonBindings() {
     // Align for shooting
     copilotController.aButton.whenHeld(
-        new LoadingBayAlignCommand(driveSubsystem, cargoLimelightSubsystem));
+        new LoadingBayAlignCommand(driveSubsystem, cargoVisionSubsystem));
 
     // Snarfing
     copilotController
