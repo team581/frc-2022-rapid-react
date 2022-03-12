@@ -30,8 +30,8 @@ public class Lifter extends SubsystemBase {
       case SIM_BOT:
       default:
         MAX_MOTOR_VOLTAGE = 12;
-        POSITION_TOLERANCE = Rotation2d.fromDegrees(0).getRadians();
-        VELOCITY_TOLERANCE = 0;
+        POSITION_TOLERANCE = Rotation2d.fromDegrees(5).getRadians();
+        VELOCITY_TOLERANCE = 0.25;
         FEEDFORWARD = new ArmFeedforward(0.05, 0.5, 0);
         CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
         break;
