@@ -18,8 +18,18 @@
     },
     "###/LiveWindow/Ungrouped/Scheduler": {
       "Collapsed": "0",
-      "Pos": "980,371",
+      "Pos": "1064,514",
       "Size": "400,200"
+    },
+    "###/LiveWindow/Ungrouped/Talon FX [2]": {
+      "Collapsed": "0",
+      "Pos": "688,538",
+      "Size": "257,60"
+    },
+    "###/SmartDashboard/Lifter Sim": {
+      "Collapsed": "0",
+      "Pos": "520,49",
+      "Size": "1376,913"
     },
     "###FMS": {
       "Collapsed": "0",
@@ -38,7 +48,7 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "625,43",
+      "Pos": "625,42",
       "Size": "750,185"
     },
     "###Other Devices": {
@@ -48,8 +58,8 @@
     },
     "###RoboRIO": {
       "Collapsed": "0",
-      "Pos": "5,125",
-      "Size": "119,146"
+      "Pos": "984,254",
+      "Size": "233,216"
     },
     "###System Joysticks": {
       "Collapsed": "0",

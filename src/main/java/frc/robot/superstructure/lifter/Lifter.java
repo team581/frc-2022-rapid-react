@@ -32,7 +32,7 @@ public class Lifter extends SubsystemBase {
         MAX_MOTOR_VOLTAGE = 12;
         POSITION_TOLERANCE = Rotation2d.fromDegrees(0).getRadians();
         VELOCITY_TOLERANCE = 0;
-        FEEDFORWARD = new ArmFeedforward(0, 0, 0);
+        FEEDFORWARD = new ArmFeedforward(0.05, 0.5, 0);
         CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
         break;
     }
@@ -52,7 +52,7 @@ public class Lifter extends SubsystemBase {
     switch (Constants.getRobot()) {
       case SIM_BOT:
       default:
-        positionPid = new ProfiledPIDController(1, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
+        positionPid = new ProfiledPIDController(1.2, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
         break;
     }
 
@@ -74,7 +74,7 @@ public class Lifter extends SubsystemBase {
 
     final var state = positionPid.getSetpoint();
     Logger.getInstance()
-        .recordOutput("Lifter/MotionProfiledPid/DesiredVelocityMeters", state.velocity);
+        .recordOutput("Lifter/MotionProfiledPid/DesiredVelocityMetersPerSecond", state.velocity);
     Logger.getInstance()
         .recordOutput("Lifter/MotionProfiledPid/DesiredPositionRadians", state.position);
 
