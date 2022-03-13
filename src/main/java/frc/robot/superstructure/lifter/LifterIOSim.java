@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants;
 
-// Talon FX already has a good built-in simulation system, so we can just extend the Falcon 500 IO
-// class
 public class LifterIOSim implements LifterIO {
   /** Mass of arm in kilograms. */
   // TODO: Update from CAD once arm is finalized
