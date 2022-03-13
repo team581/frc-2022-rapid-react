@@ -140,3 +140,7 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,linux,macos,windows,gradle,visualstudiocode
 
 /bin/
+
+# AdvantageKit logs
+*.rlog
+!logs/*.rlog
