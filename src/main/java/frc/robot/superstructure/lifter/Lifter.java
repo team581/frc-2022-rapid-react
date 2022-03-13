@@ -28,11 +28,17 @@ public class Lifter extends SubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case SIM_BOT:
+        MAX_MOTOR_VOLTAGE = 12;
+        POSITION_TOLERANCE = Rotation2d.fromDegrees(5).getRadians();
+        VELOCITY_TOLERANCE = 0.25;
+        FEEDFORWARD = new ArmFeedforward(0, 0, 0);
+        CONSTRAINTS = new TrapezoidProfile.Constraints(2, 4);
+        break;
       default:
         MAX_MOTOR_VOLTAGE = 12;
         POSITION_TOLERANCE = Rotation2d.fromDegrees(5).getRadians();
         VELOCITY_TOLERANCE = 0.25;
-        FEEDFORWARD = new ArmFeedforward(0.05, 0.5, 0);
+        FEEDFORWARD = new ArmFeedforward(0, 0, 0);
         CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
         break;
     }
@@ -52,7 +58,7 @@ public class Lifter extends SubsystemBase {
     switch (Constants.getRobot()) {
       case SIM_BOT:
       default:
-        positionPid = new ProfiledPIDController(1.2, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
+        positionPid = new ProfiledPIDController(0, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
         break;
     }
 

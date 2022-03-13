@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public enum LifterPosition {
   UP(Rotation2d.fromDegrees(60)),
-  DOWN(new Rotation2d(0));
+  DOWN(Rotation2d.fromDegrees(120));
 
   public final Rotation2d angle;
 

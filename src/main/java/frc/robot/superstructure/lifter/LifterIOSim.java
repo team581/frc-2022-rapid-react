@@ -21,43 +21,43 @@ import frc.robot.Constants;
 // class
 public class LifterIOSim implements LifterIO {
   /** Mass of arm in kilograms. */
-  private static final double MASS = 2.5;
+  // TODO: Update from CAD once arm is finalized
+  private static final double MASS = 6.5;
+
+  /** Height of arm in meters. */
+  // TODO: Update from CAD once arm is finalized
+  private static final double HEIGHT = 0.811;
 
   /** Length of arm in meters. */
-  private static final double LENGTH = 0.5;
+  // TODO: Update from CAD once arm is finalized
+  private static final double WIDTH = 2.076;
 
   /** Gearing of the arm. */
-  private static final double GEARING_RATIO = 10.71;
+  private static final double GEARING_RATIO = 5;
 
-  private final DCMotor motor = DCMotor.getFalcon500(5);
+  /** A scalar value to convert meters to pixels for rendering in the simulation UI. */
+  private static final double SIM_SCALAR = 30;
+
+  private final DCMotor motor = DCMotor.getFalcon500(1);
 
   private final SingleJointedArmSim sim =
       new SingleJointedArmSim(
           motor,
           GEARING_RATIO,
-          SingleJointedArmSim.estimateMOI(LENGTH, MASS),
-          LENGTH,
-          // LifterPosition.DOWN.angle.getRadians(),
-          0,
-          // LifterPosition.UP.angle.getRadians(),
-          2 * Math.PI,
+          SingleJointedArmSim.estimateMOI(WIDTH, MASS),
+          WIDTH,
+          Double.NEGATIVE_INFINITY,
+          Double.POSITIVE_INFINITY,
           MASS,
           true);
 
-  private final Mechanism2d lifter2d = new Mechanism2d(LENGTH * 60, LENGTH * 60);
+  private final Mechanism2d lifter2d = new Mechanism2d(WIDTH * SIM_SCALAR, HEIGHT * SIM_SCALAR * 4);
   private final MechanismRoot2d lifterPivot =
-      lifter2d.getRoot("ArmPivot", LENGTH * 30, LENGTH * 30);
+      lifter2d.getRoot("ArmPivot", (WIDTH * SIM_SCALAR) / 2, 0);
   private final MechanismLigament2d lifterTower =
-      lifterPivot.append(
-          new MechanismLigament2d("ArmTower", LENGTH * 30, LifterPosition.UP.angle.getRadians()));
+      lifterPivot.append(new MechanismLigament2d("ArmTower", HEIGHT * SIM_SCALAR, 90));
   private final MechanismLigament2d lifter =
-      lifterPivot.append(
-          new MechanismLigament2d(
-              "Arm",
-              LENGTH * 30,
-              LifterPosition.UP.angle.getDegrees(),
-              6,
-              new Color8Bit(Color.kYellow)));
+      lifterTower.append(new MechanismLigament2d("Arm", WIDTH * SIM_SCALAR, 0));
 
   private double desiredVolts = 0;
   /** The angle offset in radians. */
@@ -88,7 +88,7 @@ public class LifterIOSim implements LifterIO {
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(sim.getCurrentDrawAmps()));
 
-    lifter.setAngle(Units.radiansToDegrees(sim.getAngleRads()));
+    lifter.setAngle(Units.radiansToDegrees((sim.getAngleRads() - angleOffset)));
 
     inputs.appliedVolts = desiredVolts;
     inputs.currentAmps = sim.getCurrentDrawAmps();
