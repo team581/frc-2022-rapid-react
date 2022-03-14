@@ -49,7 +49,7 @@ public class Lifter extends SubsystemBase {
       case SIM_BOT:
       default:
         MAX_MOTOR_VOLTAGE = 12;
-        CONSTRAINTS = new TrapezoidProfile.Constraints(2, 3);
+        CONSTRAINTS = new TrapezoidProfile.Constraints(99, 99);
         break;
     }
   }
