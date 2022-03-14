@@ -4,6 +4,8 @@
 
 package frc.robot.superstructure.lifter;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class LifterIOReplay implements LifterIO {
   @Override
   public void updateInputs(Inputs inputs) {
@@ -16,7 +18,7 @@ public class LifterIOReplay implements LifterIO {
   }
 
   @Override
-  public void zeroEncoder() {
+  public void setEncoderPosition(Rotation2d rotation) {
     // Intentionally left empty
   }
 }

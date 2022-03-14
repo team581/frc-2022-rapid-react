@@ -6,16 +6,19 @@ package frc.robot.superstructure.lifter;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.io.Falcon500IO;
 
 public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
-  private final WPI_TalonFX motor;
+  protected static final double GEARING = 10.71;
+
+  protected final WPI_TalonFX motor;
 
   public LifterIOFalcon500() {
     switch (frc.robot.Constants.getRobot()) {
       case SIM_BOT:
-        setGearing(1);
+        setGearing(GEARING);
         motor = new WPI_TalonFX(1);
         break;
       default:
@@ -34,7 +37,8 @@ public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
     inputs.positionRadians = sensorUnitsToRadians(motor.getSelectedSensorPosition());
-    inputs.velocityRadiansPerSecond = sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
+    inputs.velocityRadiansPerSecond =
+        sensorUnitsPer100msToRadiansPerSecond(motor.getSelectedSensorVelocity());
   }
 
   @Override
@@ -43,7 +47,7 @@ public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
   }
 
   @Override
-  public void zeroEncoder() {
-    motor.setSelectedSensorPosition(0);
+  public void setEncoderPosition(Rotation2d rotation) {
+    motor.setSelectedSensorPosition(radiansToSensorUnits(rotation.getRadians()));
   }
 }

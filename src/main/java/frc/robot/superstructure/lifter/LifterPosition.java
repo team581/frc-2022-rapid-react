@@ -7,8 +7,8 @@ package frc.robot.superstructure.lifter;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public enum LifterPosition {
-  UP(Rotation2d.fromDegrees(60)),
-  DOWN(Rotation2d.fromDegrees(120));
+  UP(Rotation2d.fromDegrees(120)),
+  DOWN(Rotation2d.fromDegrees(70));
 
   public final Rotation2d angle;
 

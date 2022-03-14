@@ -1,13 +1,13 @@
 {
   "MainWindow": {
     "GLOBAL": {
-      "height": "994",
-      "maximized": "0",
+      "height": "1387",
+      "maximized": "1",
       "style": "0",
       "userScale": "3",
-      "width": "1792",
-      "xpos": "0",
-      "ypos": "53"
+      "width": "3440",
+      "xpos": "-106",
+      "ypos": "-1163"
     }
   },
   "Window": {
@@ -28,7 +28,7 @@
     },
     "###/SmartDashboard/Lifter Sim": {
       "Collapsed": "0",
-      "Pos": "520,49",
+      "Pos": "1825,241",
       "Size": "1376,913"
     },
     "###FMS": {
@@ -78,7 +78,7 @@
     },
     "Robot State": {
       "Collapsed": "0",
-      "Pos": "444,74",
+      "Pos": "445,74",
       "Size": "109,114"
     }
   }

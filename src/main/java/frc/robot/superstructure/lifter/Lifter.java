@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.superstructure.lifter.LifterIO.Inputs;
@@ -31,7 +32,7 @@ public class Lifter extends SubsystemBase {
         MAX_MOTOR_VOLTAGE = 12;
         POSITION_TOLERANCE = Rotation2d.fromDegrees(5).getRadians();
         VELOCITY_TOLERANCE = 0.25;
-        FEEDFORWARD = new ArmFeedforward(0, 0, 0);
+        FEEDFORWARD = new ArmFeedforward(15, 0, 0);
         CONSTRAINTS = new TrapezoidProfile.Constraints(2, 4);
         break;
       default:
@@ -58,13 +59,20 @@ public class Lifter extends SubsystemBase {
     switch (Constants.getRobot()) {
       case SIM_BOT:
       default:
-        positionPid = new ProfiledPIDController(0, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
+        positionPid = new ProfiledPIDController(25, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
         break;
     }
 
     positionPid.setTolerance(POSITION_TOLERANCE, VELOCITY_TOLERANCE);
 
     // Lifter starts in the up position at match start
+    if (RobotBase.isSimulation()) {
+      // TODO: Fix the visualization starting in the down position
+      io.setEncoderPosition(LifterPosition.DOWN.angle);
+    } else {
+      io.setEncoderPosition(LifterPosition.UP.angle);
+    }
+
     setDesiredPosition(LifterPosition.UP);
   }
 
@@ -75,6 +83,16 @@ public class Lifter extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Lifter", inputs);
     Logger.getInstance().recordOutput("Lifter/DesiredPosition", desiredPosition.toString());
+    if (atPosition(LifterPosition.UP)) {
+      Logger.getInstance().recordOutput("Lifter/Position", LifterPosition.UP.toString());
+    } else if (atPosition(LifterPosition.DOWN)) {
+      Logger.getInstance().recordOutput("Lifter/Position", LifterPosition.DOWN.toString());
+    } else {
+      Logger.getInstance().recordOutput("Lifter/Position", "");
+    }
+
+    Logger.getInstance()
+        .recordOutput("Lifter/DownPosition", LifterPosition.DOWN.angle.getRadians());
     Logger.getInstance()
         .recordOutput("Lifter/DesiredPositionRadians", positionPid.getGoal().position);
 
@@ -99,15 +117,15 @@ public class Lifter extends SubsystemBase {
     io.setVoltage(clampedVoltage);
   }
 
+  /** Check if the lifter is at the provided position. */
+  public boolean atPosition(LifterPosition position) {
+    return desiredPosition == position && positionPid.atGoal();
+  }
+
   /** Set the desired position of the lifter to the provided position. */
   public void setDesiredPosition(LifterPosition position) {
     desiredPosition = position;
     setDesiredPosition(position.angle);
-  }
-
-  /** Check if the lifter is at the provided position. */
-  public boolean atPosition(LifterPosition position) {
-    return desiredPosition == position && positionPid.atGoal();
   }
 
   /** Set the desired position of the lifter to the provided angle. */
