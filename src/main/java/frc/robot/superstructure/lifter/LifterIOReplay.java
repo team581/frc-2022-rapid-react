@@ -5,8 +5,21 @@
 package frc.robot.superstructure.lifter;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import frc.robot.Constants;
+import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 
 public class LifterIOReplay implements LifterIO {
+  @Override
+  public DCMotor getMotorSim() {
+    switch (Constants.getRobot()) {
+      case SIM_BOT:
+        return DCMotor.getFalcon500(1);
+      default:
+        throw new UnsupportedSubsystemException(this);
+    }
+  }
+
   @Override
   public void updateInputs(Inputs inputs) {
     // Intentionally left empty

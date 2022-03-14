@@ -7,18 +7,17 @@ package frc.robot.superstructure.lifter;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.io.Falcon500IO;
 
 public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
-  protected static final double GEARING = 10.71;
-
   protected final WPI_TalonFX motor;
 
   public LifterIOFalcon500() {
     switch (frc.robot.Constants.getRobot()) {
       case SIM_BOT:
-        setGearing(GEARING);
+        setGearing(Lifter.GEARING);
         motor = new WPI_TalonFX(1);
         break;
       default:
@@ -29,6 +28,11 @@ public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
     // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
     motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     motor.configVelocityMeasurementWindow(1);
+  }
+
+  @Override
+  public DCMotor getMotorSim() {
+    return DCMotor.getFalcon500(1);
   }
 
   @Override

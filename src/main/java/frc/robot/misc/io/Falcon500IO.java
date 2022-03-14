@@ -34,15 +34,15 @@ public abstract class Falcon500IO {
   }
 
   /** Converts radians with gearing reduction applied to sensor units. */
-  protected int radiansToSensorUnits(double radians) {
-    return (int) Math.round(radians * gearing * Constants.SENSOR_UNITS_PER_RADIAN);
+  protected double radiansToSensorUnits(double radians) {
+    return radians * gearing * Constants.SENSOR_UNITS_PER_RADIAN;
   }
 
   protected double sensorUnitsPer100msToRadiansPerSecond(double sensorUnitsPer100ms) {
-    return radiansToSensorUnits(sensorUnitsPer100ms * 10);
+    return sensorUnitsToRadians(sensorUnitsPer100ms * 10);
   }
 
-  protected int radiansPerSecondToSensorUnitsPer100ms(double radiansPerSecond) {
-    return (int) Math.round(sensorUnitsToRadians(radiansPerSecond / 10));
+  protected double radiansPerSecondToSensorUnitsPer100ms(double radiansPerSecond) {
+    return radiansToSensorUnits(radiansPerSecond / 10);
   }
 }

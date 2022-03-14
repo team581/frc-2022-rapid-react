@@ -5,6 +5,7 @@
 package frc.robot.superstructure.lifter;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -34,6 +35,8 @@ public interface LifterIO extends SubsystemIO<LifterIO.Inputs> {
           table.getDouble("VelocityRadiansPerSecond", velocityRadiansPerSecond);
     }
   }
+
+  public DCMotor getMotorSim();
 
   /** Sets the output voltage of the lifter's motor. */
   public void setVoltage(double volts);
