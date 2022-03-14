@@ -41,7 +41,7 @@ public class Lifter extends SubsystemBase {
   /** Maximum acceptable position error (in radians). */
   private static final double MAX_POSITION_ERROR = Units.degreesToRadians(1);
 
-  /** Maximum acceptable velocity error (in radians per second). */
+  /** Maximum acceptable angular velocity error (in radians per second). */
   private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(10);
 
   static {
@@ -150,8 +150,7 @@ public class Lifter extends SubsystemBase {
     // state with out Kalman filter
     loop.predict(Constants.PERIOD_SECONDS);
 
-    // Send the new calculated voltage to the motors.
-    // voltage = duty cycle * battery voltage, so
+    // Send the new calculated voltage to the motors. voltage = duty cycle * battery voltage, so
     // duty cycle = voltage / battery voltage
     final var nextVoltage = loop.getU(0);
     io.setVoltage(nextVoltage);
