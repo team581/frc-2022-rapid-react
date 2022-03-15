@@ -17,6 +17,7 @@ public interface LifterIO extends SubsystemIO<LifterIO.Inputs> {
     public double tempCelcius = 0;
     public double positionRadians = 0;
     public double velocityRadiansPerSecond = 0;
+    public boolean isReady = false;
 
     public void toLog(LogTable table) {
       table.put("AppliedVolts", appliedVolts);
@@ -24,6 +25,7 @@ public interface LifterIO extends SubsystemIO<LifterIO.Inputs> {
       table.put("TempCelcius", tempCelcius);
       table.put("PositionRadians", positionRadians);
       table.put("VelocityRadiansPerSecond", velocityRadiansPerSecond);
+      table.put("IsReady", isReady);
     }
 
     public void fromLog(LogTable table) {
@@ -33,6 +35,7 @@ public interface LifterIO extends SubsystemIO<LifterIO.Inputs> {
       positionRadians = table.getDouble("PositionRadians", positionRadians);
       velocityRadiansPerSecond =
           table.getDouble("VelocityRadiansPerSecond", velocityRadiansPerSecond);
+      isReady = table.getBoolean("IsReady", isReady);
     }
   }
 

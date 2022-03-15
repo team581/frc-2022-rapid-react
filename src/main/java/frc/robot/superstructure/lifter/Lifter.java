@@ -16,6 +16,7 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -45,7 +46,7 @@ public class Lifter extends SubsystemBase {
   private static final double MAX_POSITION_ERROR = Units.degreesToRadians(1);
 
   /** Maximum acceptable angular velocity error (in radians per second). */
-  private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(5);
+  private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(1);
 
   /**
    * A feedforward for the arm's gravity. An entire {@link ArmFeedforward} instance isn't required
@@ -63,10 +64,14 @@ public class Lifter extends SubsystemBase {
         CONSTRAINTS = new TrapezoidProfile.Constraints(99, 99);
         break;
       case SIM_BOT:
-      default:
         GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
         MAX_MOTOR_VOLTAGE = 12;
         CONSTRAINTS = new TrapezoidProfile.Constraints(99, 99);
+        break;
+      default:
+        GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
+        MAX_MOTOR_VOLTAGE = 12;
+        CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
         break;
     }
   }
@@ -140,7 +145,11 @@ public class Lifter extends SubsystemBase {
         .recordOutput("Lifter/PositionConstants/Down", LifterPosition.DOWN.state.position);
     Logger.getInstance().recordOutput("Lifter/AtReference", atPosition(desiredPosition));
 
-    doPositionControlLoop();
+    // Avoid messing up the Kalman filter's state by making it believe we're using its output
+    // voltages when the robot is disabled or the motor is not ready yet
+    if (DriverStation.isEnabled() && inputs.isReady) {
+      doPositionControlLoop();
+    }
 
     Logger.getInstance()
         .recordOutput("Lifter/Reference/DesiredPositionRadians", lastProfiledReference.position);

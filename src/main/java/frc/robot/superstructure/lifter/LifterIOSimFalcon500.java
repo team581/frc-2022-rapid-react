@@ -30,12 +30,9 @@ public class LifterIOSimFalcon500 extends LifterIOFalcon500 implements LifterIO 
           Lifter.GEARING,
           Lifter.MOMENT_OF_INERTIA,
           Lifter.ARM_LENGTH,
-          Math.min(
-              LifterPosition.DOWN.state.position + ANGLE_OFFSET,
-              LifterPosition.UP.state.position + ANGLE_OFFSET),
-          Math.max(
-              LifterPosition.DOWN.state.position + ANGLE_OFFSET,
-              LifterPosition.UP.state.position + ANGLE_OFFSET),
+          // This assumes that the DOWN position has an angle higher than the UP position
+          LifterPosition.DOWN.state.position + ANGLE_OFFSET,
+          LifterPosition.UP.state.position + ANGLE_OFFSET,
           Lifter.ARM_MASS,
           // WPILib doesn't support a partial gravity simulation, so we can't simulate the
           // overcentered arm which helps negate some of the effects of gravity. In practice, this
@@ -44,7 +41,8 @@ public class LifterIOSimFalcon500 extends LifterIOFalcon500 implements LifterIO 
   private final Mechanism2d lifter2d =
       new Mechanism2d(Lifter.ARM_LENGTH * 1.5, TOWER_HEIGHT + Lifter.ARM_LENGTH);
   private final MechanismRoot2d lifterPivot =
-      lifter2d.getRoot("ArmPivot", (Lifter.ARM_LENGTH * 1.5) / 4, 0);
+      lifter2d.getRoot(
+          "ArmPivot", (Lifter.ARM_LENGTH * 1.5) / 4, (TOWER_HEIGHT + Lifter.ARM_LENGTH) / 4);
   private final MechanismLigament2d lifterTower =
       lifterPivot.append(new MechanismLigament2d("ArmTower", -TOWER_HEIGHT, -90));
   private final MechanismLigament2d lifter =
@@ -69,16 +67,16 @@ public class LifterIOSimFalcon500 extends LifterIOFalcon500 implements LifterIO 
 
     sim.update(Constants.PERIOD_SECONDS);
 
-    var positionRadians = sim.getAngleRads();
+    var sensorPositionRadians = sim.getAngleRads();
 
     if (LifterIOFalcon500.INVERTED) {
       // TalonFX simulation software doesn't invert the encoder values you provide when setting the
       // simulated sensor position, so we manually do it if the motor is inverted
-      positionRadians *= -1;
+      sensorPositionRadians *= -1;
     }
 
     simMotor.setIntegratedSensorRawPosition(
-        (int) Math.round(radiansToSensorUnits(positionRadians)));
+        (int) Math.round(radiansToSensorUnits(sensorPositionRadians)));
     simMotor.setIntegratedSensorVelocity(
         (int) Math.round(radiansPerSecondToSensorUnitsPer100ms(sim.getVelocityRadPerSec())));
 
@@ -87,7 +85,7 @@ public class LifterIOSimFalcon500 extends LifterIOFalcon500 implements LifterIO 
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(sim.getCurrentDrawAmps()));
 
-    lifter.setAngle(Units.radiansToDegrees(positionRadians));
+    lifter.setAngle(Units.radiansToDegrees(sim.getAngleRads()));
 
     super.updateInputs(inputs);
   }
