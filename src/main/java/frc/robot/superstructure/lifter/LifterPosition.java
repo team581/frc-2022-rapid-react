@@ -8,8 +8,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public enum LifterPosition {
-  UP(Rotation2d.fromDegrees(120)),
-  DOWN(Rotation2d.fromDegrees(70));
+  UP(Rotation2d.fromDegrees(50)),
+  DOWN(Rotation2d.fromDegrees(0));
 
   public final TrapezoidProfile.State state;
 

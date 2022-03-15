@@ -6,14 +6,17 @@ package frc.robot.superstructure.lifter;
 
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
 import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.superstructure.lifter.LifterIO.Inputs;
@@ -42,12 +45,26 @@ public class Lifter extends SubsystemBase {
   private static final double MAX_POSITION_ERROR = Units.degreesToRadians(1);
 
   /** Maximum acceptable angular velocity error (in radians per second). */
-  private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(10);
+  private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(5);
+
+  /**
+   * A feedforward for the arm's gravity. An entire {@link ArmFeedforward} instance isn't required
+   * as we're setting every value to 0 except for the gravity gain (kcos), you could just add <code>
+   * kcos * cos(desiredAngle)</code>. Using an entire feedforward object is clearer though.
+   */
+  private static final ArmFeedforward GRAVITY_FEEDFORWARD;
 
   static {
     switch (Constants.getRobot()) {
+      case COMP_BOT:
+        // TODO: Use SysID to calculate the gravity term
+        GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
+        MAX_MOTOR_VOLTAGE = 12;
+        CONSTRAINTS = new TrapezoidProfile.Constraints(99, 99);
+        break;
       case SIM_BOT:
       default:
+        GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
         MAX_MOTOR_VOLTAGE = 12;
         CONSTRAINTS = new TrapezoidProfile.Constraints(99, 99);
         break;
@@ -62,11 +79,14 @@ public class Lifter extends SubsystemBase {
 
   // Lifter starts in the up position
   private LifterPosition desiredPosition = LifterPosition.UP;
-  private TrapezoidProfile.State lastProfiledReference = desiredPosition.state;
+  private TrapezoidProfile.State lastProfiledReference;
+  private double nextVoltage = 0;
 
   /** Creates a new Lifter. */
   public Lifter(LifterIO io) {
     this.io = io;
+
+    seedSensorPosition();
 
     final LinearSystem<N2, N1, N1> armPlant =
         LinearSystemId.createSingleJointedArmSystem(io.getMotorSim(), MOMENT_OF_INERTIA, GEARING);
@@ -127,6 +147,21 @@ public class Lifter extends SubsystemBase {
     Logger.getInstance()
         .recordOutput(
             "Lifter/Reference/DesiredVelocityRadiansPerSecond", lastProfiledReference.velocity);
+    Logger.getInstance().recordOutput("Lifter/DesiredAppliedVolts", nextVoltage);
+  }
+
+  private void seedSensorPosition() {
+    var initialPosition = LifterPosition.UP;
+
+    if (RobotBase.isSimulation()) {
+      // TODO: Lifter visualization should start in the UP position
+      initialPosition = LifterPosition.DOWN;
+    }
+
+    lastProfiledReference = initialPosition.state;
+
+    // We want the down position to be a rotation of 0
+    io.setEncoderPosition(new Rotation2d(initialPosition.state.position));
   }
 
   private void doPositionControlLoop() {
@@ -144,7 +179,10 @@ public class Lifter extends SubsystemBase {
 
     // Send the new calculated voltage to the motors. voltage = duty cycle * battery voltage, so
     // duty cycle = voltage / battery voltage
-    final var nextVoltage = loop.getU(0);
+    nextVoltage =
+        loop.getU(0)
+            + GRAVITY_FEEDFORWARD.calculate(
+                lastProfiledReference.position, lastProfiledReference.velocity);
     io.setVoltage(nextVoltage);
   }
 

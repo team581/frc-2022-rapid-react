@@ -14,6 +14,8 @@ import frc.robot.misc.io.Falcon500IO;
 public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
   protected final WPI_TalonFX motor;
 
+  protected static final boolean INVERTED = false;
+
   public LifterIOFalcon500() {
     switch (frc.robot.Constants.getRobot()) {
       case SIM_BOT:
@@ -23,6 +25,8 @@ public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
       default:
         throw new UnsupportedSubsystemException(this);
     }
+
+    motor.setInverted(INVERTED);
 
     // TODO: These values probably need to be tuned - see tuning instructions
     // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
@@ -40,9 +44,12 @@ public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
-    inputs.positionRadians = sensorUnitsToRadians(motor.getSelectedSensorPosition());
-    inputs.velocityRadiansPerSecond =
-        sensorUnitsPer100msToRadiansPerSecond(motor.getSelectedSensorVelocity());
+    // Motor is inverted so we invert the encoder measurements as well
+    var position = motor.getSelectedSensorPosition();
+    var velocity = motor.getSelectedSensorVelocity();
+
+    inputs.positionRadians = sensorUnitsToRadians(position);
+    inputs.velocityRadiansPerSecond = sensorUnitsPer100msToRadiansPerSecond(velocity);
   }
 
   @Override

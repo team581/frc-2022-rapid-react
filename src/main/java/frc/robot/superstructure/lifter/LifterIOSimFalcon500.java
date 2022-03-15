@@ -19,6 +19,8 @@ import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
 public class LifterIOSimFalcon500 extends LifterIOFalcon500 implements LifterIO {
+  private static final double ANGLE_OFFSET = Units.degreesToRadians(70);
+
   /** Height in meters of the tower the arm is attached to. */
   private static final double TOWER_HEIGHT = 330.20 / 1e3;
 
@@ -28,11 +30,19 @@ public class LifterIOSimFalcon500 extends LifterIOFalcon500 implements LifterIO 
           Lifter.GEARING,
           Lifter.MOMENT_OF_INERTIA,
           Lifter.ARM_LENGTH,
-          LifterPosition.DOWN.state.position,
-          LifterPosition.UP.state.position,
+          Math.min(
+              LifterPosition.DOWN.state.position + ANGLE_OFFSET,
+              LifterPosition.UP.state.position + ANGLE_OFFSET),
+          Math.max(
+              LifterPosition.DOWN.state.position + ANGLE_OFFSET,
+              LifterPosition.UP.state.position + ANGLE_OFFSET),
           Lifter.ARM_MASS,
-          true);
-  private final Mechanism2d lifter2d = new Mechanism2d(Lifter.ARM_LENGTH * 1.5, TOWER_HEIGHT * 2);
+          // WPILib doesn't support a partial gravity simulation, so we can't simulate the
+          // overcentered arm which helps negate some of the effects of gravity. In practice, this
+          // allows the arm to stay in the upright position without needing constant motor output.
+          false);
+  private final Mechanism2d lifter2d =
+      new Mechanism2d(Lifter.ARM_LENGTH * 1.5, TOWER_HEIGHT + Lifter.ARM_LENGTH);
   private final MechanismRoot2d lifterPivot =
       lifter2d.getRoot("ArmPivot", (Lifter.ARM_LENGTH * 1.5) / 4, 0);
   private final MechanismLigament2d lifterTower =
@@ -59,7 +69,13 @@ public class LifterIOSimFalcon500 extends LifterIOFalcon500 implements LifterIO 
 
     sim.update(Constants.PERIOD_SECONDS);
 
-    final var positionRadians = sim.getAngleRads();
+    var positionRadians = sim.getAngleRads();
+
+    if (LifterIOFalcon500.INVERTED) {
+      // TalonFX simulation software doesn't invert the encoder values you provide when setting the
+      // simulated sensor position, so we manually do it if the motor is inverted
+      positionRadians *= -1;
+    }
 
     simMotor.setIntegratedSensorRawPosition(
         (int) Math.round(radiansToSensorUnits(positionRadians)));
