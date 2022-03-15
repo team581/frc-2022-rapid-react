@@ -14,7 +14,6 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.superstructure.lifter.LifterIO.Inputs;
@@ -22,15 +21,16 @@ import org.littletonrobotics.junction.Logger;
 
 public class Lifter extends SubsystemBase {
   /** Mass of arm in kilograms. */
-  // TODO: Update from CAD once arm is finalized
-  public static final double ARM_MASS = 5;
+  public static final double ARM_MASS = 4776.833 / 1e3;
 
   /** Length of arm in meters. */
-  // TODO: Update from CAD once arm is finalized
-  public static final double ARM_LENGTH = 2.076;
+  public static final double ARM_LENGTH = 838.20 / 1e3;
+
+  /** Moment of inertia (Iyy in Fusion 360) in kg m^2. */
+  public static final double MOMENT_OF_INERTIA = 3.084;
 
   /** Gear ratio of motor. */
-  public static final double GEARING = 20;
+  public static final double GEARING = 14;
 
   private static final double MAX_MOTOR_VOLTAGE;
 
@@ -69,8 +69,7 @@ public class Lifter extends SubsystemBase {
     this.io = io;
 
     final LinearSystem<N2, N1, N1> armPlant =
-        LinearSystemId.createSingleJointedArmSystem(
-            io.getMotorSim(), SingleJointedArmSim.estimateMOI(ARM_LENGTH, ARM_MASS), GEARING);
+        LinearSystemId.createSingleJointedArmSystem(io.getMotorSim(), MOMENT_OF_INERTIA, GEARING);
 
     final KalmanFilter<N2, N1, N1> observer =
         new KalmanFilter<>(
@@ -119,14 +118,7 @@ public class Lifter extends SubsystemBase {
         .recordOutput("Lifter/PositionConstants/Up", LifterPosition.UP.state.position);
     Logger.getInstance()
         .recordOutput("Lifter/PositionConstants/Down", LifterPosition.DOWN.state.position);
-
-    if (atPosition(LifterPosition.UP)) {
-      Logger.getInstance().recordOutput("Lifter/Position", LifterPosition.UP.toString());
-    } else if (atPosition(LifterPosition.DOWN)) {
-      Logger.getInstance().recordOutput("Lifter/Position", LifterPosition.DOWN.toString());
-    } else {
-      Logger.getInstance().recordOutput("Lifter/Position", "UNKNOWN");
-    }
+    Logger.getInstance().recordOutput("Lifter/AtReference", atPosition(desiredPosition));
 
     doPositionControlLoop();
 
