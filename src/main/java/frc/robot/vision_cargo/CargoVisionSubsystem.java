@@ -36,7 +36,7 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
 
   /** Creates a new CargoVisionSubsystem. */
   public CargoVisionSubsystem(CargoVisionIO io) {
-    super(io, 0.0, Units.inchesToMeters(15.5), Pipelines.DRIVER_MODE.index);
+    super("CargoVision", io, 0.0, Units.inchesToMeters(15.5), Pipelines.DRIVER_MODE.index);
   }
 
   public CargoVisionTarget getOurCargoVisionTarget() {

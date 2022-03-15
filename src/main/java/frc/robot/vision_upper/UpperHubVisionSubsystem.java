@@ -23,6 +23,6 @@ public class UpperHubVisionSubsystem extends VisionSubsystemBase {
   /** Creates a new UpperHubVisionSubsystem. */
   public UpperHubVisionSubsystem(UpperHubVisionIO io) {
     // TODO: Add in the camera's angle of elevation and height
-    super(io, -1.0, -1.0, Pipelines.DRIVER_MODE.index);
+    super("UpperVision", io, -1.0, -1.0, Pipelines.DRIVER_MODE.index);
   }
 }

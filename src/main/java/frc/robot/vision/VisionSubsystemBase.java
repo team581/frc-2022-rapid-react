@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.vision.VisionIO.Inputs;
 import frc.robot.vision.commands.UseDriverModeCommand;
 import lib.limelight.Limelight;
+import org.littletonrobotics.junction.Logger;
 
 public abstract class VisionSubsystemBase extends SubsystemBase {
   /**
@@ -33,17 +34,24 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
 
   private final VisionIO io;
   private final Inputs inputs = new Inputs();
+  private final String loggerName;
 
   /**
    * Creates a new VisionSubsystemBase.
    *
+   * @param loggerName The name to use in the logger
    * @param io The IO layer to use
    * @param angleOfElevation The camera's angle of elevation, in radians
    * @param heightFromFloor The camera's height from the floor, in meters
    * @param driverModePipeline The index of the pipeline to use when in driver mode
    */
   protected VisionSubsystemBase(
-      VisionIO io, double angleOfElevation, double heightFromFloor, int driverModePipeline) {
+      String loggerName,
+      VisionIO io,
+      double angleOfElevation,
+      double heightFromFloor,
+      int driverModePipeline) {
+    this.loggerName = loggerName;
     this.io = io;
     this.angleOfElevation = angleOfElevation;
     this.heightFromFloor = heightFromFloor;
@@ -61,6 +69,7 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
     // This method will be called once per scheduler run
 
     io.updateInputs(inputs);
+    Logger.getInstance().processInputs(loggerName, inputs);
   }
 
   /** Whether this camera is in driver mode with vision processing disabled. */
