@@ -43,10 +43,10 @@ public class Lifter extends SubsystemBase {
   // In this example we weight position much more highly than velocity, but this can be tuned to
   // balance the two.
   /** Maximum acceptable position error (in radians). */
-  private static final double MAX_POSITION_ERROR = Units.degreesToRadians(1);
+  private static final double MAX_POSITION_ERROR = Units.degreesToRadians(2);
 
   /** Maximum acceptable angular velocity error (in radians per second). */
-  private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(1);
+  private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(3);
 
   /**
    * A feedforward for the arm's gravity. An entire {@link ArmFeedforward} instance isn't required
@@ -58,15 +58,11 @@ public class Lifter extends SubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case COMP_BOT:
+      case SIM_BOT:
         // TODO: Use SysID to calculate the gravity term
         GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
         MAX_MOTOR_VOLTAGE = 12;
-        CONSTRAINTS = new TrapezoidProfile.Constraints(99, 99);
-        break;
-      case SIM_BOT:
-        GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
-        MAX_MOTOR_VOLTAGE = 12;
-        CONSTRAINTS = new TrapezoidProfile.Constraints(99, 99);
+        CONSTRAINTS = new TrapezoidProfile.Constraints(3.5, 10);
         break;
       default:
         GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
@@ -173,6 +169,7 @@ public class Lifter extends SubsystemBase {
     io.setEncoderPosition(new Rotation2d(initialPosition.state.position));
   }
 
+  // TODO: Consider calling this from a command execute function
   private void doPositionControlLoop() {
     lastProfiledReference =
         new TrapezoidProfile(CONSTRAINTS, desiredPosition.state, lastProfiledReference)

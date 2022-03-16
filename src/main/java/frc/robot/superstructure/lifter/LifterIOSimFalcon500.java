@@ -68,17 +68,19 @@ public class LifterIOSimFalcon500 extends LifterIOFalcon500 implements LifterIO 
     sim.update(Constants.PERIOD_SECONDS);
 
     var sensorPositionRadians = sim.getAngleRads();
+    var velocityRadiansPerSecond = sim.getVelocityRadPerSec();
 
     if (LifterIOFalcon500.INVERTED) {
       // TalonFX simulation software doesn't invert the encoder values you provide when setting the
       // simulated sensor position, so we manually do it if the motor is inverted
-      sensorPositionRadians *= -1;
+      sensorPositionRadians *= -1.0;
+      velocityRadiansPerSecond *= -1.0;
     }
 
     simMotor.setIntegratedSensorRawPosition(
         (int) Math.round(radiansToSensorUnits(sensorPositionRadians)));
     simMotor.setIntegratedSensorVelocity(
-        (int) Math.round(radiansPerSecondToSensorUnitsPer100ms(sim.getVelocityRadPerSec())));
+        (int) Math.round(radiansPerSecondToSensorUnitsPer100ms(velocityRadiansPerSecond)));
 
     Logger.getInstance().recordOutput("Lifter/SimRadPerSec", sim.getVelocityRadPerSec());
 

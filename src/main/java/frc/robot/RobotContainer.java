@@ -19,7 +19,6 @@ import frc.robot.paths.commands.SimplePathCommand;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.commands.LifterDownAndSnarfCommand;
 import frc.robot.superstructure.commands.LifterUpAndSwifferShootCommand;
-import frc.robot.superstructure.commands.LifterUpAndSwifferStopCommand;
 import frc.robot.superstructure.lifter.*;
 import frc.robot.superstructure.swiffer.*;
 import frc.robot.vision.commands.LoadingBayAlignCommand;
@@ -151,16 +150,12 @@ public class RobotContainer {
         new LoadingBayAlignCommand(driveSubsystem, cargoVisionSubsystem));
 
     // Snarfing
-    copilotController
-        .rightTrigger
-        .whenPressed(new LifterDownAndSnarfCommand(superstructureSubsystem))
-        .whenReleased(new LifterUpAndSwifferStopCommand(superstructureSubsystem));
+    copilotController.rightTrigger.whileHeld(
+        new LifterDownAndSnarfCommand(superstructureSubsystem));
 
     // Shooting
-    copilotController
-        .leftTrigger
-        .whenPressed(new LifterUpAndSwifferShootCommand(superstructureSubsystem))
-        .whenReleased(new LifterUpAndSwifferStopCommand(superstructureSubsystem));
+    copilotController.leftTrigger.whileHeld(
+        new LifterUpAndSwifferShootCommand(superstructureSubsystem));
   }
 
   /**
