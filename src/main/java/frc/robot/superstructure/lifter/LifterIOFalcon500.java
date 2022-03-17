@@ -9,6 +9,7 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.io.Falcon500IO;
 
@@ -18,7 +19,7 @@ public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
   protected static final boolean INVERTED = true;
 
   public LifterIOFalcon500() {
-    switch (frc.robot.Constants.getRobot()) {
+    switch (Constants.getRobot()) {
       case SIM_BOT:
         setGearing(Lifter.GEARING);
         motor = new WPI_TalonFX(1);
@@ -46,13 +47,12 @@ public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
     // It takes the Phoenix firmware about 4 seconds to boot up in the simulator. During this period
-    // all the operations you amek seem to be queued until the motor "is ready". There doesn't
+    // all the operations you make seem to be queued until the motor "is ready". There doesn't
     // appear to be a public API for checking this readiness state, so we just assume that once the
     // driver station is enabled this period has elapsed.
     // TODO: Update this value once I get an answer here:
     // https://www.chiefdelphi.com/t/how-to-check-if-ctre-phoenix-library-has-finished-initialization/405764
     inputs.isReady = DriverStation.isEnabled();
-    // Motor is inverted so we invert the encoder measurements as well
     var position = motor.getSelectedSensorPosition();
     var velocity = motor.getSelectedSensorVelocity();
 

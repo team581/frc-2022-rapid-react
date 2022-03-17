@@ -6,6 +6,7 @@ package frc.robot.superstructure.swiffer;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.io.Falcon500IO;
 
@@ -13,7 +14,7 @@ public class SwifferIOFalcon500 extends Falcon500IO implements SwifferIO {
   private final WPI_TalonFX motor;
 
   public SwifferIOFalcon500() {
-    switch (frc.robot.Constants.getRobot()) {
+    switch (Constants.getRobot()) {
       case SIM_BOT:
         setGearing(1);
         motor = new WPI_TalonFX(2);
