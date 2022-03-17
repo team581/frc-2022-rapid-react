@@ -62,7 +62,7 @@ public class Lifter extends SubsystemBase {
         // TODO: Use SysID to calculate the gravity term
         GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
         MAX_MOTOR_VOLTAGE = 12;
-        CONSTRAINTS = new TrapezoidProfile.Constraints(3.5, 10);
+        CONSTRAINTS = new TrapezoidProfile.Constraints(4.6, 28.86);
         break;
       default:
         GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
