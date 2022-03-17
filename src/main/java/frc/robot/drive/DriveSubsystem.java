@@ -5,6 +5,7 @@
 package frc.robot.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -12,7 +13,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
-import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import java.util.function.Supplier;
+import lib.wpilib.MecanumDrivePoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -41,12 +42,13 @@ public class DriveSubsystem extends SubsystemBase {
     private static final Pose2d POSE_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(5));
   }
 
+  public final MecanumDriveKinematics kinematics;
+
+  public final TrajectoryConfig trajectoryConfig;
+
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(
           1, 0, 0, Constants.MAX_ROTATION, frc.robot.Constants.PERIOD_SECONDS);
-
-  private final Drivebase drivebase;
-  private final Supplier<Rotation2d> rotationSupplier;
 
   // Used for following trajectories
   public final HolonomicDriveController driveController =
@@ -57,11 +59,11 @@ public class DriveSubsystem extends SubsystemBase {
           new PIDController(1, 0, 0, frc.robot.Constants.PERIOD_SECONDS),
           thetaController);
 
-  public final MecanumDriveKinematics kinematics;
+  private final Drivebase drivebase;
 
-  private final MecanumDriveOdometry odometry;
+  private final Supplier<Rotation2d> rotationSupplier;
 
-  public final TrajectoryConfig trajectoryConfig;
+  private final MecanumDrivePoseEstimator poseEstimator;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(
@@ -80,10 +82,24 @@ public class DriveSubsystem extends SubsystemBase {
             drivebase.frontRight.positionToCenterOfRobot,
             drivebase.rearLeft.positionToCenterOfRobot,
             drivebase.rearRight.positionToCenterOfRobot);
-    odometry = new MecanumDriveOdometry(kinematics, rotationSupplier.get());
     trajectoryConfig =
         new TrajectoryConfig(Drivebase.MAX_VELOCITY, Drivebase.MAX_ACCELERATION)
             .setKinematics(kinematics);
+    poseEstimator =
+        new MecanumDrivePoseEstimator(
+            // Initial heading
+            rotationSupplier.get(),
+            // Initial position
+            // TODO: Allow this to be configured based on autonomous routine starting location
+            new Pose2d(),
+            kinematics,
+            // Standard deviations of wheel odometry x, y, and theta
+            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+            // Standard deviation of gyroscope heading
+            VecBuilder.fill(Units.degreesToRadians(0.01)),
+            // Vision measurement standard deviations
+            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)),
+            frc.robot.Constants.PERIOD_SECONDS);
 
     setDefaultCommand(new TeleopDriveCommand(this, controller));
 
@@ -98,7 +114,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     drivebase.periodic();
 
-    odometry.update(rotationSupplier.get(), drivebase.getWheelSpeeds());
+    poseEstimator.update(rotationSupplier.get(), drivebase.getWheelSpeeds());
 
     final var pose = getPose();
     // The robot's position
@@ -144,7 +160,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return poseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -162,11 +178,11 @@ public class DriveSubsystem extends SubsystemBase {
             });
   }
 
+  // TODO: Delete this method, or replace it with another method for setting robot pose at match
+  // start via trajectory starting pose
   /** Resets sensors to prepare for following a trajectory using its initial state. */
   public void resetSensorsForTrajectory(Trajectory.State initialTrajectoryState) {
     drivebase.zeroEncoders();
-    // TODO: This maybe should incorporate the inital state's start rotation
-    odometry.resetPosition(initialTrajectoryState.poseMeters, rotationSupplier.get());
   }
 
   /** Resets sensors to prepare for following a trajectory. */
