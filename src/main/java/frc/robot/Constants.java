@@ -57,12 +57,6 @@ public final class Constants {
     }
   }
 
-  public static final int DRIVER_CONTROLLER_PORT = 0;
-  public static final int COPILOT_CONTROLLER_PORT = 1;
-
-  /** The number of seconds each iteration takes. WPILib default is 20ms. */
-  public static final double PERIOD_SECONDS = Units.millisecondsToSeconds(20);
-
   public static TargetRobot getRobot() {
     if (RobotBase.isSimulation()) {
       return TargetRobot.SIM_BOT;
