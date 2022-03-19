@@ -4,7 +4,6 @@
 
 package frc.robot.superstructure.arm;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.Constants;
 
@@ -25,11 +24,6 @@ public class ArmIOReplay implements ArmIO {
 
   @Override
   public void setVoltage(double volts) {
-    // Intentionally left empty
-  }
-
-  @Override
-  public void setEncoderPosition(Rotation2d rotation) {
     // Intentionally left empty
   }
 }

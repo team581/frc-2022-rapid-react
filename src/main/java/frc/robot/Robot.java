@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -141,4 +142,9 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  @Override
+  public void simulationPeriodic() {
+    REVPhysicsSim.getInstance().run();
+  }
 }

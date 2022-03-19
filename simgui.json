@@ -26,14 +26,14 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Arm": "Subsystem",
+      "/LiveWindow/ArmSubsystem": "Subsystem",
       "/LiveWindow/CargoLimelightSubsystem": "Subsystem",
       "/LiveWindow/CargoVisionSubsystem": "Subsystem",
       "/LiveWindow/DriveSubsystem": "Subsystem",
       "/LiveWindow/Drivebase": "Subsystem",
       "/LiveWindow/FmsSubsystem": "Subsystem",
       "/LiveWindow/ImuSubsystem": "Subsystem",
-      "/LiveWindow/Arm": "Subsystem",
-      "/LiveWindow/ArmSubsystem": "Subsystem",
       "/LiveWindow/MatchMetadataSubsystem": "Subsystem",
       "/LiveWindow/ShooterSubsystem": "Subsystem",
       "/LiveWindow/SnarferSubsystem": "Subsystem",
@@ -58,8 +58,8 @@
       "/LiveWindow/UpperHubLimelightSubsystem": "Subsystem",
       "/LiveWindow/UpperHubVisionSubsystem": "Subsystem",
       "/LiveWindow/Wheel": "Subsystem",
-      "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/Arm Sim": "Mechanism2d"
+      "/SmartDashboard/Arm Sim": "Mechanism2d",
+      "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
       "/LiveWindow/Ungrouped/Scheduler": {

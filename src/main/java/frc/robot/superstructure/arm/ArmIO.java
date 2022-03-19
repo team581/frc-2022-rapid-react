@@ -40,7 +40,4 @@ public interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
 
   /** Sets the output voltage of the arm's motor. */
   public void setVoltage(double volts);
-
-  /** Set the encoder's position. */
-  public void setEncoderPosition(Rotation2d rotation);
 }

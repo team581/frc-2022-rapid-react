@@ -9,7 +9,6 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
 import edu.wpi.first.math.estimator.KalmanFilter;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
@@ -43,10 +42,10 @@ public class Arm extends SubsystemBase {
   // In this example we weight position much more highly than velocity, but this can be tuned to
   // balance the two.
   /** Maximum acceptable position error (in radians). */
-  private static final double MAX_POSITION_ERROR = Units.degreesToRadians(2);
+  private static final double MAX_POSITION_ERROR = 999999 * Units.degreesToRadians(2);
 
   /** Maximum acceptable angular velocity error (in radians per second). */
-  private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(3);
+  private static final double MAX_VELOCITY_ERROR = 999999 * Units.degreesToRadians(3);
 
   /**
    * A feedforward for the arm's gravity. An entire {@link ArmFeedforward} instance isn't required
@@ -80,14 +79,14 @@ public class Arm extends SubsystemBase {
 
   // Arm starts in the up position
   private ArmPosition desiredPosition = ArmPosition.UP;
-  private TrapezoidProfile.State lastProfiledReference;
+  // TODO: Arm should start in up position in simulation
+  private TrapezoidProfile.State lastProfiledReference =
+      RobotBase.isSimulation() ? ArmPosition.DOWN.state : ArmPosition.UP.state;
   private double nextVoltage = 0;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
     this.io = io;
-
-    seedSensorPosition();
 
     final LinearSystem<N2, N1, N1> armPlant =
         LinearSystemId.createSingleJointedArmSystem(io.getMotorSim(), MOMENT_OF_INERTIA, GEARING);
@@ -156,26 +155,6 @@ public class Arm extends SubsystemBase {
     Logger.getInstance()
         .recordOutput(
             "Arm/Loop/Observer/StateEstimate/AccelerationRadiansPerSecondSquared", loop.getXHat(1));
-  }
-
-  private void seedSensorPosition() {
-    if (RobotBase.isSimulation()) {
-      // The physics simualation needs to be run before this function attempts setting the sensor
-      // position. This will happen in the next tick during periodic() otherwise.
-      io.updateInputs(inputs);
-    }
-
-    var initialPosition = ArmPosition.UP;
-
-    if (RobotBase.isSimulation()) {
-      // TODO: Arm visualization should start in the UP position
-      initialPosition = ArmPosition.DOWN;
-    }
-
-    lastProfiledReference = initialPosition.state;
-
-    // We want the down position to be a rotation of 0
-    io.setEncoderPosition(new Rotation2d(initialPosition.state.position));
   }
 
   // TODO: Consider calling this from a command execute function
