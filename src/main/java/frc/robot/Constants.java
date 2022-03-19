@@ -45,8 +45,7 @@ public final class Constants {
     // TODO: Fill in this serial number
     COMP_BOT(""),
     /** The 2020 test bot. */
-    // TODO: Fill in this serial number
-    TEST_2020_BOT(""),
+    TEST_2020_BOT("031617f6"),
     /** A simulated robot. */
     SIM_BOT("simbot");
 
