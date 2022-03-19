@@ -6,8 +6,6 @@ package frc.robot.superstructure.lifter;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -82,10 +80,9 @@ public class LifterIOSimFalcon500 extends LifterIOFalcon500 implements LifterIO 
     simMotor.setIntegratedSensorVelocity(
         (int) Math.round(radiansPerSecondToSensorUnitsPer100ms(velocityRadiansPerSecond)));
 
-    Logger.getInstance().recordOutput("Lifter/SimRadPerSec", sim.getVelocityRadPerSec());
-
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(sim.getCurrentDrawAmps()));
+    Logger.getInstance()
+        .recordOutput("Lifter/Sim/VelocityRadiansPerSecond", sim.getVelocityRadPerSec());
+    Logger.getInstance().recordOutput("Lifter/Sim/PositionRadians", sim.getAngleRads());
 
     lifter.setAngle(Units.radiansToDegrees(sim.getAngleRads()));
 
