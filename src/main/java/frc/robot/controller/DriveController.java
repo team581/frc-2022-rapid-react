@@ -26,16 +26,16 @@ public class DriveController extends ButtonController {
 
   /** The rotation across the robot's x-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getXPercentage() {
-    return joystickScale(xLimiter.calculate(controller.getLeftX()));
+    return joystickScale(xLimiter.calculate(controller.getRawAxis(0)));
   }
 
   /** The translation across the robot's y-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getYPercentage() {
-    return joystickScale(yLimiter.calculate(controller.getLeftY()));
+    return joystickScale(yLimiter.calculate(controller.getRawAxis(1)));
   }
 
   /** The rotation about the robot's z-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getThetaPercentage() {
-    return joystickScale(thetaLimiter.calculate(controller.getRightX()));
+    return joystickScale(thetaLimiter.calculate(controller.getRawAxis(2)));
   }
 }
