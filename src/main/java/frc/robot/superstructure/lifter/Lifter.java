@@ -139,7 +139,6 @@ public class Lifter extends SubsystemBase {
         .recordOutput("Lifter/PositionConstants/Up", LifterPosition.UP.state.position);
     Logger.getInstance()
         .recordOutput("Lifter/PositionConstants/Down", LifterPosition.DOWN.state.position);
-    Logger.getInstance().recordOutput("Lifter/AtReference", atPosition(desiredPosition));
 
     // Avoid messing up the Kalman filter's state by making it believe we're using its output
     // voltages when the robot is disabled
@@ -147,12 +146,20 @@ public class Lifter extends SubsystemBase {
       doPositionControlLoop();
     }
 
+    Logger.getInstance().recordOutput("Lifter/AtReference", atPosition(desiredPosition));
     Logger.getInstance()
         .recordOutput("Lifter/Reference/DesiredPositionRadians", lastProfiledReference.position);
     Logger.getInstance()
         .recordOutput(
             "Lifter/Reference/DesiredVelocityRadiansPerSecond", lastProfiledReference.velocity);
     Logger.getInstance().recordOutput("Lifter/DesiredAppliedVolts", nextVoltage);
+    Logger.getInstance()
+        .recordOutput(
+            "Lifter/Loop/Observer/StateEstimate/VelocityRadiansPerSecond", loop.getXHat(0));
+    Logger.getInstance()
+        .recordOutput(
+            "Lifter/Loop/Observer/StateEstimate/AccelerationRadiansPerSecondSquared",
+            loop.getXHat(1));
   }
 
   private void seedSensorPosition() {
