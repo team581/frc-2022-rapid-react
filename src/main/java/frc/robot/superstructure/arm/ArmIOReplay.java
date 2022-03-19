@@ -7,16 +7,14 @@ package frc.robot.superstructure.arm;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.Constants;
-import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 
 public class ArmIOReplay implements ArmIO {
   @Override
   public DCMotor getMotorSim() {
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        return DCMotor.getFalcon500(1);
       default:
-        throw new UnsupportedSubsystemException(this);
+        return DCMotor.getFalcon500(1);
     }
   }
 
