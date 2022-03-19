@@ -156,6 +156,12 @@ public class Lifter extends SubsystemBase {
   }
 
   private void seedSensorPosition() {
+    if (RobotBase.isSimulation()) {
+      // The physics simualation needs to be run before this function attempts setting the sensor
+      // position. This will happen in the next tick during periodic() otherwise.
+      io.updateInputs(inputs);
+    }
+
     var initialPosition = LifterPosition.UP;
 
     if (RobotBase.isSimulation()) {
