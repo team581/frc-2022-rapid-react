@@ -17,7 +17,7 @@ public class SwifferIOFalcon500 extends Falcon500IO implements SwifferIO {
     switch (Constants.getRobot()) {
       case SIM_BOT:
         setGearing(1);
-        motor = new WPI_TalonFX(2);
+        motor = new WPI_TalonFX(8);
         break;
       default:
         throw new UnsupportedSubsystemException(this);

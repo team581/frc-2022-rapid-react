@@ -62,17 +62,17 @@ public class WheelIOFalcon500 extends Falcon500IO implements WheelIO {
         setGearing(1);
         switch (corner) {
           case FRONT_LEFT:
-            motor = new WPI_TalonFX(3);
+            motor = new WPI_TalonFX(1);
             break;
           case FRONT_RIGHT:
-            motor = new WPI_TalonFX(4);
+            motor = new WPI_TalonFX(2);
             motor.setInverted(true);
             break;
           case REAR_LEFT:
-            motor = new WPI_TalonFX(5);
+            motor = new WPI_TalonFX(3);
             break;
           case REAR_RIGHT:
-            motor = new WPI_TalonFX(6);
+            motor = new WPI_TalonFX(4);
             motor.setInverted(true);
             break;
           default:

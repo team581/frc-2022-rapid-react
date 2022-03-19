@@ -186,7 +186,7 @@ public class Arm extends SubsystemBase {
     loop.setNextR(lastProfiledReference.position, lastProfiledReference.velocity);
 
     // Correct our Kalman filter's state vector estimate with encoder data
-    loop.correct(VecBuilder.fill(inputs.positionRadians));
+    loop.correct(VecBuilder.fill(inputs.position.getRadians()));
 
     // Update our LQR to generate new voltage commands and use the voltages to predict the next
     // state with out Kalman filter

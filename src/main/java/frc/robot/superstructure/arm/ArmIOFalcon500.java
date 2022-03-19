@@ -21,7 +21,7 @@ public class ArmIOFalcon500 extends Falcon500IO implements ArmIO {
     switch (Constants.getRobot()) {
       case SIM_BOT:
         setGearing(Arm.GEARING);
-        motor = new WPI_TalonFX(1);
+        motor = new WPI_TalonFX(5);
         break;
       default:
         throw new UnsupportedSubsystemException(this);
