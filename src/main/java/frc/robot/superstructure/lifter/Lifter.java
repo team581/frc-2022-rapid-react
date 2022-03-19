@@ -142,8 +142,8 @@ public class Lifter extends SubsystemBase {
     Logger.getInstance().recordOutput("Lifter/AtReference", atPosition(desiredPosition));
 
     // Avoid messing up the Kalman filter's state by making it believe we're using its output
-    // voltages when the robot is disabled or the motor is not ready yet
-    if (DriverStation.isEnabled() && inputs.isReady) {
+    // voltages when the robot is disabled
+    if (DriverStation.isEnabled()) {
       doPositionControlLoop();
     }
 
