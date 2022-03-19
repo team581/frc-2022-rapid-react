@@ -42,13 +42,13 @@ public class ArmIOFalcon500 extends Falcon500IO implements ArmIO {
 
   @Override
   public void updateInputs(Inputs inputs) {
-    inputs.appliedVolts = motor.getMotorOutputVoltage();
-    inputs.currentAmps = motor.getSupplyCurrent();
-    inputs.tempCelcius = motor.getTemperature();
+    inputs.appliedVolts = new double[] {motor.getMotorOutputVoltage()};
+    inputs.currentAmps = new double[] {motor.getSupplyCurrent()};
+    inputs.tempCelcius = new double[] {motor.getTemperature()};
     var position = motor.getSelectedSensorPosition();
     var velocity = motor.getSelectedSensorVelocity();
 
-    inputs.positionRadians = sensorUnitsToRadians(position);
+    inputs.position = new Rotation2d(sensorUnitsToRadians(position));
     inputs.velocityRadiansPerSecond = sensorUnitsPer100msToRadiansPerSecond(velocity);
   }
 
