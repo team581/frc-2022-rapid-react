@@ -6,20 +6,20 @@ package frc.robot.superstructure.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.superstructure.SuperstructureSubsystem;
-import frc.robot.superstructure.lifter.LifterPosition;
-import frc.robot.superstructure.lifter.commands.LifterCommand;
+import frc.robot.superstructure.arm.ArmPosition;
+import frc.robot.superstructure.arm.commands.ArmCommand;
 import frc.robot.superstructure.swiffer.commands.SwifferStopCommand;
 
 /** Lift the swiffer up and stop the flywheel. */
-public class LifterUpAndSwifferStopCommand extends ParallelCommandGroup {
-  /** Creates a new LifterUpAndSwifferStopCommand. */
-  public LifterUpAndSwifferStopCommand(SuperstructureSubsystem superstructure) {
+public class ArmUpAndSwifferStopCommand extends ParallelCommandGroup {
+  /** Creates a new ArmUpAndSwifferStopCommand. */
+  public ArmUpAndSwifferStopCommand(SuperstructureSubsystem superstructure) {
     addCommands(
-        // Lifter up
-        new LifterCommand(superstructure.lifter, LifterPosition.UP),
+        // Arm up
+        new ArmCommand(superstructure.arm, ArmPosition.UP),
         // Stop the flywheel
         new SwifferStopCommand(superstructure.swiffer));
 
-    addRequirements(superstructure, superstructure.lifter, superstructure.swiffer);
+    addRequirements(superstructure, superstructure.arm, superstructure.swiffer);
   }
 }

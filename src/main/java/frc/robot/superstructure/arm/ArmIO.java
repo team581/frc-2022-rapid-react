@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.superstructure.lifter;
+package frc.robot.superstructure.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -10,7 +10,7 @@ import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface LifterIO extends SubsystemIO<LifterIO.Inputs> {
+public interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
   public class Inputs implements LoggableInputs {
     public double appliedVolts = 0;
     public double currentAmps = 0;
@@ -38,7 +38,7 @@ public interface LifterIO extends SubsystemIO<LifterIO.Inputs> {
 
   public DCMotor getMotorSim();
 
-  /** Sets the output voltage of the lifter's motor. */
+  /** Sets the output voltage of the arm's motor. */
   public void setVoltage(double volts);
 
   /** Set the encoder's position. */

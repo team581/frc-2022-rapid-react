@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.superstructure.lifter;
+package frc.robot.superstructure.arm;
 
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
@@ -20,10 +20,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.superstructure.lifter.LifterIO.Inputs;
+import frc.robot.superstructure.arm.ArmIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
-public class Lifter extends SubsystemBase {
+public class Arm extends SubsystemBase {
   /** Mass of arm in kilograms. */
   public static final double ARM_MASS = 4776.833 / 1e3;
 
@@ -75,16 +75,16 @@ public class Lifter extends SubsystemBase {
   // The state-space loop combines a controller, observer, feedforward and plant for easy control.
   private final LinearSystemLoop<N2, N1, N1> loop;
 
-  private final LifterIO io;
+  private final ArmIO io;
   private final Inputs inputs = new Inputs();
 
-  // Lifter starts in the up position
-  private LifterPosition desiredPosition = LifterPosition.UP;
+  // Arm starts in the up position
+  private ArmPosition desiredPosition = ArmPosition.UP;
   private TrapezoidProfile.State lastProfiledReference;
   private double nextVoltage = 0;
 
-  /** Creates a new Lifter. */
-  public Lifter(LifterIO io) {
+  /** Creates a new Arm. */
+  public Arm(ArmIO io) {
     this.io = io;
 
     seedSensorPosition();
@@ -130,15 +130,13 @@ public class Lifter extends SubsystemBase {
 
     io.updateInputs(inputs);
 
-    Logger.getInstance().processInputs("Lifter", inputs);
+    Logger.getInstance().processInputs("Arm", inputs);
 
-    Logger.getInstance().recordOutput("Lifter/DesiredPosition", desiredPosition.toString());
+    Logger.getInstance().recordOutput("Arm/DesiredPosition", desiredPosition.toString());
+    Logger.getInstance().recordOutput("Arm/DesiredPositionRadians", desiredPosition.state.position);
+    Logger.getInstance().recordOutput("Arm/PositionConstants/Up", ArmPosition.UP.state.position);
     Logger.getInstance()
-        .recordOutput("Lifter/DesiredPositionRadians", desiredPosition.state.position);
-    Logger.getInstance()
-        .recordOutput("Lifter/PositionConstants/Up", LifterPosition.UP.state.position);
-    Logger.getInstance()
-        .recordOutput("Lifter/PositionConstants/Down", LifterPosition.DOWN.state.position);
+        .recordOutput("Arm/PositionConstants/Down", ArmPosition.DOWN.state.position);
 
     // Avoid messing up the Kalman filter's state by making it believe we're using its output
     // voltages when the robot is disabled
@@ -146,20 +144,18 @@ public class Lifter extends SubsystemBase {
       doPositionControlLoop();
     }
 
-    Logger.getInstance().recordOutput("Lifter/AtReference", atPosition(desiredPosition));
+    Logger.getInstance().recordOutput("Arm/AtReference", atPosition(desiredPosition));
     Logger.getInstance()
-        .recordOutput("Lifter/Reference/DesiredPositionRadians", lastProfiledReference.position);
-    Logger.getInstance()
-        .recordOutput(
-            "Lifter/Reference/DesiredVelocityRadiansPerSecond", lastProfiledReference.velocity);
-    Logger.getInstance().recordOutput("Lifter/DesiredAppliedVolts", nextVoltage);
+        .recordOutput("Arm/Reference/DesiredPositionRadians", lastProfiledReference.position);
     Logger.getInstance()
         .recordOutput(
-            "Lifter/Loop/Observer/StateEstimate/VelocityRadiansPerSecond", loop.getXHat(0));
+            "Arm/Reference/DesiredVelocityRadiansPerSecond", lastProfiledReference.velocity);
+    Logger.getInstance().recordOutput("Arm/DesiredAppliedVolts", nextVoltage);
+    Logger.getInstance()
+        .recordOutput("Arm/Loop/Observer/StateEstimate/VelocityRadiansPerSecond", loop.getXHat(0));
     Logger.getInstance()
         .recordOutput(
-            "Lifter/Loop/Observer/StateEstimate/AccelerationRadiansPerSecondSquared",
-            loop.getXHat(1));
+            "Arm/Loop/Observer/StateEstimate/AccelerationRadiansPerSecondSquared", loop.getXHat(1));
   }
 
   private void seedSensorPosition() {
@@ -169,11 +165,11 @@ public class Lifter extends SubsystemBase {
       io.updateInputs(inputs);
     }
 
-    var initialPosition = LifterPosition.UP;
+    var initialPosition = ArmPosition.UP;
 
     if (RobotBase.isSimulation()) {
-      // TODO: Lifter visualization should start in the UP position
-      initialPosition = LifterPosition.DOWN;
+      // TODO: Arm visualization should start in the UP position
+      initialPosition = ArmPosition.DOWN;
     }
 
     lastProfiledReference = initialPosition.state;
@@ -205,8 +201,8 @@ public class Lifter extends SubsystemBase {
     io.setVoltage(nextVoltage);
   }
 
-  /** Check if the lifter is at the provided position. */
-  public boolean atPosition(LifterPosition position) {
+  /** Check if the arm is at the provided position. */
+  public boolean atPosition(ArmPosition position) {
     if (desiredPosition != position) {
       // Wrong position
       return false;
@@ -223,8 +219,8 @@ public class Lifter extends SubsystemBase {
     return Math.abs(angularVelocityError) < MAX_VELOCITY_ERROR;
   }
 
-  /** Set the desired position of the lifter. */
-  public void setDesiredPosition(LifterPosition position) {
+  /** Set the desired position of the arm. */
+  public void setDesiredPosition(ArmPosition position) {
     desiredPosition = position;
   }
 }

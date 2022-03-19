@@ -17,9 +17,9 @@ import frc.robot.match_metadata.*;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.paths.commands.SimplePathCommand;
 import frc.robot.superstructure.SuperstructureSubsystem;
-import frc.robot.superstructure.commands.LifterDownAndSnarfCommand;
-import frc.robot.superstructure.commands.LifterUpAndSwifferShootCommand;
-import frc.robot.superstructure.lifter.*;
+import frc.robot.superstructure.arm.*;
+import frc.robot.superstructure.commands.ArmDownAndSnarfCommand;
+import frc.robot.superstructure.commands.ArmUpAndSwifferShootCommand;
 import frc.robot.superstructure.swiffer.*;
 import frc.robot.vision.commands.LoadingBayAlignCommand;
 import frc.robot.vision_cargo.*;
@@ -45,7 +45,7 @@ public class RobotContainer {
   private final UpperHubVisionSubsystem upperVisionSubsystem;
   private final CargoVisionSubsystem cargoVisionSubsystem;
   private final Swiffer swiffer;
-  private final Lifter lifter;
+  private final Arm arm;
   private final SuperstructureSubsystem superstructureSubsystem;
 
   private final Command autoCommand;
@@ -54,7 +54,7 @@ public class RobotContainer {
   public RobotContainer() {
     if (Constants.getMode() == Constants.Mode.REPLAY) {
       matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOReplay());
-      lifter = new Lifter(new LifterIOReplay());
+      arm = new Arm(new ArmIOReplay());
       swiffer = new Swiffer(new SwifferIOReplay());
       imuSubsystem = new ImuSubsystem(new ImuIOReplay());
       driveSubsystem =
@@ -71,7 +71,7 @@ public class RobotContainer {
       switch (Constants.getRobot()) {
         case COMP_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
-          lifter = new Lifter(new LifterIOReplay());
+          arm = new Arm(new ArmIOReplay());
           swiffer = new Swiffer(new SwifferIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
           driveSubsystem =
@@ -87,7 +87,7 @@ public class RobotContainer {
           break;
         case TEST_2020_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
-          lifter = new Lifter(new LifterIOReplay());
+          arm = new Arm(new ArmIOReplay());
           swiffer = new Swiffer(new SwifferIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
           driveSubsystem =
@@ -103,7 +103,7 @@ public class RobotContainer {
           break;
         case SIM_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOSim());
-          lifter = new Lifter(new LifterIOSimFalcon500());
+          arm = new Arm(new ArmIOSimFalcon500());
           swiffer = new Swiffer(new SwifferIOSim());
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
           driveSubsystem =
@@ -122,7 +122,7 @@ public class RobotContainer {
       }
     }
 
-    superstructureSubsystem = new SuperstructureSubsystem(swiffer, lifter);
+    superstructureSubsystem = new SuperstructureSubsystem(swiffer, arm);
 
     // Configure the button bindings. You must call this after the subsystems are defined since they
     // are used to add command requirements.
@@ -150,12 +150,11 @@ public class RobotContainer {
         new LoadingBayAlignCommand(driveSubsystem, cargoVisionSubsystem));
 
     // Snarfing
-    copilotController.rightTrigger.whileHeld(
-        new LifterDownAndSnarfCommand(superstructureSubsystem));
+    copilotController.rightTrigger.whileHeld(new ArmDownAndSnarfCommand(superstructureSubsystem));
 
     // Shooting
     copilotController.leftTrigger.whileHeld(
-        new LifterUpAndSwifferShootCommand(superstructureSubsystem));
+        new ArmUpAndSwifferShootCommand(superstructureSubsystem));
   }
 
   /**

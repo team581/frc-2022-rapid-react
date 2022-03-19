@@ -5,28 +5,28 @@
 package frc.robot.superstructure;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.superstructure.commands.LifterUpAndSwifferStopCommand;
-import frc.robot.superstructure.lifter.Lifter;
+import frc.robot.superstructure.arm.Arm;
+import frc.robot.superstructure.commands.ArmUpAndSwifferStopCommand;
 import frc.robot.superstructure.swiffer.Swiffer;
 
 public class SuperstructureSubsystem extends SubsystemBase {
   public final Swiffer swiffer;
-  public final Lifter lifter;
+  public final Arm arm;
 
   /** Creates a new SuperstructureSubsystem. */
-  public SuperstructureSubsystem(Swiffer swiffer, Lifter lifter) {
+  public SuperstructureSubsystem(Swiffer swiffer, Arm arm) {
     this.swiffer = swiffer;
-    this.lifter = lifter;
+    this.arm = arm;
 
     setDefaultCommand(
-        new LifterUpAndSwifferStopCommand(this)
+        new ArmUpAndSwifferStopCommand(this)
             .perpetually()
-            .withName("Perpetual" + LifterUpAndSwifferStopCommand.class.getSimpleName()));
+            .withName("Perpetual" + ArmUpAndSwifferStopCommand.class.getSimpleName()));
   }
 
   @Override
   public void periodic() {
     swiffer.periodic();
-    lifter.periodic();
+    arm.periodic();
   }
 }

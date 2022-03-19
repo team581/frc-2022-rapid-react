@@ -32,8 +32,8 @@
       "/LiveWindow/Drivebase": "Subsystem",
       "/LiveWindow/FmsSubsystem": "Subsystem",
       "/LiveWindow/ImuSubsystem": "Subsystem",
-      "/LiveWindow/Lifter": "Subsystem",
-      "/LiveWindow/LifterSubsystem": "Subsystem",
+      "/LiveWindow/Arm": "Subsystem",
+      "/LiveWindow/ArmSubsystem": "Subsystem",
       "/LiveWindow/MatchMetadataSubsystem": "Subsystem",
       "/LiveWindow/ShooterSubsystem": "Subsystem",
       "/LiveWindow/SnarferSubsystem": "Subsystem",
@@ -59,7 +59,7 @@
       "/LiveWindow/UpperHubVisionSubsystem": "Subsystem",
       "/LiveWindow/Wheel": "Subsystem",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/Lifter Sim": "Mechanism2d"
+      "/SmartDashboard/Arm Sim": "Mechanism2d"
     },
     "windows": {
       "/LiveWindow/Ungrouped/Scheduler": {
@@ -67,7 +67,7 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Lifter Sim": {
+      "/SmartDashboard/Arm Sim": {
         "window": {
           "visible": true
         }

@@ -6,20 +6,20 @@ package frc.robot.superstructure.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.superstructure.SuperstructureSubsystem;
-import frc.robot.superstructure.lifter.LifterPosition;
-import frc.robot.superstructure.lifter.commands.LifterCommand;
+import frc.robot.superstructure.arm.ArmPosition;
+import frc.robot.superstructure.arm.commands.ArmCommand;
 import frc.robot.superstructure.swiffer.commands.SwifferSnarfCommand;
 
 /** Lowers the swiffer while snarfing. */
-public class LifterDownAndSnarfCommand extends ParallelCommandGroup {
-  /** Creates a new LifterDownAndSnarfCommand. */
-  public LifterDownAndSnarfCommand(SuperstructureSubsystem superstructure) {
+public class ArmDownAndSnarfCommand extends ParallelCommandGroup {
+  /** Creates a new ArmDownAndSnarfCommand. */
+  public ArmDownAndSnarfCommand(SuperstructureSubsystem superstructure) {
     addCommands(
-        // Start lowering the lifter
-        new LifterCommand(superstructure.lifter, LifterPosition.DOWN),
+        // Start lowering the arm
+        new ArmCommand(superstructure.arm, ArmPosition.DOWN),
         // While that's happening we begin spinning up the swiffer
         new SwifferSnarfCommand(superstructure.swiffer));
 
-    addRequirements(superstructure, superstructure.lifter, superstructure.swiffer);
+    addRequirements(superstructure, superstructure.arm, superstructure.swiffer);
   }
 }
