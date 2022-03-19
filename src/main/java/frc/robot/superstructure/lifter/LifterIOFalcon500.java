@@ -6,21 +6,28 @@ package frc.robot.superstructure.lifter;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.io.Falcon500IO;
 
 public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
-  private final WPI_TalonFX motor;
+  protected final WPI_TalonFX motor;
+
+  protected static final boolean INVERTED = true;
 
   public LifterIOFalcon500() {
-    switch (frc.robot.Constants.getRobot()) {
+    switch (Constants.getRobot()) {
       case SIM_BOT:
-        setGearing(1);
+        setGearing(Lifter.GEARING);
         motor = new WPI_TalonFX(1);
         break;
       default:
         throw new UnsupportedSubsystemException(this);
     }
+
+    motor.setInverted(INVERTED);
 
     // TODO: These values probably need to be tuned - see tuning instructions
     // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
@@ -29,12 +36,20 @@ public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
   }
 
   @Override
+  public DCMotor getMotorSim() {
+    return DCMotor.getFalcon500(1);
+  }
+
+  @Override
   public void updateInputs(Inputs inputs) {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
-    inputs.positionRadians = sensorUnitsToRadians(motor.getSelectedSensorPosition());
-    inputs.velocityRadiansPerSecond = sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
+    var position = motor.getSelectedSensorPosition();
+    var velocity = motor.getSelectedSensorVelocity();
+
+    inputs.positionRadians = sensorUnitsToRadians(position);
+    inputs.velocityRadiansPerSecond = sensorUnitsPer100msToRadiansPerSecond(velocity);
   }
 
   @Override
@@ -43,7 +58,7 @@ public class LifterIOFalcon500 extends Falcon500IO implements LifterIO {
   }
 
   @Override
-  public void zeroEncoder() {
-    motor.setSelectedSensorPosition(0);
+  public void setEncoderPosition(Rotation2d rotation) {
+    motor.setSelectedSensorPosition(radiansToSensorUnits(rotation.getRadians()));
   }
 }

@@ -9,7 +9,6 @@ import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.lifter.LifterPosition;
 import frc.robot.superstructure.lifter.commands.LifterCommand;
 import frc.robot.superstructure.swiffer.commands.SwifferShootCommand;
-import frc.robot.superstructure.swiffer.commands.SwifferStopCommand;
 
 /** Puts the lifter up and shoots all cargo. */
 public class LifterUpAndSwifferShootCommand extends SequentialCommandGroup {
@@ -18,11 +17,9 @@ public class LifterUpAndSwifferShootCommand extends SequentialCommandGroup {
     addCommands(
         // Lifter up
         new LifterCommand(superstructure.lifter, LifterPosition.UP),
-        // Shoot all cargo
-        new SwifferShootCommand(superstructure.swiffer),
-        // Stop the flywheel once finished
-        new SwifferStopCommand(superstructure.swiffer));
+        // Shoot all cargo after the lifter is up
+        new SwifferShootCommand(superstructure.swiffer));
 
-    addRequirements(superstructure);
+    addRequirements(superstructure, superstructure.lifter, superstructure.swiffer);
   }
 }

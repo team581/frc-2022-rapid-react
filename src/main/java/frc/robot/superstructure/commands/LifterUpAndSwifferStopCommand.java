@@ -17,9 +17,9 @@ public class LifterUpAndSwifferStopCommand extends ParallelCommandGroup {
     addCommands(
         // Lifter up
         new LifterCommand(superstructure.lifter, LifterPosition.UP),
-        // Stop the flywheel once finished
+        // Stop the flywheel
         new SwifferStopCommand(superstructure.swiffer));
 
-    addRequirements(superstructure);
+    addRequirements(superstructure, superstructure.lifter, superstructure.swiffer);
   }
 }

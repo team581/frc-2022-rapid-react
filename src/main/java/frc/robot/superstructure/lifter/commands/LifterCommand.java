@@ -8,7 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.superstructure.lifter.Lifter;
 import frc.robot.superstructure.lifter.LifterPosition;
 
-/** A command to move the lifter to a desired position. */
+/**
+ * A command to move the lifter to a desired position. Finishes after the lifter has first met the
+ * desired position.
+ */
 public class LifterCommand extends CommandBase {
   private final Lifter lifter;
   private final LifterPosition goalPosition;

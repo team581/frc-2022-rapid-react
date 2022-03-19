@@ -5,6 +5,7 @@
 package frc.robot.superstructure;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.superstructure.commands.LifterUpAndSwifferStopCommand;
 import frc.robot.superstructure.lifter.Lifter;
 import frc.robot.superstructure.swiffer.Swiffer;
 
@@ -16,6 +17,11 @@ public class SuperstructureSubsystem extends SubsystemBase {
   public SuperstructureSubsystem(Swiffer swiffer, Lifter lifter) {
     this.swiffer = swiffer;
     this.lifter = lifter;
+
+    setDefaultCommand(
+        new LifterUpAndSwifferStopCommand(this)
+            .perpetually()
+            .withName("Perpetual" + LifterUpAndSwifferStopCommand.class.getSimpleName()));
   }
 
   @Override

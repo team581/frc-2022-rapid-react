@@ -5,14 +5,15 @@
 package frc.robot.superstructure.lifter;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public enum LifterPosition {
-  UP(Rotation2d.fromDegrees(60)),
-  DOWN(new Rotation2d(0));
+  UP(Rotation2d.fromDegrees(50)),
+  DOWN(Rotation2d.fromDegrees(0));
 
-  public final Rotation2d angle;
+  public final TrapezoidProfile.State state;
 
   LifterPosition(Rotation2d angle) {
-    this.angle = angle;
+    this.state = new TrapezoidProfile.State(angle.getRadians(), 0);
   }
 }

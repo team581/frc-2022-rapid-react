@@ -16,18 +16,25 @@
           "open": true
         }
       }
+    },
+    "RoboRIO": {
+      "RoboRIO Input": {
+        "open": true
+      }
     }
   },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/CargoLimelightSubsystem": "Subsystem",
+      "/LiveWindow/CargoVisionSubsystem": "Subsystem",
       "/LiveWindow/DriveSubsystem": "Subsystem",
       "/LiveWindow/Drivebase": "Subsystem",
       "/LiveWindow/FmsSubsystem": "Subsystem",
       "/LiveWindow/ImuSubsystem": "Subsystem",
       "/LiveWindow/Lifter": "Subsystem",
       "/LiveWindow/LifterSubsystem": "Subsystem",
+      "/LiveWindow/MatchMetadataSubsystem": "Subsystem",
       "/LiveWindow/ShooterSubsystem": "Subsystem",
       "/LiveWindow/SnarferSubsystem": "Subsystem",
       "/LiveWindow/SuperstructureSubsystem": "Subsystem",
@@ -49,11 +56,18 @@
       "/LiveWindow/Ungrouped/navX-Sensor[1]": "Gyro",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/LiveWindow/UpperHubLimelightSubsystem": "Subsystem",
+      "/LiveWindow/UpperHubVisionSubsystem": "Subsystem",
       "/LiveWindow/Wheel": "Subsystem",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Lifter Sim": "Mechanism2d"
     },
     "windows": {
       "/LiveWindow/Ungrouped/Scheduler": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Lifter Sim": {
         "window": {
           "visible": true
         }
@@ -61,7 +75,10 @@
     }
   },
   "NetworkTables": {
-    "limelight-cargo": {
+    "LiveWindow": {
+      "Ungrouped": {
+        "open": true
+      },
       "open": true
     }
   }
