@@ -4,11 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.controller.ButtonController;
 import frc.robot.controller.DriveController;
+import frc.robot.controller.LogitechF310DirectInputController;
 import frc.robot.drive.*;
 import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.drive.wheel.*;
@@ -35,9 +35,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final DriveController driverController =
-      new DriveController(new XboxController(Constants.DRIVER_CONTROLLER_PORT));
+      new DriveController(new LogitechF310DirectInputController(Constants.DRIVER_CONTROLLER_PORT));
   private final ButtonController copilotController =
-      new ButtonController(new XboxController(Constants.COPILOT_CONTROLLER_PORT));
+      new ButtonController(
+          new LogitechF310DirectInputController(Constants.COPILOT_CONTROLLER_PORT));
 
   private final MatchMetadataSubsystem matchMetadataSubsystem;
   private final ImuSubsystem imuSubsystem;

@@ -4,16 +4,16 @@
 
 package frc.robot.controller.commands;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.controller.util.RumblePattern;
 
 public class RumbleCommand extends CommandBase {
   private final Timer timer = new Timer();
   /** The controller to rumble. */
-  private final XboxController controller;
+  private final GenericHID controller;
   /** The rumble pattern to rumble the controller with. */
   private final RumblePattern pattern;
 
@@ -23,7 +23,7 @@ public class RumbleCommand extends CommandBase {
   private double times = 0;
 
   /** Creates a new RumbleCommand with a given controller and rumble pattern. */
-  public RumbleCommand(XboxController controller, RumblePattern pattern) {
+  public RumbleCommand(GenericHID controller, RumblePattern pattern) {
     this.controller = controller;
     this.pattern = pattern;
   }

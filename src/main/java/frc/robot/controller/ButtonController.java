@@ -4,32 +4,13 @@
 
 package frc.robot.controller;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-/** A wrapper around {@link XboxController} for triggering commands using buttons. */
+/**
+ * A wrapper around {@link LogitechF310DirectInputController} for triggering commands using buttons.
+ */
 public class ButtonController {
-  public ButtonController(XboxController controller) {
-    // These values are not what an Xbox controller uses, they are what a Logitech F310 uses
-    xButton = new JoystickButton(controller, 1);
-    aButton = new JoystickButton(controller, 2);
-    bButton = new JoystickButton(controller, 3);
-    yButton = new JoystickButton(controller, 4);
-
-    leftBumper = new JoystickButton(controller, 5);
-    rightBumper = new JoystickButton(controller, 6);
-
-    leftTrigger = new JoystickButton(controller, 7);
-    rightTrigger = new JoystickButton(controller, 8);
-
-    back = new JoystickButton(controller, 9);
-    start = new JoystickButton(controller, 10);
-
-    leftStick = new JoystickButton(controller, 11);
-    rightStick = new JoystickButton(controller, 12);
-  }
-
   public final Button aButton;
   public final Button bButton;
   public final Button xButton;
@@ -44,6 +25,38 @@ public class ButtonController {
   public final Button leftStick;
   public final Button rightStick;
 
-  public final Button back;
-  public final Button start;
+  public final Button backButton;
+  public final Button startButton;
+
+  public ButtonController(LogitechF310DirectInputController controller) {
+    xButton =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.X_BUTTON.value);
+    aButton =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.A_BUTTON.value);
+    bButton =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.B_BUTTON.value);
+    yButton =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.Y_BUTTON.value);
+
+    leftBumper =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.LEFT_BUMPER.value);
+    rightBumper =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.RIGHT_BUMPER.value);
+
+    leftTrigger =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.LEFT_TRIGGER.value);
+    rightTrigger =
+        new JoystickButton(
+            controller, LogitechF310DirectInputController.Button.RIGHT_TRIGGER.value);
+
+    backButton =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.BACK_BUTTON.value);
+    startButton =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.START_BUTTON.value);
+
+    leftStick =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.LEFT_STICK.value);
+    rightStick =
+        new JoystickButton(controller, LogitechF310DirectInputController.Button.RIGHT_STICK.value);
+  }
 }

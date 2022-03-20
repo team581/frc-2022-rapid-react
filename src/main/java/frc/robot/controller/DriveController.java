@@ -5,15 +5,14 @@
 package frc.robot.controller;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.XboxController;
 
 public class DriveController extends ButtonController {
-  private final XboxController controller;
+  private final LogitechF310DirectInputController controller;
   private final SlewRateLimiter xLimiter = new SlewRateLimiter(7);
   private final SlewRateLimiter yLimiter = new SlewRateLimiter(7);
   private final SlewRateLimiter thetaLimiter = new SlewRateLimiter(7);
 
-  public DriveController(XboxController controller) {
+  public DriveController(LogitechF310DirectInputController controller) {
     super(controller);
 
     this.controller = controller;
@@ -26,16 +25,16 @@ public class DriveController extends ButtonController {
 
   /** The rotation across the robot's x-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getXPercentage() {
-    return joystickScale(xLimiter.calculate(controller.getRawAxis(0)));
+    return joystickScale(xLimiter.calculate(controller.getLeftX()));
   }
 
   /** The translation across the robot's y-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getYPercentage() {
-    return joystickScale(yLimiter.calculate(controller.getRawAxis(1)));
+    return joystickScale(yLimiter.calculate(controller.getLeftY()));
   }
 
   /** The rotation about the robot's z-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getThetaPercentage() {
-    return joystickScale(thetaLimiter.calculate(controller.getRawAxis(2)));
+    return joystickScale(thetaLimiter.calculate(controller.getRightX()));
   }
 }
