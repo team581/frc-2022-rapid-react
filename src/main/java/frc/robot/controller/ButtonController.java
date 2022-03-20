@@ -11,17 +11,17 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 /** A wrapper around {@link XboxController} for triggering commands using buttons. */
 public class ButtonController {
   public ButtonController(XboxController controller) {
-    // Values taken from https://gamepad-tester.com/
-    aButton = new JoystickButton(controller, 1);
-    bButton = new JoystickButton(controller, 2);
-    xButton = new JoystickButton(controller, 3);
+    // These values are not what an Xbox controller uses, they are what a Logitech F310 uses
+    xButton = new JoystickButton(controller, 1);
+    aButton = new JoystickButton(controller, 2);
+    bButton = new JoystickButton(controller, 3);
     yButton = new JoystickButton(controller, 4);
-
-    leftTrigger = new JoystickButton(controller, 7);
-    rightTrigger = new JoystickButton(controller, 8);
 
     leftBumper = new JoystickButton(controller, 5);
     rightBumper = new JoystickButton(controller, 6);
+
+    leftTrigger = new JoystickButton(controller, 7);
+    rightTrigger = new JoystickButton(controller, 8);
 
     back = new JoystickButton(controller, 9);
     start = new JoystickButton(controller, 10);
