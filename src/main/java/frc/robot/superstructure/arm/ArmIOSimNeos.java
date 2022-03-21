@@ -5,6 +5,7 @@
 package frc.robot.superstructure.arm;
 
 import com.revrobotics.REVPhysicsSim;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -54,7 +55,9 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
     armTower.setColor(new Color8Bit(Color.kBlue));
     arm.setColor(new Color8Bit(Color.kYellow));
 
-    // sim.setState(state);
+    sim.setState(
+        VecBuilder.fill(
+            Arm.STARTING_POSITION.state.position, Arm.STARTING_POSITION.state.velocity));
 
     // TODO: Use CAD for drawing accurate line widths
   }

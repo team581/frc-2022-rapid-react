@@ -15,7 +15,6 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.superstructure.arm.ArmIO.Inputs;
@@ -34,17 +33,26 @@ public class Arm extends SubsystemBase {
   /** Gear ratio of motor. */
   public static final double GEARING = 14;
 
+  /** The starting positon of the arm. */
+  // Arm starts in the up position
+  public static final ArmPosition STARTING_POSITION = ArmPosition.UP;
+
   private static final double MAX_MOTOR_VOLTAGE;
 
   private static final TrapezoidProfile.Constraints CONSTRAINTS;
 
+  /** Disable feedback control. Only used for debugging. */
+  private static final boolean DISABLE_FEEDBACK = false;
+
   // In this example we weight position much more highly than velocity, but this can be tuned to
   // balance the two.
   /** Maximum acceptable position error (in radians). */
-  private static final double MAX_POSITION_ERROR = Units.degreesToRadians(5);
+  private static final double MAX_POSITION_ERROR =
+      DISABLE_FEEDBACK ? 99999 : Units.degreesToRadians(5);
 
   /** Maximum acceptable angular velocity error (in radians per second). */
-  private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(20);
+  private static final double MAX_VELOCITY_ERROR =
+      DISABLE_FEEDBACK ? 99999 : Units.degreesToRadians(20);
 
   /**
    * A feedforward for the arm's gravity. An entire {@link ArmFeedforward} instance isn't required
@@ -76,13 +84,8 @@ public class Arm extends SubsystemBase {
   private final ArmIO io;
   private final Inputs inputs = new Inputs();
 
-  // Arm starts in the up position
-  // TODO: Arm should start in the UP position during simulation
-  private static final ArmPosition initialPosition =
-      RobotBase.isSimulation() ? ArmPosition.DOWN : ArmPosition.UP;
-
-  private TrapezoidProfile.State lastProfiledReference = initialPosition.state;
-  private ArmPosition desiredPosition = initialPosition;
+  private TrapezoidProfile.State lastProfiledReference = STARTING_POSITION.state;
+  private ArmPosition desiredPosition = STARTING_POSITION;
   private double nextVoltage = 0;
 
   /** Creates a new Arm. */
