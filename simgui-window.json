@@ -18,7 +18,7 @@
     },
     "###/LiveWindow/Ungrouped/Scheduler": {
       "Collapsed": "0",
-      "Pos": "1064,514",
+      "Pos": "1038,511",
       "Size": "400,200"
     },
     "###/LiveWindow/Ungrouped/Talon FX [2]": {
@@ -38,7 +38,7 @@
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "447,728",
+      "Pos": "448,728",
       "Size": "976,239"
     },
     "###Keyboard 0 Settings": {
@@ -69,7 +69,7 @@
     "###Timing": {
       "Collapsed": "0",
       "Pos": "727,258",
-      "Size": "169,142"
+      "Size": "169,168"
     },
     "Debug##Default": {
       "Collapsed": "0",

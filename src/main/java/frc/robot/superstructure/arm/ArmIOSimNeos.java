@@ -5,7 +5,6 @@
 package frc.robot.superstructure.arm;
 
 import com.revrobotics.REVPhysicsSim;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -16,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants;
+import frc.robot.misc.util.sensors.SensorUnitConverter;
 import org.littletonrobotics.junction.Logger;
 
 public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
@@ -24,13 +24,13 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
 
   private final SingleJointedArmSim sim =
       new SingleJointedArmSim(
+          getPlant(),
           getMotorSim(),
           Arm.GEARING,
-          Arm.MOMENT_OF_INERTIA,
           Arm.ARM_LENGTH,
           // This assumes that the DOWN position has an angle higher than the UP position
-          ArmPosition.DOWN.state.position + SIM_ANGLE_OFFSET.getRadians(),
-          ArmPosition.UP.state.position + SIM_ANGLE_OFFSET.getRadians(),
+          ArmPosition.DOWN.state.position,
+          ArmPosition.UP.state.position,
           Arm.ARM_MASS,
           // WPILib doesn't support a partial gravity simulation, so we can't simulate the
           // overcentered arm which helps negate some of the effects of gravity. In practice, this
@@ -54,6 +54,8 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
     armTower.setColor(new Color8Bit(Color.kBlue));
     arm.setColor(new Color8Bit(Color.kYellow));
 
+    // sim.setState(state);
+
     // TODO: Use CAD for drawing accurate line widths
   }
 
@@ -63,19 +65,23 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
 
     sim.update(Constants.PERIOD_SECONDS);
 
-    var sensorPositionRadians = sim.getAngleRads();
+    var positionRadians = sim.getAngleRads();
     var velocityRadiansPerSecond = sim.getVelocityRadPerSec();
 
     final var encoderSim = encoder.getSimCollection();
 
-    encoderSim.setRawPosition((int) Math.round(new Rotation2d(sensorPositionRadians).getDegrees()));
-    encoderSim.setVelocity((int) Math.round(new Rotation2d(velocityRadiansPerSecond).getDegrees()));
+    encoderSim.setRawPosition(
+        (int) Math.round(SensorUnitConverter.cancoder.radiansToSensorUnits(positionRadians)));
 
-    Logger.getInstance()
-        .recordOutput("Arm/Sim/VelocityRadiansPerSecond", sim.getVelocityRadPerSec());
-    Logger.getInstance().recordOutput("Arm/Sim/PositionRadians", sim.getAngleRads());
+    final var velocitySensorUnits =
+        SensorUnitConverter.cancoder.radiansPerSecondToSensorUnitsPer100ms(
+            velocityRadiansPerSecond);
+    encoderSim.setVelocity(velocitySensorUnits);
 
-    arm.setAngle(Units.radiansToDegrees(sim.getAngleRads()));
+    Logger.getInstance().recordOutput("Arm/Sim/VelocityRadiansPerSecond", velocityRadiansPerSecond);
+    Logger.getInstance().recordOutput("Arm/Sim/PositionRadians", positionRadians);
+
+    arm.setAngle(Units.radiansToDegrees(SIM_ANGLE_OFFSET.getRadians() + positionRadians));
 
     super.updateInputs(inputs);
 

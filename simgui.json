@@ -53,6 +53,7 @@
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [2]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [8]": "Motor Controller",
       "/LiveWindow/Ungrouped/navX-Sensor[1]": "Gyro",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/LiveWindow/UpperHubLimelightSubsystem": "Subsystem",

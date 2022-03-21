@@ -4,16 +4,21 @@
 
 package frc.robot.superstructure.arm;
 
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import frc.robot.Constants;
 
 public class ArmIOReplay implements ArmIO {
   @Override
-  public DCMotor getMotorSim() {
+  public LinearSystem<N2, N1, N1> getPlant() {
     switch (Constants.getRobot()) {
       case SIM_BOT:
       default:
-        return DCMotor.getFalcon500(1);
+        return LinearSystemId.createSingleJointedArmSystem(
+            DCMotor.getNEO(2), Arm.MOMENT_OF_INERTIA, Arm.GEARING);
     }
   }
 

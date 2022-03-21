@@ -7,7 +7,10 @@ package frc.robot.superstructure.arm;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.*;
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
@@ -15,19 +18,20 @@ import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 public class ArmIONeos implements ArmIO {
   public static final boolean INVERTED;
 
+  /** Used to make the arm in the visualization look like the actual robot. */
   protected static final Rotation2d SIM_ANGLE_OFFSET = Rotation2d.fromDegrees(70);
 
   /**
-   * The offset to apply to the absolute position to ensure that an absolute position of 0 means the
-   * arm is in the {@link ArmPosition down position}.
+   * The amount to subtract from the absolute position to ensure that an absolute position of 0
+   * means the arm is in the {@link ArmPosition#DOWN down position}.
    */
-  private static final Rotation2d ENCODER_ABSOLUTE_POSITION_OFFSET;
+  private static final Rotation2d ENCODER_ABSOLUTE_POSITION_DIFFERENCE;
 
   static {
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        ENCODER_ABSOLUTE_POSITION_OFFSET = SIM_ANGLE_OFFSET;
-        INVERTED = true;
+        ENCODER_ABSOLUTE_POSITION_DIFFERENCE = new Rotation2d();
+        INVERTED = false;
         break;
       default:
         throw new UnsupportedSubsystemException(ArmIONeos.class);
@@ -44,7 +48,7 @@ public class ArmIONeos implements ArmIO {
         leader = new CANSparkMax(5, CANSparkMax.MotorType.kBrushless);
         follower = new CANSparkMax(6, CANSparkMax.MotorType.kBrushless);
         encoder = new CANCoder(7);
-        leader.setInverted(true);
+        leader.setInverted(INVERTED);
         break;
       default:
         throw new UnsupportedSubsystemException(this);
@@ -53,9 +57,14 @@ public class ArmIONeos implements ArmIO {
     follower.follow(leader);
   }
 
-  @Override
-  public DCMotor getMotorSim() {
+  protected static DCMotor getMotorSim() {
     return DCMotor.getNEO(2);
+  }
+
+  @Override
+  public LinearSystem<N2, N1, N1> getPlant() {
+    return LinearSystemId.createSingleJointedArmSystem(
+        getMotorSim(), Arm.MOMENT_OF_INERTIA, Arm.GEARING);
   }
 
   @Override
@@ -66,7 +75,7 @@ public class ArmIONeos implements ArmIO {
         new double[] {leader.getMotorTemperature(), follower.getMotorTemperature()};
     inputs.position =
         Rotation2d.fromDegrees(encoder.getAbsolutePosition())
-            .plus(ENCODER_ABSOLUTE_POSITION_OFFSET);
+            .minus(ENCODER_ABSOLUTE_POSITION_DIFFERENCE);
     inputs.velocityRadiansPerSecond = Units.degreesToRadians(encoder.getVelocity());
   }
 

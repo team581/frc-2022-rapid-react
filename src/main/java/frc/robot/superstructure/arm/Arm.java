@@ -12,7 +12,6 @@ import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -42,10 +41,10 @@ public class Arm extends SubsystemBase {
   // In this example we weight position much more highly than velocity, but this can be tuned to
   // balance the two.
   /** Maximum acceptable position error (in radians). */
-  private static final double MAX_POSITION_ERROR = 999999 * Units.degreesToRadians(2);
+  private static final double MAX_POSITION_ERROR = Units.degreesToRadians(5);
 
   /** Maximum acceptable angular velocity error (in radians per second). */
-  private static final double MAX_VELOCITY_ERROR = 999999 * Units.degreesToRadians(3);
+  private static final double MAX_VELOCITY_ERROR = Units.degreesToRadians(20);
 
   /**
    * A feedforward for the arm's gravity. An entire {@link ArmFeedforward} instance isn't required
@@ -78,18 +77,19 @@ public class Arm extends SubsystemBase {
   private final Inputs inputs = new Inputs();
 
   // Arm starts in the up position
-  private ArmPosition desiredPosition = ArmPosition.UP;
-  // TODO: Arm should start in up position in simulation
-  private TrapezoidProfile.State lastProfiledReference =
-      RobotBase.isSimulation() ? ArmPosition.DOWN.state : ArmPosition.UP.state;
+  // TODO: Arm should start in the UP position during simulation
+  private static final ArmPosition initialPosition =
+      RobotBase.isSimulation() ? ArmPosition.DOWN : ArmPosition.UP;
+
+  private TrapezoidProfile.State lastProfiledReference = initialPosition.state;
+  private ArmPosition desiredPosition = initialPosition;
   private double nextVoltage = 0;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
     this.io = io;
 
-    final LinearSystem<N2, N1, N1> armPlant =
-        LinearSystemId.createSingleJointedArmSystem(io.getMotorSim(), MOMENT_OF_INERTIA, GEARING);
+    final LinearSystem<N2, N1, N1> armPlant = io.getPlant();
 
     final KalmanFilter<N2, N1, N1> observer =
         new KalmanFilter<>(
@@ -149,7 +149,14 @@ public class Arm extends SubsystemBase {
     Logger.getInstance()
         .recordOutput(
             "Arm/Reference/DesiredVelocityRadiansPerSecond", lastProfiledReference.velocity);
-    Logger.getInstance().recordOutput("Arm/DesiredAppliedVolts", nextVoltage);
+    Logger.getInstance()
+        .recordOutput(
+            "Arm/Reference/Error/PositionRadians",
+            lastProfiledReference.position - inputs.position.getRadians());
+    Logger.getInstance()
+        .recordOutput(
+            "Arm/Reference/Error/VelocityRadiansPerSecond",
+            lastProfiledReference.velocity - inputs.velocityRadiansPerSecond);
     Logger.getInstance()
         .recordOutput("Arm/Loop/Observer/StateEstimate/VelocityRadiansPerSecond", loop.getXHat(0));
     Logger.getInstance()
@@ -157,8 +164,8 @@ public class Arm extends SubsystemBase {
             "Arm/Loop/Observer/StateEstimate/AccelerationRadiansPerSecondSquared", loop.getXHat(1));
   }
 
-  // TODO: Consider calling this from a command execute function
   private void doPositionControlLoop() {
+    // Get the next step of the trapezoid profile
     lastProfiledReference =
         new TrapezoidProfile(CONSTRAINTS, desiredPosition.state, lastProfiledReference)
             .calculate(Constants.PERIOD_SECONDS);
@@ -174,10 +181,13 @@ public class Arm extends SubsystemBase {
     // Send the new calculated voltage to the motors. voltage = duty cycle * battery voltage, so
     // duty cycle = voltage / battery voltage
     nextVoltage =
-        loop.getU(0)
+        // TODO: Not sure why inverting the voltage here is required. Seems like just the
+        // LinearSystemLoop needs it, not the motor itself.
+        -loop.getU(0)
             + GRAVITY_FEEDFORWARD.calculate(
                 lastProfiledReference.position, lastProfiledReference.velocity);
     io.setVoltage(nextVoltage);
+    Logger.getInstance().recordOutput("Arm/DesiredAppliedVolts", nextVoltage);
   }
 
   /** Check if the arm is at the provided position. */
