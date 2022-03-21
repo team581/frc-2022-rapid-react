@@ -104,7 +104,7 @@ public class RobotContainer {
           break;
         case SIM_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOSim());
-          arm = new Arm(new ArmIOSimFalcon500());
+          arm = new Arm(new ArmIOSimNeos());
           swiffer = new Swiffer(new SwifferIOSim());
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
           driveSubsystem =

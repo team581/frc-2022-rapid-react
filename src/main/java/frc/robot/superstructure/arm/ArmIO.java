@@ -5,7 +5,8 @@
 package frc.robot.superstructure.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.numbers.*;
+import edu.wpi.first.math.system.LinearSystem;
 import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -36,11 +37,9 @@ public interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
     }
   }
 
-  public DCMotor getMotorSim();
+  /** Get the plant for the arm. */
+  public LinearSystem<N2, N1, N1> getPlant();
 
   /** Sets the output voltage of the arm's motor. */
   public void setVoltage(double volts);
-
-  /** Set the encoder's position. */
-  public void setEncoderPosition(Rotation2d rotation);
 }

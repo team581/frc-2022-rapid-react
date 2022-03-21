@@ -43,5 +43,10 @@
   },
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.server.launchMode": "Standard",
-  "spotlessGradle.format.enable": true
+  "spotlessGradle.format.enable": true,
+  "wpilib.selectDefaultSimulateExtension": true,
+  "wpilib.skipSelectSimulateExtension": true,
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
