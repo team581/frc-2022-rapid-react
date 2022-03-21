@@ -33,9 +33,6 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
           ArmPosition.DOWN.state.position,
           ArmPosition.UP.state.position,
           Arm.ARM_MASS,
-          // WPILib doesn't support a partial gravity simulation, so we can't simulate the
-          // overcentered arm which helps negate some of the effects of gravity. In practice, this
-          // allows the arm to stay in the upright position without needing constant motor output.
           true);
   private final Mechanism2d arm2d =
       new Mechanism2d(Arm.ARM_LENGTH * 1.5, TOWER_HEIGHT + Arm.ARM_LENGTH);
