@@ -25,10 +25,10 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
 
   private final SingleJointedArmSim sim =
       new SingleJointedArmSim(
-          getPlant(),
           getMotorSim(),
           Arm.GEARING,
           Arm.ARM_LENGTH,
+          Arm.MOMENT_OF_INERTIA,
           // This assumes that the DOWN position has an angle higher than the UP position
           ArmPosition.DOWN.state.position,
           ArmPosition.UP.state.position,
@@ -36,7 +36,7 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
           // WPILib doesn't support a partial gravity simulation, so we can't simulate the
           // overcentered arm which helps negate some of the effects of gravity. In practice, this
           // allows the arm to stay in the upright position without needing constant motor output.
-          false);
+          true);
   private final Mechanism2d arm2d =
       new Mechanism2d(Arm.ARM_LENGTH * 1.5, TOWER_HEIGHT + Arm.ARM_LENGTH);
   private final MechanismRoot2d armPivot =

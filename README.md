@@ -19,7 +19,7 @@ Our robot itself is still WIP, but these are highlights of what we've accomplish
 - Intake & shooter (AKA "Swiffer Picker Upper")
   - Closed-loop velocity control for flywheel
 - Arm for Swiffer Picker Upper
-  - Optimal control achieved with a linear quadratic regulator feedback controller
+  - Arm position control via motion profiled PID with feedforward
 - Misc
   - Mass data logging to USB + streamed to driver station via Advantage Kit
 
