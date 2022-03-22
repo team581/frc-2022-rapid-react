@@ -42,8 +42,7 @@ public final class Constants {
   /** The robot the code should target. */
   public enum TargetRobot {
     /** The 2022 competition robot. */
-    // TODO: Fill in this serial number
-    COMP_BOT(""),
+    COMP_BOT("0305cd6b"),
     /** The 2020 test bot. */
     TEST_2020_BOT("031617f6"),
     /** A simulated robot. */
