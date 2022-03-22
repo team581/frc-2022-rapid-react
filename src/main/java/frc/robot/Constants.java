@@ -17,21 +17,11 @@ import frc.robot.misc.exceptions.UnknownTargetRobotException;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  // Change this depending on which robot you are targeting for deployment
-  private static final TargetRobot TARGET_ROBOT = TargetRobot.SIM_BOT;
-
   // Change this depending on what your environment is
   public static final Env ENV = Env.DEVELOPMENT;
 
-  /** The robot the code should target. */
-  public enum TargetRobot {
-    /** The 2022 competition robot. */
-    COMP_BOT,
-    /** The 2020 test bot. */
-    TEST_2020_BOT,
-    /** A simulated robot. */
-    SIM_BOT
-  }
+  /** The roboRIO's serial number. */
+  public static final String SERIAL_NUMBER = System.getenv("serialnum");
 
   public enum Env {
     /** Running during developent. This does not include test matches at comps! */
@@ -49,16 +39,36 @@ public final class Constants {
     SIM
   }
 
+  /** The robot the code should target. */
+  public enum TargetRobot {
+    /** The 2022 competition robot. */
+    COMP_BOT("0305cd6b"),
+    /** The 2020 test bot. */
+    TEST_2020_BOT("031617f6"),
+    /** A simulated robot. */
+    SIM_BOT("simbot");
+
+    private final String serialNumber;
+
+    TargetRobot(String serialNumber) {
+      this.serialNumber = serialNumber;
+    }
+  }
+
   public static TargetRobot getRobot() {
     if (RobotBase.isSimulation()) {
       return TargetRobot.SIM_BOT;
     }
 
-    if (TARGET_ROBOT == TargetRobot.SIM_BOT && RobotBase.isReal()) {
-      System.out.println("WARNING: You are trying to run a simulation with a real robot!");
+    if (TargetRobot.COMP_BOT.serialNumber.equals(SERIAL_NUMBER)) {
+      return TargetRobot.COMP_BOT;
     }
 
-    return TARGET_ROBOT;
+    if (TargetRobot.TEST_2020_BOT.serialNumber.equals(SERIAL_NUMBER)) {
+      return TargetRobot.TEST_2020_BOT;
+    }
+
+    throw new IllegalStateException("Unknown robot serial number: " + SERIAL_NUMBER);
   }
 
   public static Mode getMode() {
@@ -80,7 +90,7 @@ public final class Constants {
   public static final double PERIOD_SECONDS = Units.millisecondsToSeconds(10);
 
   static {
-    System.out.println("SPECIFIED ROBOT: " + TARGET_ROBOT);
+    System.out.println("SERIAL NUMBER: " + SERIAL_NUMBER);
     System.out.println("RESOLVED ROBOT: " + getRobot());
     System.out.println("MODE: " + getMode());
   }
