@@ -5,7 +5,6 @@
 package frc.robot.imu;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.Constants;
