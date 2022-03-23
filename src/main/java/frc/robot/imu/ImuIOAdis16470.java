@@ -31,7 +31,7 @@ public class ImuIOAdis16470 implements ImuIO {
   @Override
   public void updateInputs(Inputs inputs) {
     inputs.tempCelcius = 0;
-    inputs.rotationRadians = Units.degreesToRadians(-sensor.getAngle());
-    inputs.turnRateRadiansPerSecond = Units.degreesToRadians(-sensor.getRate());
+    inputs.rotationRadians = Units.degreesToRadians(sensor.getAngle());
+    inputs.turnRateRadiansPerSecond = Units.degreesToRadians(sensor.getRate());
   }
 }

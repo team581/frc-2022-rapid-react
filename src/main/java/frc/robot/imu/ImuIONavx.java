@@ -5,6 +5,8 @@
 package frc.robot.imu;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
@@ -31,7 +33,7 @@ public class ImuIONavx implements ImuIO {
   @Override
   public void updateInputs(Inputs inputs) {
     inputs.tempCelcius = sensor.getTempC();
-    inputs.rotationRadians = sensor.getRotation2d().getRadians();
-    inputs.turnRateRadiansPerSecond = sensor.getRate();
+    inputs.rotationRadians = Units.degreesToRadians(sensor.getAngle());
+    inputs.turnRateRadiansPerSecond = Units.degreesToRadians(sensor.getRate());
   }
 }
