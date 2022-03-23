@@ -23,13 +23,13 @@ public class Swiffer extends SubsystemBase {
       case SIM_BOT:
       default:
         MAX_MOTOR_VOLTAGE = 12;
-        TOLERANCE_RPM = 0;
-        FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
+        TOLERANCE_RPM = 20;
+        FEEDFORWARD = new SimpleMotorFeedforward(0.1, 0.5, 0.25);
         break;
     }
   }
 
-  private final PIDController rpmPid;
+  private final PIDController pid;
 
   private final SwifferIO io;
   private final Inputs inputs = new Inputs();
@@ -44,14 +44,14 @@ public class Swiffer extends SubsystemBase {
     switch (Constants.getRobot()) {
       case SIM_BOT:
       default:
-        rpmPid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
+        pid = new PIDController(0.2, 0, 0, Constants.PERIOD_SECONDS);
         break;
     }
 
     // Flywheel should be stopped when the match starts
     setDesiredMode(SwifferMode.STOPPED);
 
-    rpmPid.setTolerance(TOLERANCE_RPM);
+    pid.setTolerance(Units.rotationsPerMinuteToRadiansPerSecond(TOLERANCE_RPM));
   }
 
   @Override
@@ -60,36 +60,36 @@ public class Swiffer extends SubsystemBase {
 
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Swiffer", inputs);
-    Logger.getInstance().recordOutput("Swiffer/DesiredMode", getDesiredMode().toString());
-    final var desiredRpm = Units.radiansPerSecondToRotationsPerMinute(getDesiredAngularVelocity());
-    Logger.getInstance().recordOutput("Swiffer/DesiredRpm", desiredRpm);
-    Logger.getInstance().recordOutput("Swiffer/DesiredAppliedVolts", desiredVoltage);
 
     doVelocityControlLoop();
+
+    Logger.getInstance().recordOutput("Swiffer/Goal/Mode", desiredMode.toString());
+    Logger.getInstance().recordOutput("Swiffer/Goal/AtGoal", pid.atSetpoint());
+    final var goalRpm = Units.radiansPerSecondToRotationsPerMinute(getDesiredAngularVelocity());
+    final var actualRpm =
+        Units.radiansPerSecondToRotationsPerMinute(inputs.angularVelocityRadiansPerSecond);
+    Logger.getInstance().recordOutput("Swiffer/Goal/Rpm", goalRpm);
+    Logger.getInstance().recordOutput("Swiffer/Goal/Error/Rpm", goalRpm - actualRpm);
   }
 
   /** Set the desired mode of the flywheel to the one provided. */
   public void setDesiredMode(SwifferMode mode) {
     desiredMode = mode;
-    rpmPid.setSetpoint(mode.angularVelocity);
+    pid.setSetpoint(mode.angularVelocity);
   }
 
   public boolean atGoal(SwifferMode mode) {
-    return mode == getDesiredMode() && rpmPid.atSetpoint();
-  }
-
-  private SwifferMode getDesiredMode() {
-    return desiredMode;
+    return mode == desiredMode && pid.atSetpoint();
   }
 
   /** Get the desired angular velocity in radians/second. */
   private double getDesiredAngularVelocity() {
-    return rpmPid.getSetpoint();
+    return pid.getSetpoint();
   }
 
   private void doVelocityControlLoop() {
     final var rawVoltage =
-        rpmPid.calculate(inputs.angularVelocityRadiansPerSecond)
+        pid.calculate(inputs.angularVelocityRadiansPerSecond)
             + FEEDFORWARD.calculate(getDesiredAngularVelocity());
     final var clampedVoltage = MathUtil.clamp(rawVoltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE);
 
