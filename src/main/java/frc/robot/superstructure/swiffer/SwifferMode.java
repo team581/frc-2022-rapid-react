@@ -9,8 +9,8 @@ import edu.wpi.first.math.util.Units;
 /** A mode that the swiffer flywheel can be in. */
 public enum SwifferMode {
   STOPPED(0),
-  SNARFING(500),
-  SHOOTING(250);
+  SNARFING(60),
+  SHOOTING(30);
 
   /** Angular velocity in radians/second. */
   public final double angularVelocity;

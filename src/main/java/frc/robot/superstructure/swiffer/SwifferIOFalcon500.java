@@ -6,20 +6,23 @@ package frc.robot.superstructure.swiffer;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 import frc.robot.misc.util.GearingConverter;
 import frc.robot.misc.util.sensors.SensorUnitConverter;
 
 public class SwifferIOFalcon500 implements SwifferIO {
-  private final WPI_TalonFX motor;
-  private final GearingConverter gearingConverter;
+  protected final WPI_TalonFX motor;
+  protected final GearingConverter gearingConverter;
+  protected final boolean isInverted;
 
   public SwifferIOFalcon500() {
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        gearingConverter = new GearingConverter(1);
+        gearingConverter = new GearingConverter(25);
         motor = new WPI_TalonFX(8);
+        isInverted = false;
         break;
       default:
         throw new UnsupportedSubsystemException(this);
@@ -49,5 +52,9 @@ public class SwifferIOFalcon500 implements SwifferIO {
   @Override
   public void zeroEncoder() {
     motor.setSelectedSensorPosition(0);
+  }
+
+  protected static DCMotor getMotorSim() {
+    return DCMotor.getFalcon500(1);
   }
 }
