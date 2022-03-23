@@ -14,6 +14,7 @@ import frc.robot.drive.*;
 import frc.robot.drive.commands.UpperHubAlignCommand;
 import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.imu.*;
+import frc.robot.lights.*;
 import frc.robot.localization.Localization;
 import frc.robot.match_metadata.*;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
@@ -51,6 +52,7 @@ public class RobotContainer {
   private final Swiffer swiffer;
   private final Arm arm;
   private final SuperstructureSubsystem superstructureSubsystem;
+  private final LightsSubsystem lightsSubsystem;
   private final Localization localization;
 
   private final Command autoCommand;
@@ -68,6 +70,7 @@ public class RobotContainer {
         throw new UnknownTargetRobotException();
     }
 
+    lightsSubsystem = new LightsSubsystem(new LightsIORoborio());
     if (Constants.getMode() == Constants.Mode.REPLAY) {
       matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOReplay());
       arm = new Arm(new ArmIOReplay());
