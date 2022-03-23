@@ -8,15 +8,17 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
-import frc.robot.misc.io.Falcon500IO;
+import frc.robot.misc.util.GearingConverter;
+import frc.robot.misc.util.sensors.SensorUnitConverter;
 
-public class SwifferIOFalcon500 extends Falcon500IO implements SwifferIO {
+public class SwifferIOFalcon500 implements SwifferIO {
   private final WPI_TalonFX motor;
+  private final GearingConverter gearingConverter;
 
   public SwifferIOFalcon500() {
     switch (Constants.getRobot()) {
       case SIM_BOT:
-        setGearing(1);
+        gearingConverter = new GearingConverter(1);
         motor = new WPI_TalonFX(8);
         break;
       default:
@@ -35,7 +37,8 @@ public class SwifferIOFalcon500 extends Falcon500IO implements SwifferIO {
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
     inputs.angularVelocityRadiansPerSecond =
-        sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
+        SensorUnitConverter.talonFX.sensorUnitsPer100msToRadiansPerSecond(
+            gearingConverter.beforeToAfterGearing(motor.getSelectedSensorVelocity()));
   }
 
   @Override

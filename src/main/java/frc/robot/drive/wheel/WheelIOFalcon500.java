@@ -9,15 +9,17 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
-import frc.robot.misc.io.Falcon500IO;
+import frc.robot.misc.util.GearingConverter;
+import frc.robot.misc.util.sensors.SensorUnitConverter;
 
-public class WheelIOFalcon500 extends Falcon500IO implements WheelIO {
+public class WheelIOFalcon500 implements WheelIO {
   private final WPI_TalonFX motor;
+  private final GearingConverter gearingConverter;
 
   public WheelIOFalcon500(Corner corner) {
     switch (Constants.getRobot()) {
       case COMP_BOT:
-        setGearing(12.75);
+        gearingConverter = new GearingConverter(12.75);
         switch (corner) {
           case FRONT_LEFT:
             motor = new WPI_TalonFX(14);
@@ -38,7 +40,7 @@ public class WheelIOFalcon500 extends Falcon500IO implements WheelIO {
         }
         break;
       case TEST_2020_BOT:
-        setGearing(10.71);
+        gearingConverter = new GearingConverter(10.71);
         switch (corner) {
           case FRONT_LEFT:
             motor = new WPI_TalonFX(10);
@@ -59,7 +61,7 @@ public class WheelIOFalcon500 extends Falcon500IO implements WheelIO {
         }
         break;
       case SIM_BOT:
-        setGearing(1);
+        gearingConverter = new GearingConverter(1);
         switch (corner) {
           case FRONT_LEFT:
             motor = new WPI_TalonFX(1);
@@ -94,8 +96,12 @@ public class WheelIOFalcon500 extends Falcon500IO implements WheelIO {
     inputs.appliedVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
-    inputs.positionRadians = sensorUnitsToRadians(motor.getSelectedSensorPosition());
-    inputs.velocityRadiansPerSecond = sensorUnitsToRadians(motor.getSelectedSensorVelocity() * 10);
+    inputs.positionRadians =
+        SensorUnitConverter.talonFX.sensorUnitsToRadians(
+            gearingConverter.beforeToAfterGearing(motor.getSelectedSensorPosition()));
+    inputs.velocityRadiansPerSecond =
+        SensorUnitConverter.talonFX.sensorUnitsPer100msToRadiansPerSecond(
+            gearingConverter.beforeToAfterGearing(motor.getSelectedSensorVelocity()));
   }
 
   @Override
