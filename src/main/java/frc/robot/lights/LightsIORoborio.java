@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.util.Color;
 
 public class LightsIORoborio implements LightsIO {
   private final AddressableLED leds = new AddressableLED(9);
-  private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(1);
+  private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(8);
 
   public LightsIORoborio() {
     leds.setLength(buffer.getLength());
@@ -25,11 +25,11 @@ public class LightsIORoborio implements LightsIO {
 
   @Override
   public void updateInputs(Inputs inputs) {
-      inputs.ledCount = buffer.getLength();
+    inputs.ledCount = buffer.getLength();
   }
 
   @Override
   public void flushColor() {
-      leds.setData(buffer);
+    leds.setData(buffer);
   }
 }

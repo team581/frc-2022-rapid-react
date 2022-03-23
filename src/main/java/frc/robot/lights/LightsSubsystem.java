@@ -4,11 +4,10 @@
 
 package frc.robot.lights;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lights.LightsIO.Inputs;
+import org.littletonrobotics.junction.Logger;
 
 public class LightsSubsystem extends SubsystemBase {
   private LightsIO io;
