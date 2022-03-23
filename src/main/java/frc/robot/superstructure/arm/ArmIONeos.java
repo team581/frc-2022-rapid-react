@@ -7,10 +7,7 @@ package frc.robot.superstructure.arm;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.numbers.*;
-import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
@@ -59,12 +56,6 @@ public class ArmIONeos implements ArmIO {
 
   protected static DCMotor getMotorSim() {
     return DCMotor.getNEO(2);
-  }
-
-  @Override
-  public LinearSystem<N2, N1, N1> getPlant() {
-    return LinearSystemId.createSingleJointedArmSystem(
-        getMotorSim(), Arm.MOMENT_OF_INERTIA, Arm.GEARING);
   }
 
   @Override

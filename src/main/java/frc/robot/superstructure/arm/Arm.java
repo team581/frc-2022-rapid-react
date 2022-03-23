@@ -4,14 +4,9 @@
 
 package frc.robot.superstructure.arm;
 
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.LinearQuadraticRegulator;
-import edu.wpi.first.math.estimator.KalmanFilter;
-import edu.wpi.first.math.numbers.*;
-import edu.wpi.first.math.system.LinearSystem;
-import edu.wpi.first.math.system.LinearSystemLoop;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -41,89 +36,52 @@ public class Arm extends SubsystemBase {
 
   private static final TrapezoidProfile.Constraints CONSTRAINTS;
 
-  /** Disable feedback control. Only used for debugging. */
-  private static final boolean DISABLE_FEEDBACK = false;
+  private static final ArmFeedforward FEEDFORWARD;
 
-  // In this example we weight position much more highly than velocity, but this can be tuned to
-  // balance the two.
-  /** Maximum acceptable position error (in radians). */
-  private static final double MAX_POSITION_ERROR =
-      DISABLE_FEEDBACK ? 99999 : Units.degreesToRadians(5);
-
-  /** Maximum acceptable angular velocity error (in radians per second). */
-  private static final double MAX_VELOCITY_ERROR =
-      DISABLE_FEEDBACK ? 99999 : Units.degreesToRadians(20);
-
-  /**
-   * A feedforward for the arm's gravity. An entire {@link ArmFeedforward} instance isn't required
-   * as we're setting every value to 0 except for the gravity gain (kcos), you could just add <code>
-   * kcos * cos(desiredAngle)</code>. Using an entire feedforward object is clearer though.
-   */
-  private static final ArmFeedforward GRAVITY_FEEDFORWARD;
+  private final ProfiledPIDController pidController;
 
   static {
     switch (Constants.getRobot()) {
       case COMP_BOT:
       case SIM_BOT:
-        // TODO: Use SysID to calculate the gravity term
-        GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
+        // TODO: Use SysID to calculate the feedforward
+        FEEDFORWARD = new ArmFeedforward(1, 1.2, 0.4, 0.25);
         MAX_MOTOR_VOLTAGE = 12;
         CONSTRAINTS = new TrapezoidProfile.Constraints(4.6, 28.86);
         break;
       default:
-        GRAVITY_FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
+        FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
         MAX_MOTOR_VOLTAGE = 12;
         CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
         break;
     }
   }
 
-  // The state-space loop combines a controller, observer, feedforward and plant for easy control.
-  private final LinearSystemLoop<N2, N1, N1> loop;
-
   private final ArmIO io;
   private final Inputs inputs = new Inputs();
 
-  private TrapezoidProfile.State lastProfiledReference = STARTING_POSITION.state;
   private ArmPosition desiredPosition = STARTING_POSITION;
-  private double nextVoltage = 0;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
     this.io = io;
 
-    final LinearSystem<N2, N1, N1> armPlant = io.getPlant();
+    switch (Constants.getRobot()) {
+      case SIM_BOT:
+      case COMP_BOT:
+        // TODO: Use SysID to calculate the PID terms
+        pidController =
+            new ProfiledPIDController(3.2, 0.35, 0.5, CONSTRAINTS, Constants.PERIOD_SECONDS);
+        // TODO: Measure actual acceptable tolerance
+        pidController.setTolerance(Units.degreesToRadians(0.01), Units.degreesToRadians(10));
+        break;
+      default:
+        pidController = new ProfiledPIDController(1, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
+        break;
+    }
 
-    final KalmanFilter<N2, N1, N1> observer =
-        new KalmanFilter<>(
-            Nat.N2(),
-            Nat.N1(),
-            armPlant,
-            // How accurate we think our model is, in radians and radians/sec
-            VecBuilder.fill(0.015, 0.17),
-            // How accurate we think our encoder position data is. In this case we very highly trust
-            // our encoder position reading.
-            VecBuilder.fill(0.01),
-            Constants.PERIOD_SECONDS);
-
-    // A LQR uses feedback to create voltage commands.
-    final LinearQuadraticRegulator<N2, N1, N1> controller =
-        new LinearQuadraticRegulator<>(
-            armPlant,
-            // qelms.
-            // Position and velocity error tolerances, in radians and radians per second. Decrease
-            // this to more heavily penalize state excursion, or make the controller behave more
-            // aggressively.
-            VecBuilder.fill(MAX_POSITION_ERROR, MAX_VELOCITY_ERROR),
-            // relms. Control effort (voltage) tolerance. Decrease this to more heavily penalize
-            // control effort, or make the controller less aggressive. 12 is a good starting point
-            // because that is the (approximate) maximum voltage of a battery.
-            VecBuilder.fill(MAX_MOTOR_VOLTAGE),
-            Constants.PERIOD_SECONDS);
-
-    loop =
-        new LinearSystemLoop<>(
-            armPlant, controller, observer, MAX_MOTOR_VOLTAGE, Constants.PERIOD_SECONDS);
+    pidController.setGoal(desiredPosition.state);
+    resetController();
   }
 
   @Override
@@ -132,87 +90,62 @@ public class Arm extends SubsystemBase {
 
     io.updateInputs(inputs);
 
-    Logger.getInstance().processInputs("Arm", inputs);
-
-    Logger.getInstance().recordOutput("Arm/DesiredPosition", desiredPosition.toString());
-    Logger.getInstance().recordOutput("Arm/DesiredPositionRadians", desiredPosition.state.position);
-    Logger.getInstance().recordOutput("Arm/PositionConstants/Up", ArmPosition.UP.state.position);
-    Logger.getInstance()
-        .recordOutput("Arm/PositionConstants/Down", ArmPosition.DOWN.state.position);
-
-    // Avoid messing up the Kalman filter's state by making it believe we're using its output
-    // voltages when the robot is disabled
     if (DriverStation.isEnabled()) {
       doPositionControlLoop();
+    } else {
+      resetController();
     }
 
-    Logger.getInstance().recordOutput("Arm/AtReference", atPosition(desiredPosition));
-    Logger.getInstance()
-        .recordOutput("Arm/Reference/DesiredPositionRadians", lastProfiledReference.position);
-    Logger.getInstance()
-        .recordOutput(
-            "Arm/Reference/DesiredVelocityRadiansPerSecond", lastProfiledReference.velocity);
-    Logger.getInstance()
-        .recordOutput(
-            "Arm/Reference/Error/PositionRadians",
-            lastProfiledReference.position - inputs.position.getRadians());
+    Logger.getInstance().processInputs("Arm", inputs);
+
+    Logger.getInstance().recordOutput("Arm/Goal/Position", desiredPosition.toString());
+    Logger.getInstance().recordOutput("Arm/Goal/AtGoal", pidController.atGoal());
+    Logger.getInstance().recordOutput("Arm/Goal/PositionRadians", pidController.getGoal().position);
     Logger.getInstance()
         .recordOutput(
-            "Arm/Reference/Error/VelocityRadiansPerSecond",
-            lastProfiledReference.velocity - inputs.velocityRadiansPerSecond);
-    Logger.getInstance()
-        .recordOutput("Arm/Loop/Observer/StateEstimate/VelocityRadiansPerSecond", loop.getXHat(0));
+            "Arm/Goal/Error/PositionRadians",
+            pidController.getGoal().position - inputs.position.getRadians());
     Logger.getInstance()
         .recordOutput(
-            "Arm/Loop/Observer/StateEstimate/AccelerationRadiansPerSecondSquared", loop.getXHat(1));
+            "Arm/Goal/Error/VelocityRadiansPerSecond",
+            pidController.getGoal().velocity - inputs.velocityRadiansPerSecond);
+
+    Logger.getInstance()
+        .recordOutput(
+            "Arm/MotionProfile/DesiredPositionRadians", pidController.getSetpoint().position);
+    Logger.getInstance()
+        .recordOutput(
+            "Arm/MotionProfile/DesiredVelocityRadiansPerSecond",
+            pidController.getSetpoint().velocity);
+    Logger.getInstance()
+        .recordOutput("Arm/MotionProfile/Error/PositionRadians", pidController.getPositionError());
+    Logger.getInstance()
+        .recordOutput(
+            "Arm/MotionProfile/Error/VelocityRadiansPerSecond", pidController.getVelocityError());
+  }
+
+  private void resetController() {
+    pidController.reset(inputs.position.getRadians(), inputs.velocityRadiansPerSecond);
   }
 
   private void doPositionControlLoop() {
-    // Get the next step of the trapezoid profile
-    lastProfiledReference =
-        new TrapezoidProfile(CONSTRAINTS, desiredPosition.state, lastProfiledReference)
-            .calculate(Constants.PERIOD_SECONDS);
-    loop.setNextR(lastProfiledReference.position, lastProfiledReference.velocity);
+    final var setpoint = pidController.getSetpoint();
+    final var feedforward = FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
+    final var feedback = pidController.calculate(inputs.position.getRadians());
 
-    // Correct our Kalman filter's state vector estimate with encoder data
-    loop.correct(VecBuilder.fill(inputs.position.getRadians()));
+    final var voltage = feedforward + feedback;
 
-    // Update our LQR to generate new voltage commands and use the voltages to predict the next
-    // state with out Kalman filter
-    loop.predict(Constants.PERIOD_SECONDS);
-
-    // Send the new calculated voltage to the motors. voltage = duty cycle * battery voltage, so
-    // duty cycle = voltage / battery voltage
-    nextVoltage =
-        // TODO: Not sure why inverting the voltage here is required. Seems like just the
-        // LinearSystemLoop needs it, not the motor itself.
-        -loop.getU(0)
-            + GRAVITY_FEEDFORWARD.calculate(
-                lastProfiledReference.position, lastProfiledReference.velocity);
-    io.setVoltage(nextVoltage);
-    Logger.getInstance().recordOutput("Arm/DesiredAppliedVolts", nextVoltage);
+    io.setVoltage(MathUtil.clamp(voltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE));
   }
 
   /** Check if the arm is at the provided position. */
   public boolean atPosition(ArmPosition position) {
-    if (desiredPosition != position) {
-      // Wrong position
-      return false;
-    }
-
-    final var angleError = loop.getError(0);
-    if (Math.abs(angleError) > MAX_POSITION_ERROR) {
-      // Angle error tolerance exceeded
-      return false;
-    }
-
-    final var angularVelocityError = loop.getError(1);
-    // Velocity error tolerance exceeded
-    return Math.abs(angularVelocityError) < MAX_VELOCITY_ERROR;
+    return pidController.getGoal() == position.state && pidController.atGoal();
   }
 
   /** Set the desired position of the arm. */
   public void setDesiredPosition(ArmPosition position) {
     desiredPosition = position;
+    pidController.setGoal(position.state);
   }
 }
