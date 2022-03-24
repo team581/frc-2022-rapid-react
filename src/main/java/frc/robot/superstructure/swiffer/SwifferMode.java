@@ -10,7 +10,7 @@ import edu.wpi.first.math.util.Units;
 public enum SwifferMode {
   STOPPED(0),
   SNARFING(60),
-  SHOOTING(30);
+  SHOOTING(-30);
 
   /** Angular velocity in radians/second. */
   public final double angularVelocity;
