@@ -4,25 +4,25 @@
 
 package frc.robot.superstructure.swiffer;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.misc.util.Clamp;
 import frc.robot.superstructure.swiffer.SwifferIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
 public class Swiffer extends SubsystemBase {
-  private static final double MAX_MOTOR_VOLTAGE;
   private static final double TOLERANCE_RPM;
   private static final SimpleMotorFeedforward FEEDFORWARD;
+  private static final Clamp VOLTAGE_CLAMP;
 
   static {
     switch (Constants.getRobot()) {
       case SIM_BOT:
       default:
-        MAX_MOTOR_VOLTAGE = 12;
+        VOLTAGE_CLAMP = new Clamp(12);
         TOLERANCE_RPM = 20;
         FEEDFORWARD = new SimpleMotorFeedforward(0.1, 0.5, 0.25);
         break;
@@ -94,7 +94,7 @@ public class Swiffer extends SubsystemBase {
 
     final var voltage = feedback + feedforward;
 
-    desiredVoltage = MathUtil.clamp(voltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE);
+    desiredVoltage = VOLTAGE_CLAMP.clamp(voltage);
 
     io.setVoltage(desiredVoltage);
   }

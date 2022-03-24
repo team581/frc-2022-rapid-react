@@ -4,7 +4,6 @@
 
 package frc.robot.superstructure.arm;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -12,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.misc.util.Clamp;
 import frc.robot.superstructure.arm.ArmIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
@@ -32,7 +32,7 @@ public class Arm extends SubsystemBase {
   // Arm starts in the up position
   public static final ArmPosition STARTING_POSITION = ArmPosition.UP;
 
-  private static final double MAX_MOTOR_VOLTAGE;
+  private static final Clamp VOLTAGE_CLAMP;
 
   private static final TrapezoidProfile.Constraints CONSTRAINTS;
 
@@ -46,12 +46,12 @@ public class Arm extends SubsystemBase {
       case SIM_BOT:
         // TODO: Use SysID to calculate the feedforward
         FEEDFORWARD = new ArmFeedforward(1, 1.2, 0.4, 0.25);
-        MAX_MOTOR_VOLTAGE = 12;
+        VOLTAGE_CLAMP = new Clamp(12);
         CONSTRAINTS = new TrapezoidProfile.Constraints(4.6, 28.86);
         break;
       default:
         FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
-        MAX_MOTOR_VOLTAGE = 12;
+        VOLTAGE_CLAMP = new Clamp(12);
         CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
         break;
     }
@@ -136,7 +136,7 @@ public class Arm extends SubsystemBase {
     final var feedback = pidController.calculate(inputs.position.getRadians());
 
     final var voltage = feedforward + feedback;
-    desiredVoltage = MathUtil.clamp(voltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE);
+    desiredVoltage = VOLTAGE_CLAMP.clamp(voltage);
 
     io.setVoltage(desiredVoltage);
   }
