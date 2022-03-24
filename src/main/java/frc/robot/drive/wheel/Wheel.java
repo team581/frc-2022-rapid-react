@@ -4,7 +4,6 @@
 
 package frc.robot.drive.wheel;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -15,6 +14,8 @@ import frc.robot.drive.DriveSubsystem;
 import frc.robot.drive.Drivebase;
 import frc.robot.drive.wheel.WheelIO.Inputs;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
+import frc.robot.misc.util.Clamp;
+import frc.robot.misc.util.WheelConverter;
 import org.littletonrobotics.junction.Logger;
 
 /** This class should only be used within {@link DriveSubsystem} and {@link Drivebase}. */
@@ -22,42 +23,38 @@ public class Wheel extends SubsystemBase {
   /** The maximum velocity of a wheel in meters/second. */
   public static final double MAX_WHEEL_VELOCITY;
 
-  /** The wheel diameter in meters. */
-  private static final double WHEEL_DIAMETER;
-
-  private static final double MAX_MOTOR_VOLTAGE;
+  private static final Clamp VOLTAGE_CLAMP;
 
   private static final SimpleMotorFeedforward FEEDFORWARD;
+
+  private static final WheelConverter WHEEL_CONVERTER;
 
   static {
     switch (Constants.getRobot()) {
       case TEST_2020_BOT:
-        WHEEL_DIAMETER = Units.inchesToMeters(5.97);
-        MAX_WHEEL_VELOCITY = wheelRotationToMeters(1.011986826 * 2 * Math.PI);
-        MAX_MOTOR_VOLTAGE = 12;
+        WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
+        MAX_WHEEL_VELOCITY =
+            WHEEL_CONVERTER.radiansToDistance(Units.rotationsToRadians(1.011986826));
+        VOLTAGE_CLAMP = new Clamp(12);
         FEEDFORWARD = new SimpleMotorFeedforward(0.61761, 2.3902, 0.17718);
         break;
       case COMP_BOT:
-        WHEEL_DIAMETER = Units.inchesToMeters(5.97);
-        MAX_WHEEL_VELOCITY = wheelRotationToMeters(2 * Math.PI);
-        MAX_MOTOR_VOLTAGE = 12;
+        WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
+        // TODO: Measure the maximum wheel velocity
+        MAX_WHEEL_VELOCITY = WHEEL_CONVERTER.radiansToDistance(Units.rotationsToRadians(1));
+        VOLTAGE_CLAMP = new Clamp(12);
         // TODO: Run SysId on the comp bot
         FEEDFORWARD = new SimpleMotorFeedforward(0.61761, 2.3902, 0.17718);
         break;
       case SIM_BOT:
-        WHEEL_DIAMETER = Units.inchesToMeters(5.97);
+        WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
         MAX_WHEEL_VELOCITY = 1;
-        MAX_MOTOR_VOLTAGE = 12;
+        VOLTAGE_CLAMP = new Clamp(12);
         FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
         break;
       default:
         throw new UnknownTargetRobotException();
     }
-  }
-
-  /** Converts the wheel's rotation (in radians) to a distance travelled in meters. */
-  private static double wheelRotationToMeters(double radians) {
-    return radians * (WHEEL_DIAMETER / 2);
   }
 
   /**
@@ -66,22 +63,16 @@ public class Wheel extends SubsystemBase {
    */
   public final Translation2d positionToCenterOfRobot;
 
-  /**
-   * Wheel velocity PID controller.
-   *
-   * <ul>
-   *   <li>Input: current velocity in meters/second.
-   *   <li>Output: motor output in volts.
-   *   <li>Setpoint: target velocity in meters/second
-   * </ul>
-   */
-  private final PIDController velocityPid;
+  /** Wheel velocity PID controller. Input is in radians/second, output is in volts. */
+  private final PIDController pid;
 
   /** This wheel's name in the logger. */
   private final String loggerName;
 
   private final WheelIO io;
   private final Inputs inputs = new Inputs();
+
+  private double desiredVoltage = 0;
 
   public Wheel(Corner corner, WheelIO io, Translation2d positionToCenterOfRobot) {
     this.loggerName = "Wheel/" + corner.toString();
@@ -101,20 +92,22 @@ public class Wheel extends SubsystemBase {
         // Error=0.3m/s MaxControlEffort=7.0V -> Kp = 6.5871
         // Error=0.3m/s MaxControlEffort=7.0V -> Kp = 6.5871
         // Error=0.8m/s MaxControlEffort=7.0V -> Kp = 3.9486
-        velocityPid = new PIDController(2.7182, 0, 0, Constants.PERIOD_SECONDS);
+        // TODO: This needs to be recalculated to use radians instead of meters. So do the example
+        // values shown above.
+        pid = new PIDController(2.7182, 0, 0, Constants.PERIOD_SECONDS);
         break;
       case COMP_BOT:
         // TODO: Run SysId on the comp bot
-        velocityPid = new PIDController(2.7182, 0, 0, Constants.PERIOD_SECONDS);
+        pid = new PIDController(2.7182, 0, 0, Constants.PERIOD_SECONDS);
         break;
       case SIM_BOT:
-        velocityPid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
+        pid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
         break;
       default:
         throw new UnknownTargetRobotException();
     }
 
-    velocityPid.setSetpoint(0);
+    pid.setSetpoint(0);
   }
 
   @Override
@@ -124,8 +117,8 @@ public class Wheel extends SubsystemBase {
     Logger.getInstance().recordOutput(loggerName + "/VelocityMetersPerSecond", getVelocity());
     Logger.getInstance().recordOutput(loggerName + "/DistanceMeters", getDistance());
     Logger.getInstance()
-        .recordOutput(loggerName + "/DesiredVelocityMetersPerSecond", getDesiredVelocity());
-    Logger.getInstance().recordOutput(loggerName + "/DesiredAppliedVolts", getDesiredVoltage());
+        .recordOutput(loggerName + "/DesiredVelocityRadiansPerSecond", pid.getSetpoint());
+    Logger.getInstance().recordOutput(loggerName + "/DesiredAppliedVolts", desiredVoltage);
   }
 
   /**
@@ -133,17 +126,13 @@ public class Wheel extends SubsystemBase {
    * Wheel#setDesiredVelocity(double)}.
    */
   public void doVelocityControlLoop() {
-    io.setVoltage(getDesiredVoltage());
-  }
+    final var feedforward = FEEDFORWARD.calculate(pid.getSetpoint());
+    final var feedback = pid.calculate(inputs.velocityRadiansPerSecond);
+    final var voltage = feedforward + feedback;
 
-  /** Get the desired motor voltage. */
-  private double getDesiredVoltage() {
-    return velocityToVoltage(getDesiredVelocity());
-  }
+    desiredVoltage = VOLTAGE_CLAMP.clamp(voltage);
 
-  /** Get the desired velocity in meters/second. */
-  private double getDesiredVelocity() {
-    return velocityPid.getSetpoint();
+    io.setVoltage(desiredVoltage);
   }
 
   /**
@@ -152,28 +141,21 @@ public class Wheel extends SubsystemBase {
    * @param metersPerSecond The desired velocity in meters/second
    */
   public void setDesiredVelocity(double metersPerSecond) {
-    velocityPid.setSetpoint(metersPerSecond);
+    pid.setSetpoint(WHEEL_CONVERTER.velocityToAngularVelocity(metersPerSecond));
   }
 
   /** Get this wheel's velocity in meters/second. */
   public double getVelocity() {
-    return wheelRotationToMeters(inputs.velocityRadiansPerSecond);
+    return WHEEL_CONVERTER.angularVelocityToVelocity(inputs.velocityRadiansPerSecond);
   }
 
   /** Get the distance in meters this wheel's encoder has travelled since last being reset. */
   public double getDistance() {
-    return wheelRotationToMeters(inputs.positionRadians);
+    return WHEEL_CONVERTER.radiansToDistance(inputs.positionRadians);
   }
 
   /** Zeroes the encoder position. */
   public void zeroEncoder() {
     io.zeroEncoder();
-  }
-
-  /** Converts a velocity in meters/second to a voltage. */
-  private double velocityToVoltage(double velocity) {
-    final var rawVoltage = FEEDFORWARD.calculate(velocity) + velocityPid.calculate(velocity);
-
-    return MathUtil.clamp(rawVoltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE);
   }
 }
