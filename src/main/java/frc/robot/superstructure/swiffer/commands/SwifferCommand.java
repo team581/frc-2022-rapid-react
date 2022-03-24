@@ -32,7 +32,9 @@ abstract class SwifferCommand extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    swiffer.setDesiredMode(SwifferMode.STOPPED);
+  }
 
   // Returns true when the command should end.
   // This is abstract to ensure you don't forget to override the default `Command interface behavior
