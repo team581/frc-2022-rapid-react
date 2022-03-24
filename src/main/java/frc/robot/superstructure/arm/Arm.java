@@ -61,6 +61,7 @@ public class Arm extends SubsystemBase {
   private final Inputs inputs = new Inputs();
 
   private ArmPosition desiredPosition = STARTING_POSITION;
+  private double desiredVoltage = 0;
 
   /** Creates a new Arm. */
   public Arm(ArmIO io) {
@@ -117,6 +118,7 @@ public class Arm extends SubsystemBase {
         .recordOutput(
             "Arm/MotionProfile/DesiredVelocityRadiansPerSecond",
             pidController.getSetpoint().velocity);
+    Logger.getInstance().recordOutput("Arm/MotionProfile/DesiredVoltage", desiredVoltage);
     Logger.getInstance()
         .recordOutput("Arm/MotionProfile/Error/PositionRadians", pidController.getPositionError());
     Logger.getInstance()
@@ -134,8 +136,9 @@ public class Arm extends SubsystemBase {
     final var feedback = pidController.calculate(inputs.position.getRadians());
 
     final var voltage = feedforward + feedback;
+    desiredVoltage = MathUtil.clamp(voltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE);
 
-    io.setVoltage(MathUtil.clamp(voltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE));
+    io.setVoltage(desiredVoltage);
   }
 
   /** Check if the arm is at the provided position. */

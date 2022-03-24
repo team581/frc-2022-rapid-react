@@ -70,6 +70,7 @@ public class Swiffer extends SubsystemBase {
         Units.radiansPerSecondToRotationsPerMinute(inputs.angularVelocityRadiansPerSecond);
     Logger.getInstance().recordOutput("Swiffer/Goal/Rpm", goalRpm);
     Logger.getInstance().recordOutput("Swiffer/Goal/Error/Rpm", goalRpm - actualRpm);
+    Logger.getInstance().recordOutput("Swiffer/Goal/Voltage", desiredVoltage);
   }
 
   /** Set the desired mode of the flywheel to the one provided. */
@@ -88,13 +89,13 @@ public class Swiffer extends SubsystemBase {
   }
 
   private void doVelocityControlLoop() {
-    final var rawVoltage =
-        pid.calculate(inputs.angularVelocityRadiansPerSecond)
-            + FEEDFORWARD.calculate(getDesiredAngularVelocity());
-    final var clampedVoltage = MathUtil.clamp(rawVoltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE);
+    final var feedforward = FEEDFORWARD.calculate(getDesiredAngularVelocity());
+    final var feedback = pid.calculate(inputs.angularVelocityRadiansPerSecond);
 
-    desiredVoltage = clampedVoltage;
+    final var voltage = feedback + feedforward;
 
-    io.setVoltage(clampedVoltage);
+    desiredVoltage = MathUtil.clamp(voltage, -MAX_MOTOR_VOLTAGE, MAX_MOTOR_VOLTAGE);
+
+    io.setVoltage(desiredVoltage);
   }
 }
