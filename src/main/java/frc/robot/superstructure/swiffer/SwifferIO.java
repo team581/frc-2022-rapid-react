@@ -17,14 +17,14 @@ public interface SwifferIO extends SubsystemIO<SwifferIO.Inputs> {
     public double angularVelocityRadiansPerSecond = 0;
 
     public void toLog(LogTable table) {
-      table.put("AppliedVolts", appliedVolts);
+      table.put("VoltageVolts", appliedVolts);
       table.put("CurrentAmps", currentAmps);
       table.put("TempCelcius", tempCelcius);
       table.put("Rpm", Units.radiansPerSecondToRotationsPerMinute(angularVelocityRadiansPerSecond));
     }
 
     public void fromLog(LogTable table) {
-      appliedVolts = table.getDouble("AppliedVolts", appliedVolts);
+      appliedVolts = table.getDouble("VoltageVolts", appliedVolts);
       currentAmps = table.getDouble("CurrentAmps", currentAmps);
       tempCelcius = table.getDouble("TempCelcius", tempCelcius);
       angularVelocityRadiansPerSecond =

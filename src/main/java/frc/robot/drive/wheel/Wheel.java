@@ -72,7 +72,7 @@ public class Wheel extends SubsystemBase {
   private final WheelIO io;
   private final Inputs inputs = new Inputs();
 
-  private double desiredVoltage = 0;
+  private double desiredVoltageVolts = 0;
 
   public Wheel(Corner corner, WheelIO io, Translation2d positionToCenterOfRobot) {
     this.loggerName = "Wheel/" + corner.toString();
@@ -118,7 +118,7 @@ public class Wheel extends SubsystemBase {
     Logger.getInstance().recordOutput(loggerName + "/DistanceMeters", getDistance());
     Logger.getInstance()
         .recordOutput(loggerName + "/DesiredVelocityRadiansPerSecond", pid.getSetpoint());
-    Logger.getInstance().recordOutput(loggerName + "/DesiredAppliedVolts", desiredVoltage);
+    Logger.getInstance().recordOutput(loggerName + "/DesiredVoltageVolts", desiredVoltageVolts);
   }
 
   /**
@@ -130,9 +130,9 @@ public class Wheel extends SubsystemBase {
     final var feedback = pid.calculate(inputs.velocityRadiansPerSecond);
     final var voltage = feedforward + feedback;
 
-    desiredVoltage = VOLTAGE_CLAMP.clamp(voltage);
+    desiredVoltageVolts = VOLTAGE_CLAMP.clamp(voltage);
 
-    io.setVoltage(desiredVoltage);
+    io.setVoltage(desiredVoltageVolts);
   }
 
   /**

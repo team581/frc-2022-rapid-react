@@ -93,7 +93,7 @@ public class WheelIOFalcon500 implements WheelIO {
 
   @Override
   public void updateInputs(Inputs inputs) {
-    inputs.appliedVolts = motor.getMotorOutputVoltage();
+    inputs.voltageVolts = motor.getMotorOutputVoltage();
     inputs.currentAmps = motor.getSupplyCurrent();
     inputs.tempCelcius = motor.getTemperature();
     inputs.positionRadians =

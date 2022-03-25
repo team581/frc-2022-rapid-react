@@ -11,14 +11,14 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface WheelIO extends SubsystemIO<WheelIO.Inputs> {
   public class Inputs implements LoggableInputs {
-    public double appliedVolts = 0;
+    public double voltageVolts = 0;
     public double currentAmps = 0;
     public double tempCelcius = 0;
     public double positionRadians = 0;
     public double velocityRadiansPerSecond = 0;
 
     public void toLog(LogTable table) {
-      table.put("AppliedVolts", appliedVolts);
+      table.put("VoltageVolts", voltageVolts);
       table.put("CurrentAmps", currentAmps);
       table.put("TempCelcius", tempCelcius);
       table.put("PositionRadians", positionRadians);
@@ -26,7 +26,7 @@ public interface WheelIO extends SubsystemIO<WheelIO.Inputs> {
     }
 
     public void fromLog(LogTable table) {
-      appliedVolts = table.getDouble("AppliedVolts", appliedVolts);
+      voltageVolts = table.getDouble("VoltageVolts", voltageVolts);
       currentAmps = table.getDouble("CurrentAmps", currentAmps);
       tempCelcius = table.getDouble("TempCelcius", tempCelcius);
       positionRadians = table.getDouble("PositionRadians", positionRadians);

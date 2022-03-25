@@ -18,7 +18,7 @@ public interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
     public double velocityRadiansPerSecond = 0;
 
     public void toLog(LogTable table) {
-      table.put("AppliedVolts", appliedVolts);
+      table.put("VoltageVolts", appliedVolts);
       table.put("CurrentAmps", currentAmps);
       table.put("TempCelcius", tempCelcius);
       table.put("PositionRadians", position.getRadians());
@@ -26,7 +26,7 @@ public interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
     }
 
     public void fromLog(LogTable table) {
-      appliedVolts = table.getDoubleArray("AppliedVolts", appliedVolts);
+      appliedVolts = table.getDoubleArray("VoltageVolts", appliedVolts);
       currentAmps = table.getDoubleArray("CurrentAmps", currentAmps);
       tempCelcius = table.getDoubleArray("TempCelcius", tempCelcius);
       position = new Rotation2d(table.getDouble("PositionRadians", position.getRadians()));
