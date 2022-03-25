@@ -19,6 +19,10 @@ import frc.robot.match_metadata.*;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.*;
+import frc.robot.superstructure.cargo_detector.CargoDetectorIOIR;
+import frc.robot.superstructure.cargo_detector.CargoDetectorIOReplay;
+import frc.robot.superstructure.cargo_detector.CargoDetectorIOSimIR;
+import frc.robot.superstructure.cargo_detector.CargoDetectorSubsystem;
 import frc.robot.superstructure.commands.ArmDownAndSnarfCommand;
 import frc.robot.superstructure.commands.ArmUpAndSwifferShootCommand;
 import frc.robot.superstructure.lights.*;
@@ -51,8 +55,9 @@ public class RobotContainer {
   private final CargoVisionSubsystem cargoVisionSubsystem;
   private final Swiffer swiffer;
   private final Arm arm;
-  private final SuperstructureSubsystem superstructureSubsystem;
   private final Lights lights;
+  private final SuperstructureSubsystem superstructureSubsystem;
+  private final CargoDetectorSubsystem cargoDetectorSubsystem;
   private final Localization localization;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -84,6 +89,7 @@ public class RobotContainer {
               new WheelIOReplay(Corner.FRONT_RIGHT),
               new WheelIOReplay(Corner.REAR_LEFT),
               new WheelIOReplay(Corner.REAR_RIGHT));
+      cargoDetectorSubsystem = new CargoDetectorSubsystem(new CargoDetectorIOReplay());
     } else {
       switch (Constants.getRobot()) {
         case COMP_BOT:
@@ -102,7 +108,9 @@ public class RobotContainer {
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
+          cargoDetectorSubsystem = new CargoDetectorSubsystem(new CargoDetectorIOReplay());
           break;
+
         case TEST_2020_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
           lights = new Lights(new LightsIORoborio());
@@ -118,8 +126,9 @@ public class RobotContainer {
                   imuSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
-                  new WheelIOFalcon500(Corner.REAR_LEFT),
+                  new WheelIOReplay(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
+          cargoDetectorSubsystem = new CargoDetectorSubsystem(new CargoDetectorIOIR());
           break;
         case SIM_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOSim());
@@ -137,6 +146,7 @@ public class RobotContainer {
                   new WheelIOSim(Corner.FRONT_RIGHT),
                   new WheelIOSim(Corner.REAR_LEFT),
                   new WheelIOSim(Corner.REAR_RIGHT));
+          cargoDetectorSubsystem = new CargoDetectorSubsystem(new CargoDetectorIOSimIR());
           break;
         default:
           throw new UnknownTargetRobotException();
