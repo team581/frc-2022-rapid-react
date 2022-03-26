@@ -42,7 +42,7 @@ public class Robot extends LoggedRobot {
     final var isReplay = Constants.getMode() == Constants.Mode.REPLAY;
 
     // Run as fast as possible during replay
-    // setUseTiming(!isReplay);
+    setUseTiming(!isReplay);
     // Log & replay "SmartDashboard" values (no tables are logged by default).
     LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
 
