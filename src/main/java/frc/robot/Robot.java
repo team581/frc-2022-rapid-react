@@ -38,7 +38,7 @@ public class Robot extends LoggedRobot {
     final var isReplay = Constants.getMode() == Constants.Mode.REPLAY;
 
     // Run as fast as possible during replay
-    setUseTiming(!isReplay);
+    // setUseTiming(!isReplay);
     // Log & replay "SmartDashboard" values (no tables are logged by default).
     LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
     Logger.getInstance().recordMetadata("ProjectName", "RapidReact");
@@ -53,7 +53,8 @@ public class Robot extends LoggedRobot {
       // Prompt the user for a file path on the command line
       System.out.println(
           "If prompted, please enter the filename of the .rlog file to use as a replay");
-      final String path = ByteLogReplay.promptForPath();
+      final String path = "logs/Log_22-03-24_17-35-39.rlog";
+      System.out.println("PATH: " + path);
       // Read log file for replay
       Logger.getInstance().setReplaySource(new ByteLogReplay(path));
       // Save replay results to a new log with the "_sim" suffix

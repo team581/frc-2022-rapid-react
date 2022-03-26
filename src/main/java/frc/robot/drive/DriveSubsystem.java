@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import frc.robot.imu.ImuSubsystem;
-import frc.robot.vision_upper.UpperHubVisionSubsystem;
+import frc.robot.vision_cargo.CargoVisionSubsystem;
 import lib.wpilib.MecanumDrivePoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
@@ -66,13 +66,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final MecanumDrivePoseEstimator poseEstimator;
 
-  private final UpperHubVisionSubsystem vision;
+  private final CargoVisionSubsystem vision;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(
       DriveController controller,
       ImuSubsystem imu,
-      UpperHubVisionSubsystem vision,
+      CargoVisionSubsystem vision,
       WheelIO frontLeftIO,
       WheelIO frontRightIO,
       WheelIO rearLeftIO,
@@ -125,6 +125,14 @@ public class DriveSubsystem extends SubsystemBase {
     if (optionalVisionPose.isPresent()) {
       final var visionPose = optionalVisionPose.get();
       poseEstimator.addVisionMeasurement(visionPose.pose, visionPose.timestamp);
+      Logger.getInstance()
+          .recordOutput(
+              "Drive/VisionPose",
+              new double[] {
+                visionPose.pose.getX(),
+                visionPose.pose.getY(),
+                visionPose.pose.getRotation().getRadians()
+              });
     }
 
     final var pose = getPose();

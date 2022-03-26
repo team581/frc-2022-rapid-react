@@ -81,7 +81,8 @@ public final class Constants {
       case TEST_2020_BOT:
         return Mode.REPLAY;
       case SIM_BOT:
-        return Mode.SIM;
+        // TODO: Remove this once done testing
+        return Mode.REPLAY;
     }
 
     throw new UnknownTargetRobotException();
