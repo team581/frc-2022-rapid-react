@@ -9,6 +9,7 @@ package frc.robot.vision_cargo;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
@@ -44,7 +45,8 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
         ANGLE_OF_ELEVATION = new Rotation2d(0);
         break;
       default:
-        HEIGHT_FROM_FLOOR = 0.25;
+        // 'Cause the test data was made when the robot was up high
+        HEIGHT_FROM_FLOOR = Units.feetToMeters(4);
         ANGLE_OF_ELEVATION = new Rotation2d(0);
         break;
     }
@@ -103,12 +105,30 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     // Apply the camera's rotational error to the robot's heading
     final var adjustedAngle = imu.getRotation().minus(cameraToHub.getTheta());
 
-    final var robotToHub = new PolarPose2d(cameraToHub.getR(), adjustedAngle);
+    // Get the polar coordinate of the target
+    final var robotToHubPolar = new PolarPose2d(cameraToHub.getR(), adjustedAngle);
 
-    // TODO: Implement localization
+    // Translate to Cartesian coordinates – this is the estimate relative position of the Hub,
+    // relative to the camera
+    final var offsetToHubFromRobot = robotToHubPolar.getTranslation2d();
 
-    return Optional.of(
-        new TimestampedPose2d(new Pose2d(2, 3, new Rotation2d(0.5)), inputs.captureTimestamp));
+    // Let's start with the Hub's position
+    // Not sure where to put Hub-related functions -- is there already one to ask for the Hub's
+    // position?
+    // Gonna brute force it here.
+    final var hubTranslation =
+        new Translation2d(Constants.FIELD_WIDTH / 2.0, Constants.FIELD_LENGTH / 2.0);
+    // Now subtract the translation from the camera to the Hub. We subtract because we're going back
+    // towards the camera from what it saw.
+    final var robotTranslation = hubTranslation.minus(offsetToHubFromRobot);
+
+    // Need to use whatever the robot's facing was when the vision target was seen.
+    // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at image capture
+    final var robotHeading = imu.getRotation();
+
+    final var robotPose = new Pose2d(robotTranslation, robotHeading);
+
+    return Optional.of(new TimestampedPose2d(robotPose, inputs.captureTimestamp));
   }
 
   /** Gets the {@link CargoVisionTarget} instance for the provided alliance (red or blue). */

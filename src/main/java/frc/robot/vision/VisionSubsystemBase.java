@@ -44,6 +44,7 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
 
     io.updateInputs(inputs);
     Logger.getInstance().processInputs(loggerName, inputs);
+    Logger.getInstance().recordOutput(loggerName + "/CornerCount", inputs.corners.size());
   }
 
   /**
