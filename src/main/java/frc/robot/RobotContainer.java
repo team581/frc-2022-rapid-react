@@ -72,12 +72,12 @@ public class RobotContainer {
       imuSubsystem = new ImuSubsystem(new ImuIOReplay());
       upperVisionSubsystem =
           new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
-      cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
+      cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
       driveSubsystem =
           new DriveSubsystem(
               driverController,
               imuSubsystem,
-              upperVisionSubsystem,
+              cargoVisionSubsystem,
               new WheelIOReplay(Corner.FRONT_LEFT),
               new WheelIOReplay(Corner.FRONT_RIGHT),
               new WheelIOReplay(Corner.REAR_LEFT),
@@ -91,12 +91,12 @@ public class RobotContainer {
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
           upperVisionSubsystem =
               new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
                   imuSubsystem,
-                  upperVisionSubsystem,
+                  cargoVisionSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
@@ -109,12 +109,13 @@ public class RobotContainer {
           imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
           upperVisionSubsystem =
               new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOLimelight());
+          cargoVisionSubsystem =
+              new CargoVisionSubsystem(new CargoVisionIOLimelight(), imuSubsystem);
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
                   imuSubsystem,
-                  upperVisionSubsystem,
+                  cargoVisionSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
@@ -127,12 +128,12 @@ public class RobotContainer {
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
           upperVisionSubsystem =
               new UpperHubVisionSubsystem(new UpperHubVisionIOSim(), imuSubsystem);
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim());
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim(), imuSubsystem);
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
                   imuSubsystem,
-                  upperVisionSubsystem,
+                  cargoVisionSubsystem,
                   new WheelIOSim(Corner.FRONT_LEFT),
                   new WheelIOSim(Corner.FRONT_RIGHT),
                   new WheelIOSim(Corner.REAR_LEFT),

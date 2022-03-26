@@ -4,13 +4,11 @@
 
 package frc.robot.vision_upper;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 import frc.robot.imu.ImuSubsystem;
-import frc.robot.misc.util.PolarPose2d;
 import frc.robot.vision.VisionSubsystemBase;
-import java.util.Optional;
+import frc.robot.vision_cargo.UpperHubVisionTarget;
 import org.littletonrobotics.junction.Logger;
 
 public class UpperHubVisionSubsystem extends VisionSubsystemBase {
@@ -40,7 +38,6 @@ public class UpperHubVisionSubsystem extends VisionSubsystemBase {
   }
 
   private final ImuSubsystem imu;
-  private final UpperHubVisionTarget upperHub = new UpperHubVisionTarget(this);
 
   /** Creates a new UpperHubVisionSubsystem. */
   public UpperHubVisionSubsystem(UpperHubVisionIO io, ImuSubsystem imu) {
@@ -59,24 +56,6 @@ public class UpperHubVisionSubsystem extends VisionSubsystemBase {
               LOGGER_NAME + "/VisionTarget",
               new double[] {UpperHubVisionTarget.POSE.getX(), UpperHubVisionTarget.POSE.getY()});
     }
-  }
-
-  /**
-   * Get the pose of the robot using the upper hub vision target and the gyroscope, if available.
-   */
-  public Optional<TimestampedPose2d> getRobotPose() {
-    final var optionalCameraToHub = upperHub.getTranslationFromCamera();
-    if (optionalCameraToHub.isEmpty()) {
-      return Optional.empty();
-    }
-
-    final var cameraToHub = optionalCameraToHub.get();
-    // Apply the camera's rotational error to the robot's heading
-    final var adjustedAngle = imu.getRotation().minus(cameraToHub.getTheta());
-
-    final var robotToHub = new PolarPose2d(cameraToHub.getR(), adjustedAngle);
-
-    return Optional.of(new TimestampedPose2d(new Pose2d(), inputs.captureTimestamp));
   }
 
   @Override

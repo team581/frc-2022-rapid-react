@@ -26,9 +26,9 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
 
     addCommands(
         new UseVisionTargetCommand(cargoVisionSubsystem, cargoVisionSubsystem.loadingBay),
-        new WaitForVisionTargetCommand(cargoVisionSubsystem),
-        commandFactory.generateCommand(cargoVisionSubsystem.loadingBay, GOAL),
         // TODO: Refactor once pose estimation is implemented
+        new WaitForVisionTargetCommand(cargoVisionSubsystem),
+        // commandFactory.generateCommand(cargoVisionSubsystem.loadingBay, GOAL),
         // new BeelineCommand(drive, cargoVisionSubsystem.loadingBay, GOAL),
         new InstantCommand(drive::stopMotors));
   }
