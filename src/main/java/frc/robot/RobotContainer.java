@@ -70,16 +70,18 @@ public class RobotContainer {
       arm = new Arm(new ArmIOReplay());
       swiffer = new Swiffer(new SwifferIOReplay());
       imuSubsystem = new ImuSubsystem(new ImuIOReplay());
+      upperVisionSubsystem =
+          new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
+      cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
       driveSubsystem =
           new DriveSubsystem(
               driverController,
-              imuSubsystem::getRotation,
+              imuSubsystem,
+              upperVisionSubsystem,
               new WheelIOReplay(Corner.FRONT_LEFT),
               new WheelIOReplay(Corner.FRONT_RIGHT),
               new WheelIOReplay(Corner.REAR_LEFT),
               new WheelIOReplay(Corner.REAR_RIGHT));
-      upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-      cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
     } else {
       switch (Constants.getRobot()) {
         case COMP_BOT:
@@ -87,48 +89,54 @@ public class RobotContainer {
           arm = new Arm(new ArmIOReplay());
           swiffer = new Swiffer(new SwifferIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
+          upperVisionSubsystem =
+              new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
-                  imuSubsystem::getRotation,
+                  imuSubsystem,
+                  upperVisionSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
-          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
           break;
         case TEST_2020_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
           arm = new Arm(new ArmIOReplay());
           swiffer = new Swiffer(new SwifferIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
+          upperVisionSubsystem =
+              new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOLimelight());
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
-                  imuSubsystem::getRotation,
+                  imuSubsystem,
+                  upperVisionSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
-          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOLimelight());
           break;
         case SIM_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOSim());
           arm = new Arm(new ArmIOSimNeos());
           swiffer = new Swiffer(new SwifferIOSimFalcon500());
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
+          upperVisionSubsystem =
+              new UpperHubVisionSubsystem(new UpperHubVisionIOSim(), imuSubsystem);
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim());
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
-                  imuSubsystem::getRotation,
+                  imuSubsystem,
+                  upperVisionSubsystem,
                   new WheelIOSim(Corner.FRONT_LEFT),
                   new WheelIOSim(Corner.FRONT_RIGHT),
                   new WheelIOSim(Corner.REAR_LEFT),
                   new WheelIOSim(Corner.REAR_RIGHT));
-          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOSim());
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim());
           break;
         default:
           throw new UnknownTargetRobotException();

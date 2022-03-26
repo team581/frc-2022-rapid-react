@@ -4,11 +4,16 @@
 
 package frc.robot.vision_upper;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 import frc.robot.vision.VisionTarget;
 
 /** The upper hub ring vision target. */
 public class UpperHubVisionTarget extends VisionTarget {
+  public static final Translation2d POSE =
+      new Translation2d(Constants.FIELD_WIDTH / 2, Constants.FIELD_LENGTH / 2);
+
   public UpperHubVisionTarget(UpperHubVisionSubsystem vision) {
     super(
         vision,

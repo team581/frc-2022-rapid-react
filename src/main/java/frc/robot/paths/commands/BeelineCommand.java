@@ -37,7 +37,8 @@ public class BeelineCommand extends CommandBase {
    * getting the robot pose. The robot will be kept facing the vision target the entire time.
    */
   public BeelineCommand(DriveSubsystem driveSubsystem, VisionTarget visionTarget, Pose2d goalPose) {
-    this(driveSubsystem, visionTarget::getRobotPose, goalPose, () -> new Rotation2d(0));
+    // TODO: Refactor once pose estimation is implemented
+    throw new RuntimeException("Not implemented");
   }
 
   // Called when the command is initially scheduled.

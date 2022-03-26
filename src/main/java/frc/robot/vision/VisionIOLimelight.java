@@ -4,6 +4,7 @@
 
 package frc.robot.vision;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import lib.limelight.Limelight;
 import lib.limelight.Limelight.CamMode;
@@ -11,6 +12,9 @@ import lib.limelight.Limelight.StreamingMode;
 import org.littletonrobotics.junction.Logger;
 
 public abstract class VisionIOLimelight implements VisionIO {
+  protected Rotation2d angleOfElevation;
+  protected double heightFromFloor;
+
   /** The number of seconds it takes to capture an image. */
   private static final double IMAGE_CAPTURE_LATENCY = Units.millisecondsToSeconds(11);
 

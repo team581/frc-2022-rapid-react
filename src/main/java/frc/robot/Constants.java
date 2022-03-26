@@ -93,6 +93,12 @@ public final class Constants {
   /** The number of seconds each iteration takes. WPILib default is 20ms. */
   public static final double PERIOD_SECONDS = Units.millisecondsToSeconds(20);
 
+  // https://firstfrc.blob.core.windows.net/frc2022/FieldAssets/2022LayoutMarkingDiagram.pdf
+  /** The long side of the field parallel to the scoring table. */
+  public static final double FIELD_WIDTH = Units.inchesToMeters(324) * 2;
+  /** The short side of the field where drivers are. */
+  public static final double FIELD_LENGTH = Units.inchesToMeters(162) * 2;
+
   static {
     System.out.println("SERIAL NUMBER: " + SERIAL_NUMBER);
     System.out.println("RESOLVED ROBOT: " + getRobot());

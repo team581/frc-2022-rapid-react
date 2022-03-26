@@ -4,6 +4,7 @@
 
 package frc.robot.vision;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.vision.VisionIO.Inputs;
 import frc.robot.vision.commands.UseDriverModeCommand;
@@ -11,29 +12,11 @@ import lib.limelight.Limelight;
 import org.littletonrobotics.junction.Logger;
 
 public abstract class VisionSubsystemBase extends SubsystemBase {
-  /**
-   * The angle of elevation of the camera, in radians.
-   *
-   * @see
-   *     <p>The <code>a1</code> angle in this diagram
-   *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
-   */
-  public final double angleOfElevation;
-  // TODO: Consider refactoring this to be a Transform2d to the center of the robot
-  /**
-   * The height from the floor to the camera, in meters.
-   *
-   * @see
-   *     <p>The <code>h1</code> distance in this diagram
-   *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
-   */
-  public final double heightFromFloor;
-
   private final int driverModePipeline;
   private boolean isDriverMode = false;
 
-  private final VisionIO io;
-  private final Inputs inputs = new Inputs();
+  protected final VisionIO io;
+  protected final Inputs inputs = new Inputs();
   private final String loggerName;
 
   /**
@@ -41,20 +24,11 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
    *
    * @param loggerName The name to use in the logger
    * @param io The IO layer to use
-   * @param angleOfElevation The camera's angle of elevation, in radians
-   * @param heightFromFloor The camera's height from the floor, in meters
    * @param driverModePipeline The index of the pipeline to use when in driver mode
    */
-  protected VisionSubsystemBase(
-      String loggerName,
-      VisionIO io,
-      double angleOfElevation,
-      double heightFromFloor,
-      int driverModePipeline) {
+  protected VisionSubsystemBase(String loggerName, VisionIO io, int driverModePipeline) {
     this.loggerName = loggerName;
     this.io = io;
-    this.angleOfElevation = angleOfElevation;
-    this.heightFromFloor = heightFromFloor;
     this.driverModePipeline = driverModePipeline;
 
     // Enable driver mode when other commands aren't using vision processing
@@ -71,6 +45,25 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs(loggerName, inputs);
   }
+
+  /**
+   * Get the angle of elevation of the camera.
+   *
+   * @see
+   *     <p>The <code>a1</code> angle in this diagram
+   *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
+   */
+  protected abstract Rotation2d getAngleOfElevation();
+
+  // TODO: Consider refactoring this to be a Transform2d to the center of the robot
+  /**
+   * Get the height from the floor to the camera, in meters.
+   *
+   * @see
+   *     <p>The <code>h1</code> distance in this diagram
+   *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
+   */
+  protected abstract double getHeightFromFloor();
 
   /** Whether this camera is in driver mode with vision processing disabled. */
   public boolean isDriverMode() {
