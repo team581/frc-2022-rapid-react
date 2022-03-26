@@ -123,7 +123,8 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     final var robotTranslation = hubTranslation.minus(offsetToHubFromRobot);
 
     // Need to use whatever the robot's facing was when the vision target was seen.
-    // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at image capture
+    // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at
+    // image capture
     final var robotHeading = imu.getRotation();
 
     final var robotPose = new Pose2d(robotTranslation, robotHeading);
