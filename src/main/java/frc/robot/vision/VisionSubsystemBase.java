@@ -77,10 +77,10 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
    * @see {@link frc.robot.vision.commands.UseDriverModeCommand}
    */
   public void useDriverMode() {
-    isDriverMode = true;
-    io.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
-    io.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
-    io.setPipeline(driverModePipeline);
+    // isDriverMode = true;
+    // io.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
+    // io.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
+    // io.setPipeline(driverModePipeline);
   }
 
   /**

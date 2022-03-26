@@ -5,7 +5,6 @@
 package frc.robot.vision_cargo;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.vision.VisionTarget;
 
@@ -18,7 +17,7 @@ public class UpperHubVisionTarget extends VisionTarget {
     super(
         vision,
         // TODO: See where the camera is placing the crosshair on the target
-        Units.feetToMeters(8) + Units.inchesToMeters(5.0 + (5.0 / 8.0)),
+        50 / 100,
         CargoVisionSubsystem.Pipelines.UPPER_HUB.index);
   }
 }

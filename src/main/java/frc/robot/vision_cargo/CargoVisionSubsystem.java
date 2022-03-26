@@ -46,7 +46,7 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
         break;
       default:
         // 'Cause the test data was made when the robot was up high
-        HEIGHT_FROM_FLOOR = Units.feetToMeters(4);
+        HEIGHT_FROM_FLOOR = Units.feetToMeters(1.25);
         ANGLE_OF_ELEVATION = new Rotation2d(0);
         break;
     }
