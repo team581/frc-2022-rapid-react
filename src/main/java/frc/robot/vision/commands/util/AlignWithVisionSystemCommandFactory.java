@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.paths.commands.DynamicTrajectoryFollowCommand;
 import frc.robot.vision.VisionTarget;
 import frc.robot.vision.util.VisionSystemTrajectoryGenerator;
 import java.util.function.Supplier;
@@ -41,8 +40,8 @@ public class AlignWithVisionSystemCommandFactory {
     final Supplier<Trajectory> trajectorySupplier =
         () -> trajectoryGenerator.generateTrajectory(visionTarget, goal);
 
-    return new DynamicTrajectoryFollowCommand(
-        trajectorySupplier, visionTarget::getRobotPose, rotationSupplier, driveSubsystem);
+    // TODO: Refactor once pose estimation is implemented
+    return null;
   }
 
   /**
@@ -58,7 +57,7 @@ public class AlignWithVisionSystemCommandFactory {
     final Supplier<Trajectory> trajectorySupplier =
         () -> trajectoryGenerator.generateTrajectory(visionTarget, goal);
 
-    return new DynamicTrajectoryFollowCommand(
-        trajectorySupplier, visionTarget::getRobotPose, () -> new Rotation2d(0), driveSubsystem);
+    // TODO: Refactor once pose estimation is implemented
+    return null;
   }
 }

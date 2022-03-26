@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.paths.commands.BeelineCommand;
 import frc.robot.vision.commands.util.AlignWithVisionSystemCommandFactory;
 import frc.robot.vision_cargo.CargoVisionSubsystem;
 
@@ -29,7 +28,8 @@ public class LoadingBayAlignCommand extends SequentialCommandGroup {
         new UseVisionTargetCommand(cargoVisionSubsystem, cargoVisionSubsystem.loadingBay),
         new WaitForVisionTargetCommand(cargoVisionSubsystem),
         commandFactory.generateCommand(cargoVisionSubsystem.loadingBay, GOAL),
-        new BeelineCommand(drive, cargoVisionSubsystem.loadingBay, GOAL),
+        // TODO: Refactor once pose estimation is implemented
+        // new BeelineCommand(drive, cargoVisionSubsystem.loadingBay, GOAL),
         new InstantCommand(drive::stopMotors));
   }
 }

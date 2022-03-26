@@ -21,7 +21,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.commands.TeleopDriveCommand;
-import java.util.function.Supplier;
+import frc.robot.imu.ImuSubsystem;
+import frc.robot.vision_upper.UpperHubVisionSubsystem;
 import lib.wpilib.MecanumDrivePoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
@@ -61,19 +62,23 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final Drivebase drivebase;
 
-  private final Supplier<Rotation2d> rotationSupplier;
+  private final ImuSubsystem imu;
 
   private final MecanumDrivePoseEstimator poseEstimator;
+
+  private final UpperHubVisionSubsystem vision;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(
       DriveController controller,
-      Supplier<Rotation2d> rotationSupplier,
+      ImuSubsystem imu,
+      UpperHubVisionSubsystem vision,
       WheelIO frontLeftIO,
       WheelIO frontRightIO,
       WheelIO rearLeftIO,
       WheelIO rearRightIO) {
-    this.rotationSupplier = rotationSupplier;
+    this.imu = imu;
+    this.vision = vision;
     drivebase = new Drivebase(frontLeftIO, frontRightIO, rearLeftIO, rearRightIO);
 
     kinematics =
@@ -88,7 +93,7 @@ public class DriveSubsystem extends SubsystemBase {
     poseEstimator =
         new MecanumDrivePoseEstimator(
             // Initial heading
-            rotationSupplier.get(),
+            imu.getRotation(),
             // Initial position
             // TODO: Allow this to be configured based on autonomous routine starting location
             new Pose2d(),
@@ -114,7 +119,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     drivebase.periodic();
 
-    poseEstimator.update(rotationSupplier.get(), drivebase.getWheelSpeeds());
+    poseEstimator.update(imu.getRotation(), drivebase.getWheelSpeeds());
+
+    final var optionalVisionPose = vision.getRobotPose();
+    if (optionalVisionPose.isPresent()) {
+      final var visionPose = optionalVisionPose.get();
+      poseEstimator.addVisionMeasurement(visionPose.pose, visionPose.timestamp);
+    }
 
     final var pose = getPose();
     // The robot's position
@@ -125,8 +136,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
-    drivebase.setCartesianPercentages(
-        xPercentage, yPercentage, thetaPercentage, rotationSupplier.get());
+    drivebase.setCartesianPercentages(xPercentage, yPercentage, thetaPercentage, imu.getRotation());
   }
 
   /** Stops all the motors. */
