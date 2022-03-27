@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.controller.ButtonController;
@@ -24,6 +25,7 @@ import frc.robot.superstructure.swiffer.*;
 import frc.robot.vision.commands.LoadingBayAlignCommand;
 import frc.robot.vision_cargo.*;
 import frc.robot.vision_upper.*;
+import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,6 +55,17 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    switch (Constants.getRobot()) {
+      case COMP_BOT:
+      case TEST_2020_BOT:
+      case SIM_BOT:
+        LoggedSystemStats.getInstance()
+            .setPowerDistributionConfig(0, PowerDistribution.ModuleType.kCTRE);
+        break;
+      default:
+        throw new UnknownTargetRobotException();
+    }
+
     if (Constants.getMode() == Constants.Mode.REPLAY) {
       matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOReplay());
       arm = new Arm(new ArmIOReplay());
