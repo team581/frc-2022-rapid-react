@@ -96,10 +96,8 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   public Optional<TimestampedPose2d> getRobotPose() {
     final var optionalCameraToHub = upperHub.getTranslationFromCamera();
     if (optionalCameraToHub.isEmpty()) {
-      System.out.println("no camera to hub translation");
       return Optional.empty();
     }
-    System.out.println("yes camera to hub translation");
 
     final var cameraToHub = optionalCameraToHub.get();
     // Apply the camera's rotational error to the robot's heading
