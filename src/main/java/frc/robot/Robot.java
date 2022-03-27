@@ -58,7 +58,7 @@ public class Robot extends LoggedRobot {
       // Prompt the user for a file path on the command line
       System.out.println(
           "If prompted, please enter the filename of the .rlog file to use as a replay");
-      final String path = "logs/Log_22-03-24_17-35-39.rlog";
+      final String path = "logs/Log_22-03-26_14-04-39.rlog";
       System.out.println("PATH: " + path);
       // Read log file for replay
       Logger.getInstance().setReplaySource(new ByteLogReplay(path));
