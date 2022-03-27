@@ -26,11 +26,10 @@ public abstract class VisionIOLimelight implements VisionIO {
 
   @Override
   public void updateInputs(Inputs inputs) {
-    /** The total amount of time (in seconds) from when the image was captured to now. */
-    final var totalCameraLatency =
-        Units.millisecondsToSeconds(limelight.getPipelineLatency()) + IMAGE_CAPTURE_LATENCY;
-
-    inputs.captureTimestamp = Logger.getInstance().getRealTimestamp() - totalCameraLatency;
+    inputs.captureTimestamp =
+        Logger.getInstance().getTimestamp()
+            - Units.millisecondsToSeconds(limelight.getPipelineLatency())
+            - IMAGE_CAPTURE_LATENCY;
     inputs.hasTargets = limelight.hasTargets();
     inputs.tx = limelight.getX();
     inputs.ty = limelight.getY();
