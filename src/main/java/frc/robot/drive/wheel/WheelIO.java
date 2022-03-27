@@ -4,7 +4,6 @@
 
 package frc.robot.drive.wheel;
 
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -40,6 +39,4 @@ public interface WheelIO extends SubsystemIO<WheelIO.Inputs> {
 
   /** Zeroes the encoder position. */
   public void zeroEncoder();
-
-  public MotorController getMotorController();
 }

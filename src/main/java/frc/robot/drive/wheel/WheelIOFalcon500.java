@@ -6,7 +6,6 @@ package frc.robot.drive.wheel;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.misc.util.GearingConverter;
@@ -112,10 +111,5 @@ public class WheelIOFalcon500 implements WheelIO {
   @Override
   public void zeroEncoder() {
     motor.setSelectedSensorPosition(0);
-  }
-
-  @Override
-  public MotorController getMotorController() {
-    return motor;
   }
 }

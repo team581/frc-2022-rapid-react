@@ -32,7 +32,6 @@ import org.littletonrobotics.junction.Logger;
  * odometry, and trajectory helpers.
  */
 public class DriveSubsystem extends SubsystemBase {
-
   private static final class Constants {
     // Max of 1 rotation per second and max acceleration of 0.5 rotations
     // per second squared

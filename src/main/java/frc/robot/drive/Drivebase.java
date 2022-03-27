@@ -48,8 +48,6 @@ public class Drivebase extends SubsystemBase {
   public final Wheel rearLeft;
   public final Wheel rearRight;
 
-  public final MecanumDrive drive;
-
   public Drivebase(
       WheelIO frontLeftIO, WheelIO frontRightIO, WheelIO rearLeftIO, WheelIO rearRightIO) {
 
@@ -72,13 +70,6 @@ public class Drivebase extends SubsystemBase {
         throw new UnknownTargetRobotException();
     }
 
-    drive =
-        new MecanumDrive(
-            frontLeftIO.getMotorController(),
-            rearLeftIO.getMotorController(),
-            frontRightIO.getMotorController(),
-            rearRightIO.getMotorController());
-
     zeroEncoders();
   }
 
@@ -91,13 +82,17 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void setCartesianPercentages(
-      double xPercentage, double yPercentage, double thetaPercentage) {
-    drive.driveCartesian(yPercentage, xPercentage, thetaPercentage);
-  }
-
-  public void setCartesianPercentages(
       double xPercentage, double yPercentage, double thetaPercentage, Rotation2d currentRotation) {
-    drive.driveCartesian(yPercentage, xPercentage, thetaPercentage, currentRotation.getDegrees());
+    final var speeds =
+        MecanumDrive.driveCartesianIK(
+            xPercentage, yPercentage, thetaPercentage, -currentRotation.getDegrees());
+
+    setWheelSpeeds(
+        new MecanumDriveWheelSpeeds(
+            speeds.frontLeft * Wheel.MAX_WHEEL_VELOCITY,
+            speeds.frontRight * Wheel.MAX_WHEEL_VELOCITY,
+            speeds.rearLeft * Wheel.MAX_WHEEL_VELOCITY,
+            speeds.rearRight * Wheel.MAX_WHEEL_VELOCITY));
   }
 
   public void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
@@ -110,8 +105,6 @@ public class Drivebase extends SubsystemBase {
     frontRight.doVelocityControlLoop();
     rearLeft.doVelocityControlLoop();
     rearRight.doVelocityControlLoop();
-
-    drive.feed();
   }
 
   public MecanumDriveWheelSpeeds getWheelSpeeds() {
@@ -125,7 +118,6 @@ public class Drivebase extends SubsystemBase {
   /** Stops all the motors. */
   public void stopMotors() {
     setWheelSpeeds(new MecanumDriveWheelSpeeds());
-    drive.stopMotor();
   }
 
   public void zeroEncoders() {
