@@ -113,14 +113,9 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     final var offsetToHubFromRobot = robotToHubPolar.getTranslation2d();
 
     // Let's start with the Hub's position
-    // Not sure where to put Hub-related functions -- is there already one to ask for the Hub's
-    // position?
-    // Gonna brute force it here.
-    final var hubTranslation =
-        new Translation2d(Constants.FIELD_WIDTH / 2.0, Constants.FIELD_LENGTH / 2.0);
     // Now subtract the translation from the camera to the Hub. We subtract because we're going back
     // towards the camera from what it saw.
-    final var robotTranslation = hubTranslation.minus(offsetToHubFromRobot);
+    final var robotTranslation = UpperHubVisionTarget.POSE.minus(offsetToHubFromRobot);
 
     // Need to use whatever the robot's facing was when the vision target was seen.
     // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at
