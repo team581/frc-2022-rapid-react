@@ -60,10 +60,8 @@ public abstract class VisionTarget {
    */
   public Optional<PolarPose2d> getTranslationFromCamera() {
     if (!visionSubsystem.hasTargets()) {
-      System.out.println("no targets");
       return Optional.empty();
     }
-    System.out.println("yes targets");
 
     final var r = getDistance();
     final var theta = getRotation();
