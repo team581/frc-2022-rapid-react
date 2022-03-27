@@ -72,10 +72,14 @@ public final class Constants {
   }
 
   public static Mode getMode() {
+    if (RobotBase.isReal()) {
+      return Mode.REAL;
+    }
+
     switch (getRobot()) {
       case COMP_BOT:
       case TEST_2020_BOT:
-        return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
+        return Mode.REPLAY;
       case SIM_BOT:
         return Mode.SIM;
     }
@@ -93,6 +97,8 @@ public final class Constants {
     System.out.println("SERIAL NUMBER: " + SERIAL_NUMBER);
     System.out.println("RESOLVED ROBOT: " + getRobot());
     System.out.println("MODE: " + getMode());
+
+    assert (getRobot() == TargetRobot.SIM_BOT) == RobotBase.isSimulation();
   }
 
   private Constants() {}
