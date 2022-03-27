@@ -47,6 +47,8 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().recordMetadata("Mode", Constants.getMode().toString());
     Logger.getInstance().recordMetadata("PeriodSeconds", Double.toString(Constants.PERIOD_SECONDS));
 
+    ByteLogReceiver receiver;
+
     if (isReplay) {
       // Prompt the user for a file path on the command line
       System.out.println(
@@ -55,18 +57,16 @@ public class Robot extends LoggedRobot {
       // Read log file for replay
       Logger.getInstance().setReplaySource(new ByteLogReplay(path));
       // Save replay results to a new log with the "_sim" suffix
-      Logger.getInstance()
-          .addDataReceiver(new ByteLogReceiver(ByteLogReceiver.addPathSuffix(path, "_sim")));
+      receiver = new ByteLogReceiver(ByteLogReceiver.addPathSuffix(path, "_sim"));
     } else {
       // Log to USB stick (name will be selected automatically)
-      Logger.getInstance()
-          .addDataReceiver(
-              new ByteLogReceiver(
-                  Constants.getMode() == Constants.Mode.SIM ? "./" : "/media/sda1/"));
-      // Provide log data over the network, viewable in Advantage Scope.
-      Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
+      receiver =
+          new ByteLogReceiver(Constants.getMode() == Constants.Mode.SIM ? "./" : "/media/sda1/");
     }
 
+    Logger.getInstance().addDataReceiver(receiver);
+    // Provide log data over the network, viewable in Advantage Scope.
+    Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
     // Start logging! No more data receivers, replay sources, or metadata values may be added.
     Logger.getInstance().start();
 
