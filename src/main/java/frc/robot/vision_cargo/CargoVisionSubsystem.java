@@ -108,7 +108,7 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     // Get the polar coordinate of the target
     final var robotToHubPolar = new PolarPose2d(cameraToHub.getR(), adjustedAngle);
 
-    // Translate to Cartesian coordinates – this is the estimate relative position of the Hub,
+    // Translate to Cartesian coordinates - this is the estimate relative position of the Hub,
     // relative to the camera
     final var offsetToHubFromRobot = robotToHubPolar.getTranslation2d();
 
