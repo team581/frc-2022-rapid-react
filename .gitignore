@@ -144,3 +144,4 @@ gradle-app.setting
 # AdvantageKit logs
 *.rlog
 !logs/*.rlog
+logs/*_sim.rlog
