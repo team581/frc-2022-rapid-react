@@ -125,14 +125,6 @@ public class DriveSubsystem extends SubsystemBase {
     if (optionalVisionPose.isPresent()) {
       final var visionPose = optionalVisionPose.get();
       // poseEstimator.addVisionMeasurement(visionPose.pose, visionPose.timestamp);
-      Logger.getInstance()
-          .recordOutput(
-              "Drive/VisionPose",
-              new double[] {
-                visionPose.pose.getX(),
-                visionPose.pose.getY(),
-                visionPose.pose.getRotation().getRadians()
-              });
     }
 
     final var pose = getPose();

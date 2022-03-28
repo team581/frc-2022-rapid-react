@@ -17,7 +17,7 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
 
   protected final VisionIO io;
   protected final Inputs inputs = new Inputs();
-  private final String loggerName;
+  protected final String loggerName;
 
   /**
    * Creates a new VisionSubsystemBase.
