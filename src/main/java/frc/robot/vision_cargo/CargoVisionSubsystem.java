@@ -13,11 +13,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.imu.ImuSubsystem;
-import frc.robot.misc.util.PolarPose2d;
+import frc.robot.misc.util.PolarTranslation2d;
 import frc.robot.vision.VisionSubsystemBase;
 import frc.robot.vision_cargo.CargoVisionTarget.Color;
 import frc.robot.vision_upper.TimestampedPose2d;
 import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 
 public class CargoVisionSubsystem extends VisionSubsystemBase {
   public enum Pipelines {
@@ -40,12 +41,12 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   static {
     switch (Constants.getRobot()) {
       case TEST_2020_BOT:
+      case SIM_BOT:
         HEIGHT_FROM_FLOOR = Units.inchesToMeters(15.5);
         ANGLE_OF_ELEVATION = new Rotation2d(0);
         break;
       default:
-        // 'Cause the test data was made when the robot was up high
-        HEIGHT_FROM_FLOOR = Units.feetToMeters(1.25);
+        HEIGHT_FROM_FLOOR = Units.feetToMeters(1);
         ANGLE_OF_ELEVATION = new Rotation2d(0);
         break;
     }
@@ -66,6 +67,33 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     super("CargoVision", io, Pipelines.DRIVER_MODE.index);
 
     this.imu = imu;
+  }
+
+  @Override
+  public void periodic() {
+    super.periodic();
+
+    final var optionalTranslation = upperHub.getTranslationFromCamera();
+    if (optionalTranslation.isPresent()) {
+      final var translation = optionalTranslation.get();
+      Logger.getInstance().recordOutput(loggerName + "/DistanceToHubMeters", translation.getR());
+      Logger.getInstance()
+          .recordOutput(loggerName + "/AngleToHubRadians", translation.getTheta().getRadians());
+
+      final var visionPose = getRobotPose().orElseThrow();
+      Logger.getInstance()
+          .recordOutput(
+              loggerName + "/RobotPose",
+              new double[] {
+                visionPose.pose.getX(),
+                visionPose.pose.getY(),
+                visionPose.pose.getRotation().getRadians()
+              });
+      Logger.getInstance()
+          .recordOutput(
+              loggerName + "/VisionTargetPose",
+              new double[] {UpperHubVisionTarget.POSE.getX(), UpperHubVisionTarget.POSE.getY()});
+    }
   }
 
   public CargoVisionTarget getOurCargoVisionTarget() {
@@ -99,11 +127,16 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     }
 
     final var cameraToHub = optionalCameraToHub.get();
-    // Apply the camera's rotational error to the robot's heading
-    final var adjustedAngle = imu.getRotation().minus(cameraToHub.getTheta());
+
+    // Need to use whatever the robot's facing was when the vision target was seen.
+    // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at
+    // image capture
+    // TODO: This should maybe be .plus(). We tested using an inverted gyroscope heading and so the
+    // angle related parts of this code are probably wrong.
+    final var robotHeading = imu.getRotation().minus(cameraToHub.getTheta());
 
     // Get the polar coordinate of the target
-    final var robotToHubPolar = new PolarPose2d(cameraToHub.getR(), adjustedAngle);
+    final var robotToHubPolar = new PolarTranslation2d(cameraToHub.getR(), robotHeading);
 
     // Translate to Cartesian coordinates - this is the estimate relative position of the Hub,
     // relative to the camera
@@ -113,11 +146,6 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     // Now subtract the translation from the camera to the Hub. We subtract because we're going back
     // towards the camera from what it saw.
     final var robotTranslation = UpperHubVisionTarget.POSE.minus(offsetToHubFromRobot);
-
-    // Need to use whatever the robot's facing was when the vision target was seen.
-    // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at
-    // image capture
-    final var robotHeading = imu.getRotation();
 
     final var robotPose = new Pose2d(robotTranslation, robotHeading);
 

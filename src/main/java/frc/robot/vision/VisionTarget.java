@@ -6,7 +6,7 @@ package frc.robot.vision;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.misc.util.PolarPose2d;
+import frc.robot.misc.util.PolarTranslation2d;
 import java.util.Optional;
 
 /** A vision target for the vision system. */
@@ -48,7 +48,10 @@ public abstract class VisionTarget {
     final var a1 = visionSubsystem.getAngleOfElevation().getRadians();
     final var a2 = Units.degreesToRadians(visionSubsystem.getY());
 
-    return (h2 - h1) / Math.tan(a1 + a2);
+    final var distance = (h2 - h1) / Math.tan(a1 + a2);
+    assert distance > 0;
+
+    return distance;
   }
 
   private Rotation2d getRotation() {
@@ -58,7 +61,7 @@ public abstract class VisionTarget {
   /**
    * The translation (in polar coordinates) from the the camera to this vision target, if visible.
    */
-  public Optional<PolarPose2d> getTranslationFromCamera() {
+  public Optional<PolarTranslation2d> getTranslationFromCamera() {
     if (!visionSubsystem.hasTargets()) {
       return Optional.empty();
     }
@@ -66,6 +69,6 @@ public abstract class VisionTarget {
     final var r = getDistance();
     final var theta = getRotation();
 
-    return Optional.of(new PolarPose2d(r, theta));
+    return Optional.of(new PolarTranslation2d(r, theta));
   }
 }
