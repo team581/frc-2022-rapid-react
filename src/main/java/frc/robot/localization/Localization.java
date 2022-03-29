@@ -95,15 +95,16 @@ public class Localization extends SubsystemBase {
 
   @Override
   public void periodic() {
-    final var odometryPose =
-        odometry.update(imuSubsystem.getRotation(), driveSubsystem.getWheelSpeeds());
+    final var rotation = imuSubsystem.getRotation();
+    final var wheelSpeeds = driveSubsystem.getWheelSpeeds();
+
+    final var odometryPose = odometry.update(rotation, wheelSpeeds);
 
     // The robot's position, just using odometry
     Logger.getInstance().recordOutput("Localization/OdometryPose", poseToArray(odometryPose));
 
     try {
-      final var localizationPose =
-          poseEstimator.update(imuSubsystem.getRotation(), driveSubsystem.getWheelSpeeds());
+      final var localizationPose = poseEstimator.update(imuSubsystem.getRotation(), wheelSpeeds);
 
       // The robot's position using both odometry and vision
       Logger.getInstance().recordOutput("Localization/RobotPose", poseToArray(localizationPose));
