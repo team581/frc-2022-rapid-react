@@ -5,6 +5,7 @@
 package frc.robot.vision_cargo;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.vision.VisionTarget;
 
@@ -12,6 +13,7 @@ import frc.robot.vision.VisionTarget;
 public class UpperHubVisionTarget extends VisionTarget {
   public static final Translation2d POSE =
       new Translation2d(Constants.FIELD_WIDTH / 2, Constants.FIELD_LENGTH / 2);
+  public static final double RADIUS = Units.feetToMeters(4) / 2;
 
   public UpperHubVisionTarget(CargoVisionSubsystem vision) {
     super(
