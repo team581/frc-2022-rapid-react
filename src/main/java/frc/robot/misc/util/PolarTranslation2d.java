@@ -37,4 +37,12 @@ public class PolarTranslation2d {
   public PolarTranslation2d unaryMinus() {
     return new PolarTranslation2d(-r, theta.unaryMinus());
   }
+
+  public PolarTranslation2d plus(PolarTranslation2d other) {
+    return new PolarTranslation2d(r + other.r, theta.plus(other.theta));
+  }
+
+  public PolarTranslation2d minus(PolarTranslation2d other) {
+    return new PolarTranslation2d(r - other.r, theta.minus(other.theta));
+  }
 }
