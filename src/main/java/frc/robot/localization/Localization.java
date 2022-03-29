@@ -6,6 +6,7 @@ package frc.robot.localization;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.util.Units;
@@ -14,6 +15,7 @@ import frc.robot.Constants;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.vision_cargo.CargoVisionSubsystem;
+import frc.robot.vision_cargo.UpperHubVisionTarget;
 import frc.robot.vision_upper.TimestampedPose2d;
 import java.util.Optional;
 import lib.wpilib.MecanumDrivePoseEstimator;
@@ -51,13 +53,12 @@ public class Localization extends SubsystemBase {
   public Localization(
       DriveSubsystem driveSubsystem,
       CargoVisionSubsystem visionSubsystem,
-      ImuSubsystem imuSubsystem) {
+      ImuSubsystem imuSubsystem,
+      Pose2d initialRobotPose) {
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
     this.imuSubsystem = imuSubsystem;
 
-    // TODO: Allow this to be configured based on autonomous routine starting location
-    final var initialPose = new Pose2d();
     final var initialHeading = imuSubsystem.getRotation();
 
     poseEstimator =
@@ -65,7 +66,7 @@ public class Localization extends SubsystemBase {
             // Initial heading
             initialHeading,
             // Initial position
-            initialPose,
+            initialRobotPose,
             driveSubsystem.kinematics,
             // Standard deviations of wheel odometry x, y, and theta
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
@@ -75,7 +76,21 @@ public class Localization extends SubsystemBase {
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)),
             frc.robot.Constants.PERIOD_SECONDS);
 
-    odometry = new MecanumDriveOdometry(driveSubsystem.kinematics, initialHeading, initialPose);
+    odometry =
+        new MecanumDriveOdometry(driveSubsystem.kinematics, initialHeading, initialRobotPose);
+  }
+
+  public Localization(
+      DriveSubsystem driveSubsystem,
+      CargoVisionSubsystem visionSubsystem,
+      ImuSubsystem imuSubsystem) {
+    this(
+        driveSubsystem,
+        visionSubsystem,
+        imuSubsystem,
+        // Default to being in the center of the field
+        // This should only really be used for debugging
+        new Pose2d(UpperHubVisionTarget.POSE, new Rotation2d()));
   }
 
   @Override
