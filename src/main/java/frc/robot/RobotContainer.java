@@ -54,8 +54,8 @@ public class RobotContainer {
   private final Arm arm;
   private final Lights lights;
   private final SuperstructureSubsystem superstructureSubsystem;
-  private final CargoDetectorSubsystem cargoDetectorSubsystem;
   private final Localization localization;
+  private final CargoDetector cargoDetector;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -75,6 +75,7 @@ public class RobotContainer {
       lights = new Lights(new LightsIOReplay());
       arm = new Arm(new ArmIOReplay(), lights);
       swiffer = new Swiffer(new SwifferIOReplay(), lights);
+      cargoDetector = new CargoDetector(new CargoDetectorIOReplay());
       imuSubsystem = new ImuSubsystem(new ImuIOReplay());
       upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
       cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
@@ -86,7 +87,6 @@ public class RobotContainer {
               new WheelIOReplay(Corner.FRONT_RIGHT),
               new WheelIOReplay(Corner.REAR_LEFT),
               new WheelIOReplay(Corner.REAR_RIGHT));
-      cargoDetectorSubsystem = new CargoDetectorSubsystem(new CargoDetectorIOReplay());
     } else {
       switch (Constants.getRobot()) {
         case COMP_BOT:
@@ -94,6 +94,7 @@ public class RobotContainer {
           lights = new Lights(new LightsIOReplay());
           arm = new Arm(new ArmIOReplay(), lights);
           swiffer = new Swiffer(new SwifferIOReplay(), lights);
+          cargoDetector = new CargoDetector(new CargoDetectorIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
           cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
@@ -105,7 +106,6 @@ public class RobotContainer {
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
-          cargoDetectorSubsystem = new CargoDetectorSubsystem(new CargoDetectorIOReplay());
           break;
 
         case TEST_2020_BOT:
@@ -113,6 +113,7 @@ public class RobotContainer {
           lights = new Lights(new LightsIORoborio());
           arm = new Arm(new ArmIOReplay(), lights);
           swiffer = new Swiffer(new SwifferIOReplay(), lights);
+          cargoDetector = new CargoDetector(new CargoDetectorIOIR());
           imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
           cargoVisionSubsystem =
@@ -125,13 +126,13 @@ public class RobotContainer {
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
-          cargoDetectorSubsystem = new CargoDetectorSubsystem(new CargoDetectorIOIR());
           break;
         case SIM_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOSim());
           lights = new Lights(new LightsIOSim());
           arm = new Arm(new ArmIOSimNeos(), lights);
           swiffer = new Swiffer(new SwifferIOSimFalcon500(), lights);
+          cargoDetector = new CargoDetector(new CargoDetectorIOSimIR());
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOSim());
           cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim(), imuSubsystem);
@@ -143,14 +144,13 @@ public class RobotContainer {
                   new WheelIOSim(Corner.FRONT_RIGHT),
                   new WheelIOSim(Corner.REAR_LEFT),
                   new WheelIOSim(Corner.REAR_RIGHT));
-          cargoDetectorSubsystem = new CargoDetectorSubsystem(new CargoDetectorIOSimIR());
           break;
         default:
           throw new UnknownTargetRobotException();
       }
     }
 
-    superstructureSubsystem = new SuperstructureSubsystem(swiffer, arm, lights);
+    superstructureSubsystem = new SuperstructureSubsystem(swiffer, arm, lights, cargoDetector);
     localization = new Localization(driveSubsystem, cargoVisionSubsystem, imuSubsystem);
 
     autonomousChooser =

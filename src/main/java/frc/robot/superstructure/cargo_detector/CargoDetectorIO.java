@@ -10,14 +10,17 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface CargoDetectorIO extends SubsystemIO<CargoDetectorIO.Inputs> {
   public class Inputs implements LoggableInputs {
-    public double distance = 0;
+    public boolean hasLeftCargo = false;
+    public boolean hasRightCargo = false;
 
     public void toLog(LogTable table) {
-      table.put("Distance", distance);
+      table.put("HasLeftCargo", hasLeftCargo);
+      table.put("HasRightCargo", hasRightCargo);
     }
 
     public void fromLog(LogTable table) {
-      distance = table.getDouble("Distance", distance);
+      hasLeftCargo = table.getBoolean("HasLeftCargo", hasLeftCargo);
+      hasRightCargo = table.getBoolean("HasRightCargo", hasRightCargo);
     }
   }
 }

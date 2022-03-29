@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.ArmPosition;
 import frc.robot.superstructure.arm.commands.ArmCommand;
-import frc.robot.superstructure.swiffer.commands.SwifferStopCommand;
+import frc.robot.superstructure.swiffer.SwifferMode;
+import frc.robot.superstructure.swiffer.commands.SwifferCommand;
 
 /** Lift the swiffer up and stop the flywheel. */
 public class ArmUpAndSwifferStopCommand extends ParallelCommandGroup {
@@ -18,7 +19,7 @@ public class ArmUpAndSwifferStopCommand extends ParallelCommandGroup {
         // Arm up
         new ArmCommand(superstructure.arm, ArmPosition.UP),
         // Stop the flywheel
-        new SwifferStopCommand(superstructure.swiffer));
+        new SwifferCommand(superstructure.swiffer, SwifferMode.STOPPED));
 
     addRequirements(superstructure, superstructure.arm, superstructure.swiffer);
   }

@@ -4,13 +4,15 @@
 
 package frc.robot.superstructure.cargo_detector;
 
-import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class CargoDetectorIOIR implements CargoDetectorIO {
-  private final AnalogInput sensor = new AnalogInput(0);
+  private final DigitalInput leftSensor = new DigitalInput(0);
+  private final DigitalInput rightSensor = new DigitalInput(1);
 
   @Override
   public void updateInputs(Inputs inputs) {
-    inputs.distance = sensor.getValue();
+    inputs.hasLeftCargo = leftSensor.get();
+    inputs.hasRightCargo = rightSensor.get();
   }
 }

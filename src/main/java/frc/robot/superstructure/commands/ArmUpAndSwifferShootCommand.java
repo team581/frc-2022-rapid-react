@@ -10,7 +10,7 @@ import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.ArmPosition;
 import frc.robot.superstructure.arm.commands.ArmCommand;
 import frc.robot.superstructure.swiffer.SwifferMode;
-import frc.robot.superstructure.swiffer.commands.SwifferShootCommand;
+import frc.robot.superstructure.swiffer.commands.SwifferCommand;
 
 /** Puts the arm up and shoots all cargo. */
 public class ArmUpAndSwifferShootCommand extends SequentialCommandGroup {
@@ -25,7 +25,11 @@ public class ArmUpAndSwifferShootCommand extends SequentialCommandGroup {
         // Arm up
         new ArmCommand(superstructure.arm, ArmPosition.UP),
         // Shoot all cargo after the arm is up
-        new SwifferShootCommand(superstructure.swiffer));
+        new SwifferCommand(superstructure.swiffer, SwifferMode.SHOOTING)
+            // Shoot until the sensor reads as empty
+            .until(() -> superstructure.cargoDetector.getCargoCount() == 0)
+            // Add a timeout in case the sensor fails
+            .withTimeout(1.5));
 
     addRequirements(superstructure, superstructure.arm, superstructure.swiffer);
   }

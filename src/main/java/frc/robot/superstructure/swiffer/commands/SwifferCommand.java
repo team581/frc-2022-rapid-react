@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.superstructure.swiffer.Swiffer;
 import frc.robot.superstructure.swiffer.SwifferMode;
 
-abstract class SwifferCommand extends CommandBase {
+public class SwifferCommand extends CommandBase {
   private final Swiffer swiffer;
   private final SwifferMode mode;
 
   /** Creates a new SwifferCommand. */
-  protected SwifferCommand(Swiffer swiffer, SwifferMode mode) {
+  public SwifferCommand(Swiffer swiffer, SwifferMode mode) {
     this.swiffer = swiffer;
     this.mode = mode;
 
@@ -37,8 +37,8 @@ abstract class SwifferCommand extends CommandBase {
   }
 
   // Returns true when the command should end.
-  // This is abstract to ensure you don't forget to override the default `Command interface behavior
-  // of `return false`
   @Override
-  public abstract boolean isFinished();
+  public boolean isFinished() {
+    return swiffer.atGoal(mode);
+  }
 }
