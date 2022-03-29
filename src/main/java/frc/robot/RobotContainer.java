@@ -126,7 +126,7 @@ public class RobotContainer {
                   imuSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
-                  new WheelIOReplay(Corner.REAR_LEFT),
+                  new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
           cargoDetectorSubsystem = new CargoDetectorSubsystem(new CargoDetectorIOIR());
           break;
