@@ -10,9 +10,6 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.drive.wheel.Corner;
-import frc.robot.drive.wheel.Wheel;
-import frc.robot.drive.wheel.WheelIO;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 
 /**

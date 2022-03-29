@@ -12,7 +12,7 @@ import lib.limelight.Limelight;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface VisionIO extends SubsystemIO<VisionIO.Inputs> {
+public abstract interface VisionIO extends SubsystemIO<VisionIO.Inputs> {
   public class Inputs implements LoggableInputs {
     protected static List<Translation2d> coordinateArrayToTranslation2dList(
         double[] coordinateArray) {

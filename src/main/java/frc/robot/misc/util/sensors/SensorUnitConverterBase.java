@@ -6,7 +6,7 @@ package frc.robot.misc.util.sensors;
 
 import edu.wpi.first.math.util.Units;
 
-public abstract class SensorUnitConverterBase {
+abstract class SensorUnitConverterBase {
   private final double sensorUnitsPerRotation;
 
   protected SensorUnitConverterBase(double sensorUnitsPerRotation) {

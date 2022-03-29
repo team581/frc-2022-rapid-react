@@ -2,13 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.drive.wheel;
+package frc.robot.drive;
 
 import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface WheelIO extends SubsystemIO<WheelIO.Inputs> {
+interface WheelIO extends SubsystemIO<WheelIO.Inputs> {
   public class Inputs implements LoggableInputs {
     public double voltageVolts = 0;
     public double currentAmps = 0;

@@ -9,7 +9,7 @@ import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
+interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
   public class Inputs implements LoggableInputs {
     public double[] appliedVolts = {};
     public double[] currentAmps = {};

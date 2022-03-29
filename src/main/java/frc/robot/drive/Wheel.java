@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.drive.wheel;
+package frc.robot.drive;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -10,9 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.drive.DriveSubsystem;
-import frc.robot.drive.Drivebase;
-import frc.robot.drive.wheel.WheelIO.Inputs;
+import frc.robot.drive.WheelIO.Inputs;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.misc.util.Clamp;
 import frc.robot.misc.util.WheelConverter;

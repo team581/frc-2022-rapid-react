@@ -6,4 +6,4 @@ package frc.robot.vision_upper;
 
 import frc.robot.vision.VisionIO;
 
-public interface UpperHubVisionIO extends VisionIO {}
+interface UpperHubVisionIO extends VisionIO {}

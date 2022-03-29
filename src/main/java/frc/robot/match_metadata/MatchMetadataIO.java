@@ -9,7 +9,7 @@ import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface MatchMetadataIO extends SubsystemIO<MatchMetadataIO.Inputs> {
+interface MatchMetadataIO extends SubsystemIO<MatchMetadataIO.Inputs> {
   public class Inputs implements LoggableInputs {
     public Alliance alliance = Alliance.Invalid;
 

@@ -9,7 +9,7 @@ import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface SwifferIO extends SubsystemIO<SwifferIO.Inputs> {
+interface SwifferIO extends SubsystemIO<SwifferIO.Inputs> {
   public class Inputs implements LoggableInputs {
     public double appliedVolts = 0;
     public double currentAmps = 0;

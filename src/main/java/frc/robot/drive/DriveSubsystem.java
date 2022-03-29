@@ -21,7 +21,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.commands.TeleopDriveCommand;
-import frc.robot.drive.wheel.WheelIO;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 

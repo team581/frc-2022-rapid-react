@@ -6,4 +6,4 @@ package frc.robot.vision_cargo;
 
 import frc.robot.vision.VisionIO;
 
-public interface CargoVisionIO extends VisionIO {}
+interface CargoVisionIO extends VisionIO {}

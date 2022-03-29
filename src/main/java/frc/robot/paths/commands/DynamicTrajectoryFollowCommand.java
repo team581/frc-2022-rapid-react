@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.drive.wheel.Wheel;
+import frc.robot.drive.Wheel;
 import java.util.function.Supplier;
 
 /**
