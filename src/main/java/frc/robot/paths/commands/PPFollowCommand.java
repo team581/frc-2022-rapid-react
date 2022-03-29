@@ -8,6 +8,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.drive.DriveSubsystem;
+import frc.robot.localization.Localization;
 import lib.pathplanner.PPCommand;
 
 /**
@@ -15,10 +16,11 @@ import lib.pathplanner.PPCommand;
  * DriveSubsystem drive subsystem's} odometry.
  */
 public class PPFollowCommand extends SequentialCommandGroup {
-  public PPFollowCommand(DriveSubsystem driveSubsystem, PathPlannerTrajectory trajectory) {
+  public PPFollowCommand(
+      DriveSubsystem driveSubsystem, PathPlannerTrajectory trajectory, Localization localization) {
     addCommands(
         new InstantCommand(
             () -> driveSubsystem.resetSensorsForTrajectory(trajectory), driveSubsystem),
-        new PPCommand(trajectory, driveSubsystem));
+        new PPCommand(trajectory, driveSubsystem, localization));
   }
 }

@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.imu.ImuSubsystem;
+import frc.robot.localization.Localization;
 import frc.robot.misc.util.PolarTranslation2d;
 import frc.robot.vision.VisionSubsystemBase;
 import frc.robot.vision_cargo.CargoVisionTarget.Color;
@@ -80,19 +81,23 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
       Logger.getInstance()
           .recordOutput(loggerName + "/AngleToHubRadians", translation.getTheta().getRadians());
 
-      final var visionPose = getRobotPose().orElseThrow();
-      Logger.getInstance()
-          .recordOutput(
-              loggerName + "/RobotPose",
-              new double[] {
-                visionPose.pose.getX(),
-                visionPose.pose.getY(),
-                visionPose.pose.getRotation().getRadians()
-              });
-      Logger.getInstance()
-          .recordOutput(
-              loggerName + "/VisionTargetPose",
-              new double[] {UpperHubVisionTarget.POSE.getX(), UpperHubVisionTarget.POSE.getY()});
+      final var optionalVisionPose = getRobotPose();
+      if (optionalVisionPose.isPresent()) {
+        final var visionPose = optionalVisionPose.get();
+
+        Logger.getInstance()
+            .recordOutput(
+                loggerName + "/RobotPose",
+                new double[] {
+                  visionPose.pose.getX(),
+                  visionPose.pose.getY(),
+                  visionPose.pose.getRotation().getRadians()
+                });
+        Logger.getInstance()
+            .recordOutput(
+                loggerName + "/VisionTargetPose",
+                new double[] {UpperHubVisionTarget.POSE.getX(), UpperHubVisionTarget.POSE.getY()});
+      }
     }
   }
 
@@ -130,7 +135,7 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
 
     // Need to use whatever the robot's facing was when the vision target was seen.
     // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at
-    // image capture
+    // image capture. Use WPILib's TimeInterpolatableBuffer.
     // TODO: This should maybe be .plus(). We tested using an inverted gyroscope heading and so the
     // angle related parts of this code are probably wrong.
     final var robotHeading = imu.getRotation().minus(cameraToHub.getTheta());
@@ -149,7 +154,12 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
 
     final var robotPose = new Pose2d(robotTranslation, robotHeading);
 
-    return Optional.of(new TimestampedPose2d(robotPose, inputs.captureTimestamp));
+    if (Localization.poseIsValid(robotPose)) {
+      return Optional.of(new TimestampedPose2d(robotPose, inputs.captureTimestamp));
+    }
+
+    // Invalid pose, you can't be outside of the field
+    return Optional.empty();
   }
 
   /** Gets the {@link CargoVisionTarget} instance for the provided alliance (red or blue). */

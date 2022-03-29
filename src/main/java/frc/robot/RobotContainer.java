@@ -11,19 +11,21 @@ import frc.robot.controller.ButtonController;
 import frc.robot.controller.DriveController;
 import frc.robot.controller.LogitechF310DirectInputController;
 import frc.robot.drive.*;
+import frc.robot.drive.commands.UpperHubAlignCommand;
 import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.imu.*;
+import frc.robot.localization.Localization;
 import frc.robot.match_metadata.*;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
-import frc.robot.paths.commands.SimplePathCommand;
+import frc.robot.paths.PPPaths;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.*;
 import frc.robot.superstructure.commands.ArmDownAndSnarfCommand;
 import frc.robot.superstructure.commands.ArmUpAndSwifferShootCommand;
 import frc.robot.superstructure.swiffer.*;
-import frc.robot.vision.commands.LoadingBayAlignCommand;
 import frc.robot.vision_cargo.*;
 import frc.robot.vision_upper.*;
+import lib.pathplanner.PPCommand;
 import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 /**
@@ -49,6 +51,7 @@ public class RobotContainer {
   private final Swiffer swiffer;
   private final Arm arm;
   private final SuperstructureSubsystem superstructureSubsystem;
+  private final Localization localization;
 
   private final Command autoCommand;
 
@@ -77,7 +80,6 @@ public class RobotContainer {
           new DriveSubsystem(
               driverController,
               imuSubsystem,
-              cargoVisionSubsystem,
               new WheelIOReplay(Corner.FRONT_LEFT),
               new WheelIOReplay(Corner.FRONT_RIGHT),
               new WheelIOReplay(Corner.REAR_LEFT),
@@ -96,7 +98,6 @@ public class RobotContainer {
               new DriveSubsystem(
                   driverController,
                   imuSubsystem,
-                  cargoVisionSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
@@ -115,7 +116,6 @@ public class RobotContainer {
               new DriveSubsystem(
                   driverController,
                   imuSubsystem,
-                  cargoVisionSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
@@ -133,7 +133,6 @@ public class RobotContainer {
               new DriveSubsystem(
                   driverController,
                   imuSubsystem,
-                  cargoVisionSubsystem,
                   new WheelIOSim(Corner.FRONT_LEFT),
                   new WheelIOSim(Corner.FRONT_RIGHT),
                   new WheelIOSim(Corner.REAR_LEFT),
@@ -145,19 +144,21 @@ public class RobotContainer {
     }
 
     superstructureSubsystem = new SuperstructureSubsystem(swiffer, arm);
+    localization = new Localization(driveSubsystem, cargoVisionSubsystem, imuSubsystem);
 
     // Configure the button bindings. You must call this after the subsystems are defined since they
     // are used to add command requirements.
     configureDriverButtonBindings();
     configureCopilotButtonBindings();
 
-    autoCommand =
-        new ParallelCommandGroup(new LoadingBayAlignCommand(driveSubsystem, cargoVisionSubsystem));
+    // TODO: Add autonomous command
+    autoCommand = new ParallelCommandGroup();
   }
 
   private void configureDriverButtonBindings() {
     // Testing PathPlanner
-    driverController.bButton.whenHeld(new SimplePathCommand(driveSubsystem));
+    driverController.bButton.whenHeld(
+        new PPCommand(PPPaths.simplePath, driveSubsystem, localization));
 
     // Testing autonomous
     driverController.yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
@@ -168,8 +169,7 @@ public class RobotContainer {
 
   private void configureCopilotButtonBindings() {
     // Align for shooting
-    copilotController.aButton.whenHeld(
-        new LoadingBayAlignCommand(driveSubsystem, cargoVisionSubsystem));
+    copilotController.aButton.whenHeld(new UpperHubAlignCommand(driveSubsystem, localization));
 
     // Snarfing
     copilotController.rightTrigger.whileHeld(new ArmDownAndSnarfCommand(superstructureSubsystem));

@@ -5,7 +5,6 @@
 package frc.robot.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -22,8 +21,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import frc.robot.imu.ImuSubsystem;
-import frc.robot.vision_cargo.CargoVisionSubsystem;
-import lib.wpilib.MecanumDrivePoseEstimator;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -61,25 +58,18 @@ public class DriveSubsystem extends SubsystemBase {
           thetaController);
 
   private final Drivebase drivebase;
-
-  private final ImuSubsystem imu;
-
-  private final MecanumDrivePoseEstimator poseEstimator;
-
-  private final CargoVisionSubsystem vision;
+  private final ImuSubsystem imuSubsystem;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(
       DriveController controller,
-      ImuSubsystem imu,
-      CargoVisionSubsystem vision,
+      ImuSubsystem imuSubsystem,
       WheelIO frontLeftIO,
       WheelIO frontRightIO,
       WheelIO rearLeftIO,
       WheelIO rearRightIO) {
-    this.imu = imu;
-    this.vision = vision;
     drivebase = new Drivebase(frontLeftIO, frontRightIO, rearLeftIO, rearRightIO);
+    this.imuSubsystem = imuSubsystem;
 
     kinematics =
         new MecanumDriveKinematics(
@@ -90,21 +80,6 @@ public class DriveSubsystem extends SubsystemBase {
     trajectoryConfig =
         new TrajectoryConfig(Drivebase.MAX_VELOCITY, Drivebase.MAX_ACCELERATION)
             .setKinematics(kinematics);
-    poseEstimator =
-        new MecanumDrivePoseEstimator(
-            // Initial heading
-            imu.getRotation(),
-            // Initial position
-            // TODO: Allow this to be configured based on autonomous routine starting location
-            new Pose2d(),
-            kinematics,
-            // Standard deviations of wheel odometry x, y, and theta
-            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-            // Standard deviation of gyroscope heading
-            VecBuilder.fill(Units.degreesToRadians(0.01)),
-            // Vision measurement standard deviations
-            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)),
-            frc.robot.Constants.PERIOD_SECONDS);
 
     setDefaultCommand(new TeleopDriveCommand(this, controller));
 
@@ -118,25 +93,11 @@ public class DriveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     drivebase.periodic();
-
-    poseEstimator.update(imu.getRotation(), drivebase.getWheelSpeeds());
-
-    final var optionalVisionPose = vision.getRobotPose();
-    if (optionalVisionPose.isPresent()) {
-      final var visionPose = optionalVisionPose.get();
-      // poseEstimator.addVisionMeasurement(visionPose.pose, visionPose.timestamp);
-    }
-
-    final var pose = getPose();
-    // The robot's position
-    Logger.getInstance()
-        .recordOutput(
-            "Drive/RobotPose",
-            new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
   }
 
   public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
-    drivebase.setCartesianPercentages(xPercentage, yPercentage, thetaPercentage, imu.getRotation());
+    drivebase.setCartesianPercentages(
+        xPercentage, yPercentage, thetaPercentage, imuSubsystem.getRotation());
   }
 
   /** Stops all the motors. */
@@ -167,10 +128,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
     drivebase.setWheelSpeeds(wheelSpeeds);
-  }
-
-  public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
   }
 
   /**

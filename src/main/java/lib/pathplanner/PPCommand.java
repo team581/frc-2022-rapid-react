@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.drive.Wheel;
+import frc.robot.localization.Localization;
 
 /**
  * A command that uses a {@link HolonomicDriveController} to follow a trajectory {@link
@@ -19,6 +20,7 @@ public class PPCommand extends CommandBase {
   private final Timer timer = new Timer();
   private final PathPlannerTrajectory trajectory;
   private final DriveSubsystem driveSubsystem;
+  private final Localization localization;
 
   /**
    * Constructs a new PPMecanumControllerCommand that when executed will follow the provided
@@ -31,10 +33,13 @@ public class PPCommand extends CommandBase {
    *
    * @param trajectory The Pathplanner trajectory to follow.
    * @param driveSubsystem The drive subsystem to use.
+   * @param localization The source of localization data.
    */
-  public PPCommand(PathPlannerTrajectory trajectory, DriveSubsystem driveSubsystem) {
+  public PPCommand(
+      PathPlannerTrajectory trajectory, DriveSubsystem driveSubsystem, Localization localization) {
     this.trajectory = trajectory;
     this.driveSubsystem = driveSubsystem;
+    this.localization = localization;
 
     addRequirements(driveSubsystem);
   }
@@ -54,7 +59,7 @@ public class PPCommand extends CommandBase {
 
     var targetChassisSpeeds =
         driveSubsystem.driveController.calculate(
-            driveSubsystem.getPose(), desiredState, desiredState.holonomicRotation);
+            localization.getPose(), desiredState, desiredState.holonomicRotation);
     var targetWheelSpeeds = driveSubsystem.kinematics.toWheelSpeeds(targetChassisSpeeds);
 
     targetWheelSpeeds.desaturate(Wheel.MAX_WHEEL_VELOCITY);
