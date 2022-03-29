@@ -83,16 +83,6 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
 
       final var optionalVisionPose = getRobotPose();
       if (optionalVisionPose.isPresent()) {
-        final var visionPose = optionalVisionPose.get();
-
-        Logger.getInstance()
-            .recordOutput(
-                loggerName + "/RobotPose",
-                new double[] {
-                  visionPose.pose.getX(),
-                  visionPose.pose.getY(),
-                  visionPose.pose.getRotation().getRadians()
-                });
         Logger.getInstance()
             .recordOutput(
                 loggerName + "/VisionTargetPose",
@@ -136,8 +126,6 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     // Need to use whatever the robot's facing was when the vision target was seen.
     // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at
     // image capture. Use WPILib's TimeInterpolatableBuffer.
-    // TODO: This should maybe be .plus(). We tested using an inverted gyroscope heading and so the
-    // angle related parts of this code are probably wrong.
     final var robotHeading = imu.getRotation().minus(cameraToHub.getTheta());
 
     // Get the polar coordinate of the target
