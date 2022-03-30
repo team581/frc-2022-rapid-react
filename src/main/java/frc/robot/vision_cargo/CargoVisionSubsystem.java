@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.localization.Localization;
-import frc.robot.misc.util.PolarTranslation2d;
 import frc.robot.vision.Camera;
 import frc.robot.vision.ComputerVisionUtilForCamera;
 import frc.robot.vision.VisionSubsystemBase;
@@ -142,13 +141,18 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     final var gyroAngle = imu.getRotation();
     final var upperHubTransform = UpperHubVisionTarget.POSE;
 
-    // Estimate the robot's field position using the Hub height, pitch & yaw to the Hub, robot facing, and position of the Hub
-    // Note: This also takes into account the transform from the camera to the robot, and the camera height.
+    // Estimate the robot's field position using the Hub height, pitch & yaw to the Hub, robot
+    // facing, and position of the Hub
+    // Note: This also takes into account the transform from the camera to the robot, and the camera
+    // height.
     // As far as I know, the angle will be ignored in all the estimateFieldToRobot math because
     // all that matters is where it is, not where it's facing.
     final var fieldPose = new Pose2d(upperHubTransform, new Rotation2d());
 
-    final var robotPose = getVisionUtil().estimateFieldToRobot(upperHub.heightFromFloor, targetPitch, targetYaw, gyroAngle, fieldPose);
+    final var robotPose =
+        getVisionUtil()
+            .estimateFieldToRobot(
+                upperHub.heightFromFloor, targetPitch, targetYaw, gyroAngle, fieldPose);
 
     // Only return this pose if it's valid (i.e. Inside the field)
     if (Localization.poseIsValid(robotPose)) {
