@@ -145,3 +145,6 @@ gradle-app.setting
 *.rlog
 !logs/*.rlog
 logs/*_sim.rlog
+
+# PhotonVision config
+!/photonvision/*.zip
