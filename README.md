@@ -12,10 +12,10 @@ Our robot itself is still WIP, but these are highlights of what we've accomplish
 - Drivetrain
   - Mecanum drivetrain controlled with a holonomic drive controller during autonomous
   - Per-wheel closed-loop velocity control with feedforward and feedback via PID
-  - Full odometry via encoders and IMU
 - Vision
   - Two Limelight 2+s used for seeking cargo and aligning with the upper hub
   - Uses on-the-fly trajectory generation to plan the best route to the goal
+  - Full robot localization using vision data fused with odometry data using an unscented Kalman filter
 - Intake & shooter (AKA "Swiffer Picker Upper")
   - Closed-loop velocity control for flywheel
 - Arm for Swiffer Picker Upper
