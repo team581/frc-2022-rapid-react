@@ -148,7 +148,8 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     final var headingTowardsHub = robotHeading.plus(cameraToHubRelative.getTheta());
 
     // Use the robot's heading to get the actual angle to the hub
-    final var cameraToHubActual = new PolarTranslation2d(cameraToHubRelative.getR(), headingTowardsHub);
+    final var cameraToHubActual =
+        new PolarTranslation2d(cameraToHubRelative.getR(), headingTowardsHub);
     // Invert it so we have a distance and angle from the hub to the estimated camera position
     final var hubToCameraPolar = cameraToHubActual.unaryMinus();
 
