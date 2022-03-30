@@ -82,7 +82,7 @@ public class Drivebase extends SubsystemBase {
       double xPercentage, double yPercentage, double thetaPercentage, Rotation2d currentRotation) {
     final var speeds =
         MecanumDrive.driveCartesianIK(
-            xPercentage, yPercentage, thetaPercentage, -currentRotation.getDegrees());
+            yPercentage, xPercentage, thetaPercentage, currentRotation.unaryMinus().getDegrees());
 
     setWheelSpeeds(
         new MecanumDriveWheelSpeeds(
