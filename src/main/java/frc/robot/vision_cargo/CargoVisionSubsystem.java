@@ -139,15 +139,14 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     final Rotation2d targetYaw = cameraToHubRelative.getTheta();
     final var targetPitch = getY();
     final var gyroAngle = imu.getRotation();
-    final var upperHubTransform = UpperHubVisionTarget.POSE;
 
     // Estimate the robot's field position using the Hub height, pitch & yaw to the Hub, robot
-    // facing, and position of the Hub
+    // facing, and position of the Hub.
     // Note: This also takes into account the transform from the camera to the robot, and the camera
     // height.
     // As far as I know, the angle will be ignored in all the estimateFieldToRobot math because
     // all that matters is where it is, not where it's facing.
-    final var fieldPose = new Pose2d(upperHubTransform, new Rotation2d());
+    final var fieldPose = new Pose2d(UpperHubVisionTarget.POSE, new Rotation2d());
 
     final var robotPose =
         getVisionUtil()
