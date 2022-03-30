@@ -40,9 +40,10 @@ public abstract interface VisionIO extends SubsystemIO<VisionIO.Inputs> {
     public double captureTimestamp = 0;
     public List<Translation2d> corners = List.of();
     public boolean hasTargets = false;
-    /** Horizontal offset angle. */
+    // TODO: Convert these values to radians
+    /** Horizontal offset angle in degrees. */
     public double tx = 0;
-    /** Vertical offset angle. */
+    /** Vertical offset angle in degrees. */
     public double ty = 0;
 
     public void toLog(LogTable table) {
