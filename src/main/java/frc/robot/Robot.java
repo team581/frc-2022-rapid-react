@@ -65,8 +65,12 @@ public class Robot extends LoggedRobot {
     }
 
     Logger.getInstance().addDataReceiver(receiver);
-    // Provide log data over the network, viewable in Advantage Scope.
-    Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
+
+    if (Constants.ENV == Constants.Env.DEVELOPMENT) {
+      // Provide log data over the network, viewable in Advantage Scope.
+      Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
+    }
+
     // Start logging! No more data receivers, replay sources, or metadata values may be added.
     Logger.getInstance().start();
 
