@@ -58,6 +58,7 @@ public final class ComputerVisionUtil {
    *     values up.
    * @param targetYaw The observed yaw of the target. Note that this *must* be CCW-positive, and
    *     Photon returns CW-positive.
+   * @param gyroAngle The current robot gyro angle, likely from odometry.
    * @param fieldToTarget A Pose2d representing the target position in the field coordinate system.
    * @param cameraToRobot The position of the robot relative to the camera. If the camera was
    *     mounted 3 inches behind the "origin" (usually physical center) of the robot, this would be
@@ -70,6 +71,7 @@ public final class ComputerVisionUtil {
       double cameraPitchRadians,
       double targetPitchRadians,
       Rotation2d targetYaw,
+      Rotation2d gyroAngle,
       Pose2d fieldToTarget,
       Transform2d cameraToRobot) {
     return estimateFieldToRobot(
@@ -78,7 +80,8 @@ public final class ComputerVisionUtil {
                 calculateDistanceToTarget(
                     cameraHeightMeters, targetHeightMeters, cameraPitchRadians, targetPitchRadians),
                 targetYaw),
-            fieldToTarget),
+            fieldToTarget,
+            gyroAngle),
         fieldToTarget,
         cameraToRobot);
   }
@@ -101,18 +104,24 @@ public final class ComputerVisionUtil {
   }
 
   /**
-   * Estimates a {@link Transform2d} that maps the camera position to the target position.
+   * Estimates a {@link Transform2d} that maps the camera position to the target position, using the
+   * robot's gyro. Note that the gyro angle provided *must* line up with the field coordinate system
+   * -- that is, it should read zero degrees when pointed towards the opposing alliance station, and
+   * increase as the robot rotates CCW.
    *
    * @param cameraToTargetTranslation A Translation2d that encodes the x/y position of the target
    *     relative to the camera.
    * @param fieldToTarget A Pose2d representing the target position in the field coordinate system.
+   * @param gyroAngle The current robot gyro angle, likely from odometry.
    * @return A Transform2d that takes us from the camera to the target.
    */
   public static Transform2d estimateCameraToTarget(
-      Translation2d cameraToTargetTranslation, Pose2d fieldToTarget) {
-    // Map our camera at the origin out to our target, in the robot
-    // reference frame
-    return new Transform2d(cameraToTargetTranslation, fieldToTarget.getRotation().unaryMinus());
+      Translation2d cameraToTargetTranslation, Pose2d fieldToTarget, Rotation2d gyroAngle) {
+    // Map our camera at the origin out to our target, in the robot reference
+    // frame. Gyro angle is needed because there's a circle of possible camera
+    // poses for which the camera has the same yaw from camera to target.
+    return new Transform2d(
+        cameraToTargetTranslation, gyroAngle.unaryMinus().minus(fieldToTarget.getRotation()));
   }
 
   /**
