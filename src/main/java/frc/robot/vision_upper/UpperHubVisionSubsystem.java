@@ -5,8 +5,13 @@
 package frc.robot.vision_upper;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.imu.ImuSubsystem;
+import frc.robot.vision.Camera;
+import frc.robot.vision.ComputerVisionUtilForCamera;
 import frc.robot.vision.VisionSubsystemBase;
 import frc.robot.vision_cargo.UpperHubVisionTarget;
 import org.littletonrobotics.junction.Logger;
@@ -25,16 +30,21 @@ public class UpperHubVisionSubsystem extends VisionSubsystemBase {
     }
   }
 
-  private static final double HEIGHT_FROM_FLOOR;
-  private static final Rotation2d ANGLE_OF_ELEVATION;
+  private static final Camera CAMERA;
+  private static final ComputerVisionUtilForCamera VISION_UTIL;
 
   static {
     switch (Constants.getRobot()) {
       default:
-        HEIGHT_FROM_FLOOR = 0.6;
-        ANGLE_OF_ELEVATION = new Rotation2d(0);
+        CAMERA =
+            new Camera(
+                Units.feetToMeters(1),
+                new Rotation2d(0),
+                new Transform2d(new Translation2d(0, 0), new Rotation2d(0)));
         break;
     }
+
+    VISION_UTIL = new ComputerVisionUtilForCamera(CAMERA);
   }
 
   private final ImuSubsystem imu;
@@ -59,12 +69,7 @@ public class UpperHubVisionSubsystem extends VisionSubsystemBase {
   }
 
   @Override
-  protected Rotation2d getAngleOfElevation() {
-    return ANGLE_OF_ELEVATION;
-  }
-
-  @Override
-  protected double getHeightFromFloor() {
-    return HEIGHT_FROM_FLOOR;
+  public ComputerVisionUtilForCamera getVisionUtil() {
+    return VISION_UTIL;
   }
 }
