@@ -130,7 +130,6 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
    * Get the pose of the robot using the upper hub vision target and the gyroscope, if available.
    */
   public Optional<TimestampedPose2d> getRobotPose() {
-
     final var optionalCameraToHub = upperHub.getTranslationFromCamera();
     if (optionalCameraToHub.isEmpty()) {
       return Optional.empty();
@@ -138,30 +137,18 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
 
     // Get the angle and distance as reported by the Limelight from the camera to the hub
     final var cameraToHubRelative = optionalCameraToHub.get();
+    final Rotation2d targetYaw = cameraToHubRelative.getTheta();
+    final var targetPitch = getY();
+    final var gyroAngle = imu.getRotation();
+    final var upperHubTransform = UpperHubVisionTarget.POSE;
 
-    // Need to use whatever the robot's facing was when the vision target was seen.
-    // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at
-    // image capture. Use WPILib's TimeInterpolatableBuffer.
+    // Estimate the robot's field position using the Hub height, pitch & yaw to the Hub, robot facing, and position of the Hub
+    // Note: This also takes into account the transform from the camera to the robot, and the camera height.
+    // As far as I know, the angle will be ignored in all the estimateFieldToRobot math because
+    // all that matters is where it is, not where it's facing.
+    final var fieldPose = new Pose2d(upperHubTransform, new Rotation2d());
 
-    // Robot's actual facing -- mostly
-    final var robotHeading = imu.getRotation();
-    final var headingTowardsHub = robotHeading.plus(cameraToHubRelative.getTheta());
-
-    // Use the robot's heading to get the actual angle to the hub
-    final var cameraToHubActual =
-        new PolarTranslation2d(cameraToHubRelative.getR(), headingTowardsHub);
-    // Invert it so we have a distance and angle from the hub to the estimated camera position
-    final var hubToCameraPolar = cameraToHubActual.unaryMinus();
-
-    // Convert to Cartesian coordinates - this is the estimate relative position of the Camera,
-    // relative to the Hub
-    final var offsetFromHubToCamera = hubToCameraPolar.getTranslation2d();
-
-    // Let's start with the Hub's position and add our offset to approximate where the camera/robot
-    // is.
-    final var robotTranslation = UpperHubVisionTarget.POSE.plus(offsetFromHubToCamera);
-
-    final var robotPose = new Pose2d(robotTranslation, robotHeading);
+    final var robotPose = getVisionUtil().estimateFieldToRobot(upperHub.heightFromFloor, targetPitch, targetYaw, gyroAngle, fieldPose);
 
     // Only return this pose if it's valid (i.e. Inside the field)
     if (Localization.poseIsValid(robotPose)) {

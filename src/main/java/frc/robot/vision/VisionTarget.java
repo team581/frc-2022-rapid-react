@@ -21,7 +21,7 @@ public abstract class VisionTarget {
    *     <p>The <code>h2</code> distance in this diagram
    *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
    */
-  private final double heightFromFloor;
+  public final double heightFromFloor;
 
   protected VisionTarget(
       VisionSubsystemBase visionSubsystem, double heightFromFloor, int pipeline) {
