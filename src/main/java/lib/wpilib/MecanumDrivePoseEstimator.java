@@ -16,7 +16,6 @@ import edu.wpi.first.math.estimator.UnscentedKalmanFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -73,9 +72,9 @@ public class MecanumDrivePoseEstimator {
    * @param stateStdDevs Standard deviations of model states. Increase these numbers to trust your
    *     model's state estimates less. This matrix is in the form [x, y, theta]ᵀ, with units in
    *     meters and radians.
-   * @param localMeasurementStdDevs Standard deviations of the encoder and gyro measurements.
-   *     Increase these numbers to trust sensor readings from encoders and gyros less. This matrix
-   *     is in the form [theta], with units in radians.
+   * @param localMeasurementStdDevs Standard deviation of the gyro measurement. Increase this number
+   *     to trust sensor readings from the gyro less. This matrix is in the form [theta], with units
+   *     in radians.
    * @param visionMeasurementStdDevs Standard deviations of the vision measurements. Increase these
    *     numbers to trust global measurements from vision less. This matrix is in the form [x, y,
    *     theta]ᵀ, with units in meters and radians.
@@ -215,6 +214,10 @@ public class MecanumDrivePoseEstimator {
    * <p>This method can be called as infrequently as you want, as long as you are calling {@link
    * MecanumDrivePoseEstimator#update} every loop.
    *
+   * <p>To promote stability of the pose estimate and make it robust to bad vision data, we
+   * recommend only adding vision measurements that are already within one meter or so of the
+   * current pose estimate.
+   *
    * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
    * @param timestampSeconds The timestamp of the vision measurement in seconds. Note that if you
    *     don't use your own time source by calling {@link MecanumDrivePoseEstimator#updateWithTime}
@@ -223,12 +226,13 @@ public class MecanumDrivePoseEstimator {
    *     Timer.getFPGATimestamp as your time source or sync the epochs.
    */
   public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
-    m_visionCorrect.accept(
-        new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0, 0.0, 0.0),
-        StateSpaceUtil.poseTo3dVector(
-            getEstimatedPosition()
-                .transformBy(
-                    visionRobotPoseMeters.minus(m_poseBuffer.getSample(timestampSeconds)))));
+    var sample = m_poseBuffer.getSample(timestampSeconds);
+    if (sample.isPresent()) {
+      m_visionCorrect.accept(
+          new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.0, 0.0, 0.0),
+          StateSpaceUtil.poseTo3dVector(
+              getEstimatedPosition().transformBy(visionRobotPoseMeters.minus(sample.get()))));
+    }
   }
 
   /**
@@ -237,6 +241,10 @@ public class MecanumDrivePoseEstimator {
    *
    * <p>This method can be called as infrequently as you want, as long as you are calling {@link
    * MecanumDrivePoseEstimator#update} every loop.
+   *
+   * <p>To promote stability of the pose estimate and make it robust to bad vision data, we
+   * recommend only adding vision measurements that are already within one meter or so of the
+   * current pose estimate.
    *
    * <p>Note that the vision measurement standard deviations passed into this method will continue
    * to apply to future measurements until a subsequent call to {@link
