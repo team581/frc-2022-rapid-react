@@ -91,7 +91,7 @@ public final class Constants {
   public static final int COPILOT_CONTROLLER_PORT = 1;
 
   /** The number of seconds each iteration takes. WPILib default is 20ms. */
-  public static final double PERIOD_SECONDS = Units.millisecondsToSeconds(10);
+  public static final double PERIOD_SECONDS = Units.millisecondsToSeconds(20);
 
   static {
     System.out.println("SERIAL NUMBER: " + SERIAL_NUMBER);
