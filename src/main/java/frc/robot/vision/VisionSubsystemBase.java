@@ -47,25 +47,6 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
     Logger.getInstance().recordOutput(loggerName + "/CornerCount", inputs.corners.size());
   }
 
-  /**
-   * Get the angle of elevation of the camera.
-   *
-   * @see
-   *     <p>The <code>a1</code> angle in this diagram
-   *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
-   */
-  protected abstract Rotation2d getAngleOfElevation();
-
-  // TODO: Consider refactoring this to be a Transform2d to the center of the robot
-  /**
-   * Get the height from the floor to the camera, in meters.
-   *
-   * @see
-   *     <p>The <code>h1</code> distance in this diagram
-   *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
-   */
-  protected abstract double getHeightFromFloor();
-
   /** Whether this camera is in driver mode with vision processing disabled. */
   public boolean isDriverMode() {
     return isDriverMode;
@@ -95,15 +76,17 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
     io.setPipeline(target.pipeline);
   }
 
-  public double getX() {
+  public Rotation2d getX() {
     return inputs.tx;
   }
 
-  public double getY() {
+  public Rotation2d getY() {
     return inputs.ty;
   }
 
   public boolean hasTargets() {
     return inputs.hasTargets;
   }
+
+  public abstract ComputerVisionUtilForCamera getVisionUtil();
 }

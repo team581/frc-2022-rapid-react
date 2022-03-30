@@ -3,18 +3,19 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.vision_cargo;
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.localization.Localization;
 import frc.robot.misc.util.PolarTranslation2d;
+import frc.robot.vision.Camera;
+import frc.robot.vision.ComputerVisionUtilForCamera;
 import frc.robot.vision.VisionSubsystemBase;
 import frc.robot.vision_cargo.CargoVisionTarget.Color;
 import frc.robot.vision_upper.TimestampedPose2d;
@@ -36,21 +37,29 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     }
   }
 
-  private static final double HEIGHT_FROM_FLOOR;
-  private static final Rotation2d ANGLE_OF_ELEVATION;
+  private static final Camera CAMERA;
+  private static final ComputerVisionUtilForCamera VISION_UTIL;
 
   static {
     switch (Constants.getRobot()) {
       case TEST_2020_BOT:
       case SIM_BOT:
-        HEIGHT_FROM_FLOOR = Units.inchesToMeters(15.5);
-        ANGLE_OF_ELEVATION = new Rotation2d(0);
+        CAMERA =
+            new Camera(
+                Units.inchesToMeters(15.5),
+                new Rotation2d(0),
+                new Transform2d(new Translation2d(0, 0.285), new Rotation2d(0)));
         break;
       default:
-        HEIGHT_FROM_FLOOR = Units.feetToMeters(1);
-        ANGLE_OF_ELEVATION = new Rotation2d(0);
+        CAMERA =
+            new Camera(
+                Units.feetToMeters(1),
+                new Rotation2d(0),
+                new Transform2d(new Translation2d(0, 0), new Rotation2d(0)));
         break;
     }
+
+    VISION_UTIL = new ComputerVisionUtilForCamera(CAMERA);
   }
 
   public final LoadingBayVisionTarget loadingBay = new LoadingBayVisionTarget(this);
@@ -89,6 +98,11 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
                 new double[] {UpperHubVisionTarget.POSE.getX(), UpperHubVisionTarget.POSE.getY()});
       }
     }
+  }
+
+  @Override
+  public ComputerVisionUtilForCamera getVisionUtil() {
+    return VISION_UTIL;
   }
 
   public CargoVisionTarget getOurCargoVisionTarget() {
@@ -157,15 +171,5 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     }
 
     return blueCargo;
-  }
-
-  @Override
-  protected Rotation2d getAngleOfElevation() {
-    return ANGLE_OF_ELEVATION;
-  }
-
-  @Override
-  protected double getHeightFromFloor() {
-    return HEIGHT_FROM_FLOOR;
   }
 }

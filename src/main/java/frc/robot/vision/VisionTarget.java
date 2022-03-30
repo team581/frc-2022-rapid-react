@@ -5,7 +5,6 @@
 package frc.robot.vision;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import frc.robot.misc.util.PolarTranslation2d;
 import java.util.Optional;
 
@@ -42,20 +41,13 @@ public abstract class VisionTarget {
    *     https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
    */
   private double getDistance() {
-    final var h1 = visionSubsystem.getHeightFromFloor();
-    final var h2 = heightFromFloor;
-
-    final var a1 = visionSubsystem.getAngleOfElevation().getRadians();
-    final var a2 = Units.degreesToRadians(visionSubsystem.getY());
-
-    final var distance = (h2 - h1) / Math.tan(a1 + a2);
-    assert distance > 0;
-
-    return distance;
+    return visionSubsystem
+        .getVisionUtil()
+        .calculateDistanceToTarget(heightFromFloor, visionSubsystem.getY());
   }
 
   private Rotation2d getRotation() {
-    return Rotation2d.fromDegrees(visionSubsystem.getX());
+    return visionSubsystem.getX();
   }
 
   /**
