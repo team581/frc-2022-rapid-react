@@ -125,7 +125,7 @@ public class Wheel extends SubsystemBase {
    */
   public void doVelocityControlLoop() {
     final var feedforward = FEEDFORWARD.calculate(pid.getSetpoint());
-    final var feedback = pid.calculate(inputs.velocityRadiansPerSecond);
+    final var feedback = 0 * pid.calculate(inputs.velocityRadiansPerSecond);
     final var voltage = feedforward + feedback;
 
     desiredVoltageVolts = VOLTAGE_CLAMP.clamp(voltage);
