@@ -134,7 +134,8 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
       return Optional.empty();
     }
 
-    // Get the pitch (based on tx) and yaw (ty) as reported by the Limelight from the camera to the hub
+    // Get the pitch (based on tx) and yaw (ty) as reported by the Limelight from the camera to the
+    // hub
     final var targetYaw = getX();
     final var targetPitch = getY();
     final var gyroAngle = imu.getRotation();
