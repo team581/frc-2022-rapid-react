@@ -145,7 +145,9 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   }
 
   private Pose2d getFieldToTarget(Rotation2d x) {
-    return new Pose2d(UpperHubVisionTarget.COORDINATES, robotRotation.get().minus(x));
+    return new Pose2d(
+        UpperHubVisionTarget.COORDINATES,
+        robotRotation.get().plus(Rotation2d.fromDegrees(180)).minus(x));
   }
 
   /** Sets the {@link CargoVisionTarget}s in this class based on what our team's alliance is. */
