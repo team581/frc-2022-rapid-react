@@ -88,12 +88,16 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   public void periodic() {
     super.periodic();
 
-    if (getPastRobotPose().isPresent()) {
+    if (inputs.hasTargets) {
       // Draw the vision target on the odometry view if it's visible
+      final var fieldToTarget = getFieldToTarget(inputs.tx);
+
+      Logger.getInstance()
+          .recordOutput(loggerName + "/VisionTarget/Pose", LoggingUtil.poseToArray(fieldToTarget));
       Logger.getInstance()
           .recordOutput(
-              loggerName + "/VisionTargetPose",
-              LoggingUtil.translationToArray(UpperHubVisionTarget.COORDINATES));
+              loggerName + "/VisionTarget/Translation",
+              LoggingUtil.translationToArray(fieldToTarget.getTranslation()));
     }
   }
 
@@ -113,6 +117,7 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
 
     final var fieldToTarget = getFieldToTarget(inputs.tx);
     final var cameraToTarget = getCameraToTarget(inputs.tx, inputs.ty, fieldToTarget);
+
     final var fieldToRobot = VISION_UTIL.estimateFieldToRobot(cameraToTarget, fieldToTarget);
 
     if (!Localization.poseIsValid(fieldToRobot)) {
@@ -125,7 +130,7 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   /** @see {@link ComputerVisionUtil#estimateCameraToTarget(Translation2d, Pose2d, Rotation2d)} */
   private Transform2d getCameraToTarget(Rotation2d x, Rotation2d y, Pose2d fieldToTarget) {
     final var r = VISION_UTIL.calculateDistanceToTarget(upperHub.heightFromFloor, y);
-    final var theta = x;
+    final var theta = x.unaryMinus();
     final var polarTranslation =
         new PolarTranslation2d(r, theta)
             // The vision target is 3D (a ring), not a flat shape against a wall. This means we need
@@ -139,10 +144,7 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   }
 
   private Pose2d getFieldToTarget(Rotation2d x) {
-    return new Pose2d(
-        UpperHubVisionTarget.COORDINATES,
-        // TODO: This rotation is wrong I think
-        robotRotation.get().plus(x).plus(Rotation2d.fromDegrees(180)));
+    return new Pose2d(UpperHubVisionTarget.COORDINATES, robotRotation.get().minus(x));
   }
 
   /** Sets the {@link CargoVisionTarget}s in this class based on what our team's alliance is. */
