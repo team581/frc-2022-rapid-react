@@ -139,15 +139,12 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
             .plus(UpperHubVisionTarget.TRANSLATION_FROM_OUTER_RING_TO_CENTER)
             .getTranslation2d();
 
-    // TODO: Why is this .unaryMinus() necessary to make the robot face the correct way?
     return VISION_UTIL.estimateCameraToTarget(
-        cameraToTargetTranslation, fieldToTarget, robotRotation.get().unaryMinus());
+        cameraToTargetTranslation, fieldToTarget, robotRotation.get());
   }
 
   private Pose2d getFieldToTarget(Rotation2d x) {
-    return new Pose2d(
-        UpperHubVisionTarget.COORDINATES,
-        robotRotation.get().plus(Rotation2d.fromDegrees(180)).minus(x));
+    return new Pose2d(UpperHubVisionTarget.COORDINATES, new Rotation2d());
   }
 
   /** Sets the {@link CargoVisionTarget}s in this class based on what our team's alliance is. */
