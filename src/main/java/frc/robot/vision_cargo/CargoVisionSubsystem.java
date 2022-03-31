@@ -117,7 +117,6 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
 
     final var fieldToTarget = getFieldToTarget(inputs.tx);
     final var cameraToTarget = getCameraToTarget(inputs.tx, inputs.ty, fieldToTarget);
-
     final var fieldToRobot = VISION_UTIL.estimateFieldToRobot(cameraToTarget, fieldToTarget);
 
     if (!Localization.poseIsValid(fieldToRobot)) {
@@ -131,16 +130,18 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   private Transform2d getCameraToTarget(Rotation2d x, Rotation2d y, Pose2d fieldToTarget) {
     final var r = VISION_UTIL.calculateDistanceToTarget(upperHub.heightFromFloor, y);
     final var theta = x.unaryMinus();
-    final var polarTranslation =
+    final var cameraToTargetTranslation =
         new PolarTranslation2d(r, theta)
             // The vision target is 3D (a ring), not a flat shape against a wall. This means we need
             // to factor in the radius of the ring in our distance calculations. Adding this extra
             // pose ensures we  measure the distance from the camera to the center of the hub, not
             // the camera to the outer vision ring.
-            .plus(UpperHubVisionTarget.TRANSLATION_FROM_OUTER_RING_TO_CENTER);
+            .plus(UpperHubVisionTarget.TRANSLATION_FROM_OUTER_RING_TO_CENTER)
+            .getTranslation2d()
+            .unaryMinus();
 
     return VISION_UTIL.estimateCameraToTarget(
-        polarTranslation.getTranslation2d(), fieldToTarget, robotRotation.get());
+        cameraToTargetTranslation, fieldToTarget, robotRotation.get());
   }
 
   private Pose2d getFieldToTarget(Rotation2d x) {
