@@ -18,7 +18,7 @@ import frc.robot.misc.exceptions.UnknownTargetRobotException;
  */
 public final class Constants {
   // Change this depending on what your environment is
-  public static final Env ENV = Env.DEVELOPMENT;
+  public static final Env ENV = Env.PRODUCTION;
 
   /** The roboRIO's serial number. */
   public static final String SERIAL_NUMBER = System.getenv("serialnum");
