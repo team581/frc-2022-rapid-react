@@ -32,19 +32,23 @@ public class UpperHubAlignCommand extends DynamicTrajectoryFollowCommand {
       List.of(
           // Right
           new Pose2d(
-              UpperHubVisionTarget.POSE.plus(new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0)),
+              UpperHubVisionTarget.COORDINATES.plus(
+                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0)),
               Rotation2d.fromDegrees(180)),
           // Left
           new Pose2d(
-              UpperHubVisionTarget.POSE.minus(new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0)),
+              UpperHubVisionTarget.COORDINATES.minus(
+                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0)),
               Rotation2d.fromDegrees(0)),
           // Up
           new Pose2d(
-              UpperHubVisionTarget.POSE.plus(new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER)),
+              UpperHubVisionTarget.COORDINATES.plus(
+                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER)),
               Rotation2d.fromDegrees(90)),
           // Down
           new Pose2d(
-              UpperHubVisionTarget.POSE.minus(new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER)),
+              UpperHubVisionTarget.COORDINATES.minus(
+                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER)),
               Rotation2d.fromDegrees(270)));
 
   private static Pose2d chooseGoalPose(Localization localization) {

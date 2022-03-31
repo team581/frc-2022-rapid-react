@@ -87,6 +87,4 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
   public boolean hasTargets() {
     return inputs.hasTargets;
   }
-
-  public abstract ComputerVisionUtilForCamera getVisionUtil();
 }
