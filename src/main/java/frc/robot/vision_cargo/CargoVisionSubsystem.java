@@ -129,7 +129,7 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   /** @see {@link ComputerVisionUtil#estimateCameraToTarget(Translation2d, Pose2d, Rotation2d)} */
   private Transform2d getCameraToTarget(Rotation2d x, Rotation2d y, Pose2d fieldToTarget) {
     final var r = VISION_UTIL.calculateDistanceToTarget(upperHub.heightFromFloor, y);
-    final var theta = x.unaryMinus();
+    final var theta = x;
     final var cameraToTargetTranslation =
         new PolarTranslation2d(r, theta)
             // The vision target is 3D (a ring), not a flat shape against a wall. This means we need
@@ -137,11 +137,11 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
             // pose ensures we  measure the distance from the camera to the center of the hub, not
             // the camera to the outer vision ring.
             .plus(UpperHubVisionTarget.TRANSLATION_FROM_OUTER_RING_TO_CENTER)
-            .getTranslation2d()
-            .unaryMinus();
+            .getTranslation2d();
 
+    // TODO: Why is this .unaryMinus() necessary to make the robot face the correct way?
     return VISION_UTIL.estimateCameraToTarget(
-        cameraToTargetTranslation, fieldToTarget, robotRotation.get());
+        cameraToTargetTranslation, fieldToTarget, robotRotation.get().unaryMinus());
   }
 
   private Pose2d getFieldToTarget(Rotation2d x) {
