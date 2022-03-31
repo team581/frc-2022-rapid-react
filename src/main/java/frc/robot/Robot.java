@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.revrobotics.REVPhysicsSim;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -35,12 +36,16 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    // We don't use this and it causes a lot of lag since it's NetworkTables based
+    LiveWindow.disableAllTelemetry();
+
     final var isReplay = Constants.getMode() == Constants.Mode.REPLAY;
 
     // Run as fast as possible during replay
     setUseTiming(!isReplay);
     // Log & replay "SmartDashboard" values (no tables are logged by default).
     LoggedNetworkTables.getInstance().addTable("/SmartDashboard");
+
     Logger.getInstance().recordMetadata("ProjectName", "RapidReact");
     Logger.getInstance().recordMetadata("TargetRobot", Constants.getRobot().toString());
     Logger.getInstance().recordMetadata("Env", Constants.ENV.toString());
