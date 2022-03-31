@@ -90,7 +90,7 @@ public class Localization extends SubsystemBase {
         imuSubsystem,
         // Default to being in the center of the field
         // This should only really be used for debugging
-        new Pose2d(UpperHubVisionTarget.POSE, new Rotation2d()));
+        new Pose2d(UpperHubVisionTarget.COORDINATES, new Rotation2d()));
   }
 
   @Override
@@ -144,18 +144,10 @@ public class Localization extends SubsystemBase {
   }
 
   /**
-   * Returns the robot's position using odometry. You probably want to use {@link #getPose()}
-   * instead.
-   */
-  public Pose2d getRawOdometryPose() {
-    return odometry.getPoseMeters();
-  }
-
-  /**
    * Returns the robot pose from the vision system directly, if available. You probably want to use
    * {@link #getPose()} instead.
    */
-  public Optional<TimestampedPose2d> getRawVisionPose() {
-    return visionSubsystem.getRobotPose();
+  private Optional<TimestampedPose2d> getRawVisionPose() {
+    return visionSubsystem.getPastRobotPose();
   }
 }

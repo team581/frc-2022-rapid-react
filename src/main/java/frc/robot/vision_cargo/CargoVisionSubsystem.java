@@ -20,6 +20,7 @@ import frc.robot.vision.VisionSubsystemBase;
 import frc.robot.vision_cargo.CargoVisionTarget.Color;
 import frc.robot.vision_upper.TimestampedPose2d;
 import java.util.Optional;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class CargoVisionSubsystem extends VisionSubsystemBase {
@@ -63,12 +64,15 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   }
 
   public final LoadingBayVisionTarget loadingBay = new LoadingBayVisionTarget(this);
-  private final UpperHubVisionTarget upperHub = new UpperHubVisionTarget(this);
+
+  private final UpperHubVisionTarget upperHub = new UpperHubVisionTarget();
   private final CargoVisionTarget redCargo =
       new CargoVisionTarget(this, CargoVisionTarget.Color.RED);
   private final CargoVisionTarget blueCargo =
       new CargoVisionTarget(this, CargoVisionTarget.Color.BLUE);
-  private final ImuSubsystem imu;
+
+  protected final Supplier<Rotation2d> robotRotation;
+
   private CargoVisionTarget ourCargoVisionTarget;
   private CargoVisionTarget opponentCargoVisionTarget;
 
@@ -76,33 +80,56 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
   public CargoVisionSubsystem(CargoVisionIO io, ImuSubsystem imu) {
     super("CargoVision", io, Pipelines.DRIVER_MODE.index);
 
-    this.imu = imu;
+    robotRotation = imu::getRotation;
   }
 
   @Override
   public void periodic() {
     super.periodic();
 
-    final var optionalTranslation = upperHub.getTranslationFromCamera();
-    if (optionalTranslation.isPresent()) {
-      final var translation = optionalTranslation.get();
-      Logger.getInstance().recordOutput(loggerName + "/DistanceToHubMeters", translation.getR());
+    if (getPastRobotPose().isPresent()) {
+      // Draw the vision target on the odometry view if it's visible
       Logger.getInstance()
-          .recordOutput(loggerName + "/AngleToHubRadians", translation.getTheta().getRadians());
-
-      final var optionalVisionPose = getRobotPose();
-      if (optionalVisionPose.isPresent()) {
-        Logger.getInstance()
-            .recordOutput(
-                loggerName + "/VisionTargetPose",
-                new double[] {UpperHubVisionTarget.POSE.getX(), UpperHubVisionTarget.POSE.getY()});
-      }
+          .recordOutput(
+              loggerName + "/VisionTargetPose",
+              new double[] {
+                UpperHubVisionTarget.COORDINATES.getX(), UpperHubVisionTarget.COORDINATES.getY()
+              });
     }
   }
 
-  @Override
-  public ComputerVisionUtilForCamera getVisionUtil() {
-    return VISION_UTIL;
+  public Optional<TimestampedPose2d> getPastRobotPose() {
+    if (!inputs.hasTargets) {
+      return Optional.empty();
+    }
+
+    final var r = VISION_UTIL.calculateDistanceToTarget(upperHub.heightFromFloor, getY());
+    final var theta = getX();
+    final var polarTranslation =
+        new PolarTranslation2d(r, theta)
+            // The vision target is 3D (a ring), not a flat shape against a wall. This means we need
+            // to factor in the radius of the ring in our distance calculations. Adding this extra
+            // pose ensures we  measure the distance from the camera to the center of the hub, not
+            // the camera to the outer vision ring.
+            .plus(UpperHubVisionTarget.TRANSLATION_FROM_OUTER_RING_TO_CENTER);
+
+    final var fieldToTarget =
+        new Pose2d(
+            UpperHubVisionTarget.COORDINATES,
+            // TODO: This rotation is wrong I think
+            robotRotation.get().plus(theta).plus(Rotation2d.fromDegrees(180)));
+
+    final var cameraToTarget =
+        VISION_UTIL.estimateCameraToTarget(
+            polarTranslation.getTranslation2d(), fieldToTarget, robotRotation.get());
+
+    final var fieldToRobot = VISION_UTIL.estimateFieldToRobot(cameraToTarget, fieldToTarget);
+
+    if (!Localization.poseIsValid(fieldToRobot)) {
+      return Optional.empty();
+    }
+
+    return Optional.of(new TimestampedPose2d(fieldToRobot, inputs.captureTimestamp));
   }
 
   public CargoVisionTarget getOurCargoVisionTarget() {
@@ -124,52 +151,6 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
 
     ourCargoVisionTarget = getTargetForAlliance(ourAllianceColor);
     opponentCargoVisionTarget = getTargetForAlliance(opponentAllianceColor);
-  }
-
-  /**
-   * Get the pose of the robot using the upper hub vision target and the gyroscope, if available.
-   */
-  public Optional<TimestampedPose2d> getRobotPose() {
-
-    final var optionalCameraToHub = upperHub.getTranslationFromCamera();
-    if (optionalCameraToHub.isEmpty()) {
-      return Optional.empty();
-    }
-
-    // Get the angle and distance as reported by the Limelight from the camera to the hub
-    final var cameraToHubRelative = optionalCameraToHub.get();
-
-    // Need to use whatever the robot's facing was when the vision target was seen.
-    // TODO: Keep an interpolated tree map of IMU rotation histories to get the robot heading at
-    // image capture. Use WPILib's TimeInterpolatableBuffer.
-
-    // Robot's actual facing -- mostly
-    final var robotHeading = imu.getRotation();
-    final var headingTowardsHub = robotHeading.plus(cameraToHubRelative.getTheta());
-
-    // Use the robot's heading to get the actual angle to the hub
-    final var cameraToHubActual =
-        new PolarTranslation2d(cameraToHubRelative.getR(), headingTowardsHub);
-    // Invert it so we have a distance and angle from the hub to the estimated camera position
-    final var hubToCameraPolar = cameraToHubActual.unaryMinus();
-
-    // Convert to Cartesian coordinates - this is the estimate relative position of the Camera,
-    // relative to the Hub
-    final var offsetFromHubToCamera = hubToCameraPolar.getTranslation2d();
-
-    // Let's start with the Hub's position and add our offset to approximate where the camera/robot
-    // is.
-    final var robotTranslation = UpperHubVisionTarget.POSE.plus(offsetFromHubToCamera);
-
-    final var robotPose = new Pose2d(robotTranslation, robotHeading);
-
-    // Only return this pose if it's valid (i.e. Inside the field)
-    if (Localization.poseIsValid(robotPose)) {
-      return Optional.of(new TimestampedPose2d(robotPose, inputs.captureTimestamp));
-    }
-
-    // Invalid pose, you can't be outside of the field
-    return Optional.empty();
   }
 
   /** Gets the {@link CargoVisionTarget} instance for the provided alliance (red or blue). */

@@ -64,12 +64,9 @@ public class UpperHubVisionSubsystem extends VisionSubsystemBase {
       Logger.getInstance()
           .recordOutput(
               LOGGER_NAME + "/VisionTarget",
-              new double[] {UpperHubVisionTarget.POSE.getX(), UpperHubVisionTarget.POSE.getY()});
+              new double[] {
+                UpperHubVisionTarget.COORDINATES.getX(), UpperHubVisionTarget.COORDINATES.getY()
+              });
     }
-  }
-
-  @Override
-  public ComputerVisionUtilForCamera getVisionUtil() {
-    return VISION_UTIL;
   }
 }
