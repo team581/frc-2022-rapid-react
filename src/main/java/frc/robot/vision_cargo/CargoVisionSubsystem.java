@@ -134,9 +134,8 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
       return Optional.empty();
     }
 
-    // Get the angle and distance as reported by the Limelight from the camera to the hub
-    final var cameraToHubRelative = optionalCameraToHub.get();
-    final Rotation2d targetYaw = cameraToHubRelative.getTheta();
+    // Get the pitch (based on tx) and yaw (ty) as reported by the Limelight from the camera to the hub
+    final var targetYaw = getX();
     final var targetPitch = getY();
     final var gyroAngle = imu.getRotation();
 
@@ -144,8 +143,6 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     // facing, and position of the Hub.
     // Note: This also takes into account the transform from the camera to the robot, and the camera
     // height.
-    // As far as I know, the angle will be ignored in all the estimateFieldToRobot math because
-    // all that matters is where it is, not where it's facing.
     final var fieldPose = new Pose2d(UpperHubVisionTarget.POSE, new Rotation2d());
 
     final var robotPose =

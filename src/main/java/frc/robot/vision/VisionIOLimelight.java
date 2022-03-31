@@ -31,7 +31,7 @@ public abstract class VisionIOLimelight implements VisionIO {
             - Units.millisecondsToSeconds(limelight.getPipelineLatency())
             - IMAGE_CAPTURE_LATENCY;
     inputs.hasTargets = limelight.hasTargets();
-    inputs.tx = Rotation2d.fromDegrees(limelight.getX());
+    inputs.tx = Rotation2d.fromDegrees(limelight.getX()).unaryMinus();
     inputs.ty = Rotation2d.fromDegrees(limelight.getY());
     inputs.corners = Inputs.coordinateArrayToTranslation2dList(limelight.getCorners());
   }
