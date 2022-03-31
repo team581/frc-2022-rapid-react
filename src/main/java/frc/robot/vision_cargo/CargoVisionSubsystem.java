@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.localization.Localization;
+import frc.robot.misc.util.LoggingUtil;
 import frc.robot.misc.util.PolarTranslation2d;
 import frc.robot.vision.Camera;
 import frc.robot.vision.ComputerVisionUtilForCamera;
@@ -92,37 +93,26 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
       Logger.getInstance()
           .recordOutput(
               loggerName + "/VisionTargetPose",
-              new double[] {
-                UpperHubVisionTarget.COORDINATES.getX(), UpperHubVisionTarget.COORDINATES.getY()
-              });
+              LoggingUtil.translationToArray(UpperHubVisionTarget.COORDINATES));
     }
   }
 
+  public CargoVisionTarget getOurCargoVisionTarget() {
+    return ourCargoVisionTarget;
+  }
+
+  public CargoVisionTarget getOpponentCargoVisionTarget() {
+    return opponentCargoVisionTarget;
+  }
+
+  /** Gets the current robot pose with visino processor latency factored in. */
   public Optional<TimestampedPose2d> getPastRobotPose() {
     if (!inputs.hasTargets) {
       return Optional.empty();
     }
 
-    final var r = VISION_UTIL.calculateDistanceToTarget(upperHub.heightFromFloor, getY());
-    final var theta = getX();
-    final var polarTranslation =
-        new PolarTranslation2d(r, theta)
-            // The vision target is 3D (a ring), not a flat shape against a wall. This means we need
-            // to factor in the radius of the ring in our distance calculations. Adding this extra
-            // pose ensures we  measure the distance from the camera to the center of the hub, not
-            // the camera to the outer vision ring.
-            .plus(UpperHubVisionTarget.TRANSLATION_FROM_OUTER_RING_TO_CENTER);
-
-    final var fieldToTarget =
-        new Pose2d(
-            UpperHubVisionTarget.COORDINATES,
-            // TODO: This rotation is wrong I think
-            robotRotation.get().plus(theta).plus(Rotation2d.fromDegrees(180)));
-
-    final var cameraToTarget =
-        VISION_UTIL.estimateCameraToTarget(
-            polarTranslation.getTranslation2d(), fieldToTarget, robotRotation.get());
-
+    final var fieldToTarget = getFieldToTarget(inputs.tx);
+    final var cameraToTarget = getCameraToTarget(inputs.tx, inputs.ty, fieldToTarget);
     final var fieldToRobot = VISION_UTIL.estimateFieldToRobot(cameraToTarget, fieldToTarget);
 
     if (!Localization.poseIsValid(fieldToRobot)) {
@@ -132,12 +122,27 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     return Optional.of(new TimestampedPose2d(fieldToRobot, inputs.captureTimestamp));
   }
 
-  public CargoVisionTarget getOurCargoVisionTarget() {
-    return ourCargoVisionTarget;
+  /** @see {@link ComputerVisionUtil#estimateCameraToTarget(Translation2d, Pose2d, Rotation2d)} */
+  private Transform2d getCameraToTarget(Rotation2d x, Rotation2d y, Pose2d fieldToTarget) {
+    final var r = VISION_UTIL.calculateDistanceToTarget(upperHub.heightFromFloor, y);
+    final var theta = x;
+    final var polarTranslation =
+        new PolarTranslation2d(r, theta)
+            // The vision target is 3D (a ring), not a flat shape against a wall. This means we need
+            // to factor in the radius of the ring in our distance calculations. Adding this extra
+            // pose ensures we  measure the distance from the camera to the center of the hub, not
+            // the camera to the outer vision ring.
+            .plus(UpperHubVisionTarget.TRANSLATION_FROM_OUTER_RING_TO_CENTER);
+
+    return VISION_UTIL.estimateCameraToTarget(
+        polarTranslation.getTranslation2d(), fieldToTarget, robotRotation.get());
   }
 
-  public CargoVisionTarget getOpponentCargoVisionTarget() {
-    return opponentCargoVisionTarget;
+  private Pose2d getFieldToTarget(Rotation2d x) {
+    return new Pose2d(
+        UpperHubVisionTarget.COORDINATES,
+        // TODO: This rotation is wrong I think
+        robotRotation.get().plus(x).plus(Rotation2d.fromDegrees(180)));
   }
 
   /** Sets the {@link CargoVisionTarget}s in this class based on what our team's alliance is. */

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.imu.ImuSubsystem;
+import frc.robot.misc.util.LoggingUtil;
 import frc.robot.vision_cargo.CargoVisionSubsystem;
 import frc.robot.vision_cargo.UpperHubVisionTarget;
 import frc.robot.vision_upper.TimestampedPose2d;
@@ -35,10 +36,6 @@ public class Localization extends SubsystemBase {
   /** Returns whether a pose is within the bounds of the field. */
   public static boolean poseIsValid(Pose2d pose) {
     return translationIsValid(pose.getTranslation());
-  }
-
-  private static double[] poseToArray(Pose2d pose) {
-    return new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()};
   }
 
   private final DriveSubsystem driveSubsystem;
@@ -101,13 +98,15 @@ public class Localization extends SubsystemBase {
     final var odometryPose = odometry.update(rotation, wheelSpeeds);
 
     // The robot's position, just using odometry
-    Logger.getInstance().recordOutput("Localization/OdometryPose", poseToArray(odometryPose));
+    Logger.getInstance()
+        .recordOutput("Localization/OdometryPose", LoggingUtil.poseToArray(odometryPose));
 
     try {
       final var localizationPose = poseEstimator.update(imuSubsystem.getRotation(), wheelSpeeds);
 
       // The robot's position using both odometry and vision
-      Logger.getInstance().recordOutput("Localization/RobotPose", poseToArray(localizationPose));
+      Logger.getInstance()
+          .recordOutput("Localization/RobotPose", LoggingUtil.poseToArray(localizationPose));
     } catch (SingularMatrixException e) {
       // Ignore errors that occur from an unsolvable matrix due to uncountable numbers
       // This seems to periodically happen when driving around IRL with the camera on
@@ -122,7 +121,8 @@ public class Localization extends SubsystemBase {
         final var visionPose = optionalVisionPose.get();
 
         // The robot's position, just using the vision data
-        Logger.getInstance().recordOutput("Localization/VisionPose", poseToArray(visionPose.pose));
+        Logger.getInstance()
+            .recordOutput("Localization/VisionPose", LoggingUtil.poseToArray(visionPose.pose));
 
         poseEstimator.addVisionMeasurement(visionPose.pose, visionPose.timestamp);
       }
