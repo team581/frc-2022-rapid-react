@@ -107,7 +107,6 @@ public class RobotContainer {
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
           break;
-
         case TEST_2020_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
           lights = new Lights(new LightsIORoborio());
@@ -132,7 +131,7 @@ public class RobotContainer {
           lights = new Lights(new LightsIOSim());
           arm = new Arm(new ArmIOSimNeos(), lights);
           swiffer = new Swiffer(new SwifferIOSimFalcon500(), lights);
-          cargoDetector = new CargoDetector(new CargoDetectorIOSimIR());
+          cargoDetector = new CargoDetector(new CargoDetectorIOSim());
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOSim());
           cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim(), imuSubsystem);

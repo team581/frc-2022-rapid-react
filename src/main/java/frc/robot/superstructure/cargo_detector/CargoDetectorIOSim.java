@@ -4,6 +4,6 @@
 
 package frc.robot.superstructure.cargo_detector;
 
-public class CargoDetectorIOSimIR extends CargoDetectorIOIR {
+public class CargoDetectorIOSim extends CargoDetectorIOIR {
   // TODO: Implement
 }

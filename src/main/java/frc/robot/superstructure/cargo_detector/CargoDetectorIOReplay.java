@@ -9,6 +9,5 @@ public class CargoDetectorIOReplay implements CargoDetectorIO {
   @Override
   public void updateInputs(Inputs inputs) {
     // Intentionally left empty
-
   }
 }
