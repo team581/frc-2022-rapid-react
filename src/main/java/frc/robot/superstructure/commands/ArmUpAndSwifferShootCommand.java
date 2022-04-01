@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.ArmPosition;
 import frc.robot.superstructure.arm.commands.ArmCommand;
+import frc.robot.superstructure.cargo_detector.CargoInventoryState;
 import frc.robot.superstructure.swiffer.SwifferMode;
 import frc.robot.superstructure.swiffer.commands.SwifferCommand;
 
@@ -27,7 +28,7 @@ public class ArmUpAndSwifferShootCommand extends SequentialCommandGroup {
         // Shoot all cargo after the arm is up
         new SwifferCommand(superstructure.swiffer, SwifferMode.SHOOTING)
             // Shoot until the sensor reads as empty
-            .until(() -> superstructure.cargoDetector.getCargoCount() == 0)
+            .until(() -> superstructure.cargoDetector.isCarrying(CargoInventoryState.EMPTY))
             // Add a timeout in case the sensor fails
             .withTimeout(1.5));
 

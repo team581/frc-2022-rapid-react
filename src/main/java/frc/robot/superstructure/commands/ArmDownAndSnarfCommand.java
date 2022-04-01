@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.ArmPosition;
 import frc.robot.superstructure.arm.commands.ArmCommand;
+import frc.robot.superstructure.cargo_detector.CargoInventoryState;
 import frc.robot.superstructure.swiffer.SwifferMode;
 import frc.robot.superstructure.swiffer.commands.SwifferCommand;
 
@@ -22,7 +23,7 @@ public class ArmDownAndSnarfCommand extends ParallelCommandGroup {
         new SwifferCommand(superstructure.swiffer, SwifferMode.SNARFING)
             // Stop snarfing once 2 cargo are being carried
             // The driver can manually cancel the command if they only want to grab 1 cargo
-            .until(() -> superstructure.cargoDetector.getCargoCount() == 2));
+            .until(() -> superstructure.cargoDetector.isCarrying(CargoInventoryState.BOTH)));
 
     addRequirements(superstructure, superstructure.arm, superstructure.swiffer);
   }

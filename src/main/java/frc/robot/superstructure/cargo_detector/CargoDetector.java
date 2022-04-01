@@ -24,11 +24,20 @@ public class CargoDetector extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("CargoDetector", inputs);
 
-    Logger.getInstance().recordOutput("CargoDetector/CargoCount", getCargoCount());
+    Logger.getInstance().recordOutput("CargoDetector/CargoCount", getCargoInventory().toString());
   }
 
-  /** Returns the number of cargo held by the robot. */
-  public int getCargoCount() {
-    return (inputs.hasLeftCargo ? 1 : 0) + (inputs.hasRightCargo ? 1 : 0);
+  /** Returns the state of the robot's cargo inventory. */
+  public CargoInventoryState getCargoInventory() {
+    if (inputs.hasLeftCargo) {
+      return inputs.hasRightCargo ? CargoInventoryState.BOTH : CargoInventoryState.ONE;
+    }
+
+    return CargoInventoryState.EMPTY;
+  }
+
+  /** @return Whether the robot's cargo inventory is in the provided state. */
+  public boolean isCarrying(CargoInventoryState state) {
+    return getCargoInventory() == state;
   }
 }
