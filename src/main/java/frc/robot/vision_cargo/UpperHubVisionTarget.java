@@ -27,7 +27,6 @@ public class UpperHubVisionTarget extends VisionTarget {
   public UpperHubVisionTarget() {
     super(
         // TODO: See where the camera is placing the crosshair on the target
-        Units.feetToMeters(5) + Units.inchesToMeters(9),
-        CargoVisionSubsystem.Pipelines.UPPER_HUB.index);
+        0.75, CargoVisionSubsystem.Pipelines.UPPER_HUB.index);
   }
 }
