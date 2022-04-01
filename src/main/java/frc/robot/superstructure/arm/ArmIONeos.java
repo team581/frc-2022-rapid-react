@@ -52,6 +52,9 @@ public class ArmIONeos implements ArmIO {
     }
 
     follower.follow(leader);
+
+    leader.burnFlash();
+    follower.burnFlash();
   }
 
   protected static DCMotor getMotorSim() {
