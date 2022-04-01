@@ -41,8 +41,7 @@ public class Wheel extends SubsystemBase {
         // TODO: Measure the maximum wheel velocity
         MAX_WHEEL_VELOCITY = WHEEL_CONVERTER.radiansToDistance(Units.rotationsToRadians(1));
         VOLTAGE_CLAMP = new Clamp(12);
-        // TODO: Run SysId on the comp bot
-        FEEDFORWARD = new SimpleMotorFeedforward(0.61761, 2.3902, 0.17718);
+        FEEDFORWARD = new SimpleMotorFeedforward(0.060039, 0.22421, 0.011814);
         break;
       case SIM_BOT:
         WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
@@ -92,11 +91,10 @@ public class Wheel extends SubsystemBase {
         // Error=0.8m/s MaxControlEffort=7.0V -> Kp = 3.9486
         // TODO: This needs to be recalculated to use radians instead of meters. So do the example
         // values shown above.
-        pid = new PIDController(2.7182, 0, 0, Constants.PERIOD_SECONDS);
+        pid = new PIDController(0.24579, 0, 0, Constants.PERIOD_SECONDS);
         break;
       case COMP_BOT:
-        // TODO: Run SysId on the comp bot
-        pid = new PIDController(2.7182, 0, 0, Constants.PERIOD_SECONDS);
+        pid = new PIDController(0.068406, 0, 0, Constants.PERIOD_SECONDS);
         break;
       case SIM_BOT:
         pid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
