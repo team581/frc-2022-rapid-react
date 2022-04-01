@@ -32,7 +32,7 @@ public class ImuIONavx implements ImuIO {
   @Override
   public void updateInputs(Inputs inputs) {
     inputs.tempCelcius = sensor.getTempC();
-    inputs.rotationRadians = Units.degreesToRadians(sensor.getAngle());
-    inputs.turnRateRadiansPerSecond = Units.degreesToRadians(sensor.getRate());
+    inputs.rotationRadians = Units.degreesToRadians(-sensor.getAngle());
+    inputs.turnRateRadiansPerSecond = Units.degreesToRadians(-sensor.getRate());
   }
 }
