@@ -174,10 +174,10 @@ public class RobotContainer {
     copilotController.aButton.whenHeld(new UpperHubAlignCommand(driveSubsystem, localization));
 
     // Snarfing
-    copilotController.rightTrigger.whileHeld(new ArmDownAndSnarfCommand(superstructureSubsystem));
+    copilotController.rightTrigger.whenHeld(new ArmDownAndSnarfCommand(superstructureSubsystem));
 
     // Shooting
-    copilotController.leftTrigger.whileHeld(
+    copilotController.leftTrigger.whenHeld(
         new ArmUpAndSwifferShootCommand(superstructureSubsystem));
   }
 

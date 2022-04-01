@@ -26,19 +26,8 @@ public class SwifferCommand extends CommandBase {
     swiffer.setDesiredMode(mode);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    swiffer.setDesiredMode(SwifferMode.STOPPED);
-  }
-
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return swiffer.atGoal(mode);
+    return false;
   }
 }
