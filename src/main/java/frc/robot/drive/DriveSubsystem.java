@@ -154,7 +154,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void logTrajectoryPose(Trajectory.State state) {
     Logger.getInstance()
         .recordOutput(
-            "Drive/ExpectedRobotPose",
+            "Drive/TrajectoryPose",
             new double[] {
               state.poseMeters.getX(),
               state.poseMeters.getY(),
