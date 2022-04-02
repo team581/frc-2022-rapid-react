@@ -88,7 +88,7 @@ public class RobotContainer {
       switch (Constants.getRobot()) {
         case COMP_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
-          arm = new Arm(new ArmIOReplay());
+          arm = new Arm(new ArmIONeos());
           swiffer = new Swiffer(new SwifferIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
           upperVisionSubsystem =

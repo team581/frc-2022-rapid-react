@@ -46,11 +46,14 @@ public class ArmIONeos implements ArmIO {
 
   public ArmIONeos() {
     switch (Constants.getRobot()) {
+      case COMP_BOT:
       case SIM_BOT:
         leader = new CANSparkMax(5, CANSparkMaxLowLevel.MotorType.kBrushless);
         follower = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
         encoder = new CANCoder(7);
-        leader.setInverted(INVERTED);
+
+        forwardLimitSwitch = leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+        reverseLimitSwitch = leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
         break;
       default:
         throw new UnsupportedSubsystemException(this);
@@ -60,9 +63,6 @@ public class ArmIONeos implements ArmIO {
 
     leader.burnFlash();
     follower.burnFlash();
-
-    forwardLimitSwitch = leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-    reverseLimitSwitch = leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
   }
 
   protected static DCMotor getMotorSim() {
