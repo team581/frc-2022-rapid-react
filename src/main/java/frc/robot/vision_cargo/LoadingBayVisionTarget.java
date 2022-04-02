@@ -11,6 +11,6 @@ import frc.robot.vision.VisionTarget;
 // TODO: Delete this
 public class LoadingBayVisionTarget extends VisionTarget {
   public LoadingBayVisionTarget(CargoVisionSubsystem vision) {
-    super(vision, Units.inchesToMeters(11), CargoVisionSubsystem.Pipelines.LOADING_BAY.index);
+    super(Units.inchesToMeters(11), CargoVisionSubsystem.Pipelines.LOADING_BAY.index);
   }
 }

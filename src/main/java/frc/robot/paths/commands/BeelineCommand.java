@@ -8,36 +8,28 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.vision.VisionTarget;
+import frc.robot.localization.Localization;
 import java.util.function.Supplier;
 
 /** Drives in a straight line from your current position to the desired position. */
 public class BeelineCommand extends CommandBase {
   private final DriveSubsystem driveSubsystem;
-  private final Supplier<Pose2d> currentPoseSupplier;
+  private final Localization localization;
   private final Pose2d goalPose;
   private final Supplier<Rotation2d> desiredRotationSupplier;
 
   /** Creates a new BeelineCommand. */
   public BeelineCommand(
       DriveSubsystem driveSubsystem,
-      Supplier<Pose2d> currentPoseSupplier,
+      Localization localization,
       Pose2d goalPose,
       Supplier<Rotation2d> desiredRotationSupplier) {
     this.driveSubsystem = driveSubsystem;
-    this.currentPoseSupplier = currentPoseSupplier;
+    this.localization = localization;
     this.goalPose = goalPose;
     this.desiredRotationSupplier = desiredRotationSupplier;
 
     addRequirements(driveSubsystem);
-  }
-
-  /**
-   * Creates a new BeelineCommand that uses the provided {@link VisionTarget vision target} for
-   * getting the robot pose. The robot will be kept facing the vision target the entire time.
-   */
-  public BeelineCommand(DriveSubsystem driveSubsystem, VisionTarget visionTarget, Pose2d goalPose) {
-    this(driveSubsystem, visionTarget::getRobotPose, goalPose, () -> new Rotation2d(0));
   }
 
   // Called when the command is initially scheduled.
@@ -49,7 +41,7 @@ public class BeelineCommand extends CommandBase {
   public void execute() {
     driveSubsystem.setChassisSpeeds(
         driveSubsystem.driveController.calculate(
-            currentPoseSupplier.get(), goalPose, 0, desiredRotationSupplier.get()));
+            localization.getPose(), goalPose, 0, desiredRotationSupplier.get()));
   }
 
   // Called once the command ends or is interrupted.

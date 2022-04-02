@@ -4,6 +4,7 @@
 
 package frc.robot.vision;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.misc.SubsystemIO;
 import java.util.ArrayList;
@@ -41,23 +42,23 @@ public abstract interface VisionIO extends SubsystemIO<VisionIO.Inputs> {
     public List<Translation2d> corners = List.of();
     public boolean hasTargets = false;
     /** Horizontal offset angle. */
-    public double tx = 0;
+    public Rotation2d tx = new Rotation2d();
     /** Vertical offset angle. */
-    public double ty = 0;
+    public Rotation2d ty = new Rotation2d();
 
     public void toLog(LogTable table) {
       table.put("CaptureTimestamp", captureTimestamp);
       table.put("HasTargets", hasTargets);
-      table.put("Tx", tx);
-      table.put("Ty", ty);
+      table.put("Tx", tx.getDegrees());
+      table.put("Ty", ty.getDegrees());
       table.put("Corners", translation2dListToCoordinateArray(corners));
     }
 
     public void fromLog(LogTable table) {
       captureTimestamp = table.getDouble("CaptureTimestamp", captureTimestamp);
       hasTargets = table.getBoolean("HasTargets", hasTargets);
-      tx = table.getDouble("Tx", tx);
-      ty = table.getDouble("Ty", ty);
+      tx = Rotation2d.fromDegrees(table.getDouble("Tx", tx.getDegrees()));
+      ty = Rotation2d.fromDegrees(table.getDouble("Ty", ty.getDegrees()));
       corners =
           coordinateArrayToTranslation2dList(
               table.getDoubleArray("Corners", translation2dListToCoordinateArray(corners)));

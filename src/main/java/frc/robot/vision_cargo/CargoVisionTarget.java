@@ -18,7 +18,6 @@ public class CargoVisionTarget extends VisionTarget {
 
   public CargoVisionTarget(CargoVisionSubsystem vision, Color color) {
     super(
-        vision,
         // We are going to assume all cargo is on the floor (a height of 0)
         0,
         color == Color.RED

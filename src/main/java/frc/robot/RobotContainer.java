@@ -11,19 +11,21 @@ import frc.robot.controller.ButtonController;
 import frc.robot.controller.DriveController;
 import frc.robot.controller.LogitechF310DirectInputController;
 import frc.robot.drive.*;
+import frc.robot.drive.commands.UpperHubAlignCommand;
 import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.imu.*;
+import frc.robot.localization.Localization;
 import frc.robot.match_metadata.*;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
-import frc.robot.paths.commands.SimplePathCommand;
+import frc.robot.paths.PPPaths;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.*;
 import frc.robot.superstructure.commands.ArmDownAndSnarfCommand;
 import frc.robot.superstructure.commands.ArmUpAndSwifferShootCommand;
 import frc.robot.superstructure.swiffer.*;
-import frc.robot.vision.commands.LoadingBayAlignCommand;
 import frc.robot.vision_cargo.*;
 import frc.robot.vision_upper.*;
+import lib.pathplanner.PPCommand;
 import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 /**
@@ -49,6 +51,7 @@ public class RobotContainer {
   private final Swiffer swiffer;
   private final Arm arm;
   private final SuperstructureSubsystem superstructureSubsystem;
+  private final Localization localization;
 
   private final Command autoCommand;
 
@@ -70,16 +73,17 @@ public class RobotContainer {
       arm = new Arm(new ArmIOReplay());
       swiffer = new Swiffer(new SwifferIOReplay());
       imuSubsystem = new ImuSubsystem(new ImuIOReplay());
+      upperVisionSubsystem =
+          new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
+      cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
       driveSubsystem =
           new DriveSubsystem(
               driverController,
-              imuSubsystem::getRotation,
+              imuSubsystem,
               new WheelIOReplay(Corner.FRONT_LEFT),
               new WheelIOReplay(Corner.FRONT_RIGHT),
               new WheelIOReplay(Corner.REAR_LEFT),
               new WheelIOReplay(Corner.REAR_RIGHT));
-      upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-      cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
     } else {
       switch (Constants.getRobot()) {
         case COMP_BOT:
@@ -87,48 +91,52 @@ public class RobotContainer {
           arm = new Arm(new ArmIOReplay());
           swiffer = new Swiffer(new SwifferIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
+          upperVisionSubsystem =
+              new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
-                  imuSubsystem::getRotation,
+                  imuSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
-          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
           break;
         case TEST_2020_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
           arm = new Arm(new ArmIOReplay());
           swiffer = new Swiffer(new SwifferIOReplay());
           imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
+          upperVisionSubsystem =
+              new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
+          cargoVisionSubsystem =
+              new CargoVisionSubsystem(new CargoVisionIOLimelight(), imuSubsystem);
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
-                  imuSubsystem::getRotation,
+                  imuSubsystem,
                   new WheelIOFalcon500(Corner.FRONT_LEFT),
                   new WheelIOFalcon500(Corner.FRONT_RIGHT),
                   new WheelIOFalcon500(Corner.REAR_LEFT),
                   new WheelIOFalcon500(Corner.REAR_RIGHT));
-          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOLimelight());
           break;
         case SIM_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOSim());
           arm = new Arm(new ArmIOSimNeos());
           swiffer = new Swiffer(new SwifferIOSimFalcon500());
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
+          upperVisionSubsystem =
+              new UpperHubVisionSubsystem(new UpperHubVisionIOSim(), imuSubsystem);
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim(), imuSubsystem);
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
-                  imuSubsystem::getRotation,
+                  imuSubsystem,
                   new WheelIOSim(Corner.FRONT_LEFT),
                   new WheelIOSim(Corner.FRONT_RIGHT),
                   new WheelIOSim(Corner.REAR_LEFT),
                   new WheelIOSim(Corner.REAR_RIGHT));
-          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOSim());
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim());
           break;
         default:
           throw new UnknownTargetRobotException();
@@ -136,19 +144,21 @@ public class RobotContainer {
     }
 
     superstructureSubsystem = new SuperstructureSubsystem(swiffer, arm);
+    localization = new Localization(driveSubsystem, cargoVisionSubsystem, imuSubsystem);
 
     // Configure the button bindings. You must call this after the subsystems are defined since they
     // are used to add command requirements.
     configureDriverButtonBindings();
     configureCopilotButtonBindings();
 
-    autoCommand =
-        new ParallelCommandGroup(new LoadingBayAlignCommand(driveSubsystem, cargoVisionSubsystem));
+    // TODO: Add autonomous command
+    autoCommand = new ParallelCommandGroup();
   }
 
   private void configureDriverButtonBindings() {
     // Testing PathPlanner
-    driverController.bButton.whenHeld(new SimplePathCommand(driveSubsystem));
+    driverController.bButton.whenHeld(
+        new PPCommand(PPPaths.simplePath, driveSubsystem, localization));
 
     // Testing autonomous
     driverController.yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
@@ -159,8 +169,7 @@ public class RobotContainer {
 
   private void configureCopilotButtonBindings() {
     // Align for shooting
-    copilotController.aButton.whenHeld(
-        new LoadingBayAlignCommand(driveSubsystem, cargoVisionSubsystem));
+    copilotController.aButton.whenHeld(new UpperHubAlignCommand(driveSubsystem, localization));
 
     // Snarfing
     copilotController.rightTrigger.whileHeld(new ArmDownAndSnarfCommand(superstructureSubsystem));

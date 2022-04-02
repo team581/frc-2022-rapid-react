@@ -4,7 +4,6 @@
 
 package frc.robot.paths.commands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
@@ -12,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.drive.Wheel;
+import frc.robot.localization.Localization;
 import java.util.function.Supplier;
 
 /**
@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 public class DynamicTrajectoryFollowCommand extends CommandBase {
   private final Timer timer = new Timer();
   private Trajectory trajectory;
-  private final Supplier<Pose2d> pose;
+  private final Localization localization;
   private final Supplier<Rotation2d> desiredRotation;
   private final Supplier<Trajectory> trajectorySupplier;
   private final DriveSubsystem driveSubsystem;
@@ -38,19 +38,18 @@ public class DynamicTrajectoryFollowCommand extends CommandBase {
    *
    * @param trajectorySupplier A supplier that returns a trajectory to use for this scheduling of
    *     the command. Called once during initialization.
-   * @param pose A function that supplies the robot pose - use one of the odometry classes to
-   *     provide this.
+   * @param localization The source of robot localization data.
    * @param desiredRotation The angle that the robot should be facing. This is sampled at each time
    *     step.
    */
   public DynamicTrajectoryFollowCommand(
       Supplier<Trajectory> trajectorySupplier,
-      Supplier<Pose2d> pose,
+      Localization localization,
       Supplier<Rotation2d> desiredRotation,
       DriveSubsystem driveSubsystem) {
     trajectory = null;
     this.trajectorySupplier = trajectorySupplier;
-    this.pose = pose;
+    this.localization = localization;
     this.driveSubsystem = driveSubsystem;
 
     this.desiredRotation = desiredRotation;
@@ -74,7 +73,8 @@ public class DynamicTrajectoryFollowCommand extends CommandBase {
     driveSubsystem.logTrajectoryPose(desiredState);
 
     final var targetChassisSpeeds =
-        driveSubsystem.driveController.calculate(pose.get(), desiredState, desiredRotation.get());
+        driveSubsystem.driveController.calculate(
+            localization.getPose(), desiredState, desiredRotation.get());
     final var targetWheelSpeeds = driveSubsystem.kinematics.toWheelSpeeds(targetChassisSpeeds);
 
     targetWheelSpeeds.desaturate(Wheel.MAX_WHEEL_VELOCITY);
