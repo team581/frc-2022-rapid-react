@@ -31,8 +31,7 @@ public class Wheel extends SubsystemBase {
     switch (Constants.getRobot()) {
       case TEST_2020_BOT:
         WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
-        MAX_WHEEL_VELOCITY =
-            WHEEL_CONVERTER.radiansToDistance(Units.rotationsToRadians(1.011986826));
+        MAX_WHEEL_VELOCITY = 4.517538186030606;
         VOLTAGE_CLAMP = new Clamp(12);
         FEEDFORWARD = new SimpleMotorFeedforward(0.088986, 0.18647, 0.0076096);
         break;
@@ -110,7 +109,7 @@ public class Wheel extends SubsystemBase {
    */
   public void doVelocityControlLoop() {
     final var feedforward = FEEDFORWARD.calculate(pid.getSetpoint());
-    final var feedback = 0 * pid.calculate(inputs.velocityRadiansPerSecond);
+    final var feedback = pid.calculate(inputs.velocityRadiansPerSecond);
     final var voltage = feedforward + feedback;
 
     desiredVoltageVolts = VOLTAGE_CLAMP.clamp(voltage);
