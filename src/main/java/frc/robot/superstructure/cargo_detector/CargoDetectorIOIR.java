@@ -5,14 +5,29 @@
 package frc.robot.superstructure.cargo_detector;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.Constants;
+import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 
 public class CargoDetectorIOIR implements CargoDetectorIO {
-  private final DigitalInput leftSensor = new DigitalInput(0);
-  private final DigitalInput rightSensor = new DigitalInput(1);
+  private final DigitalInput leftSensor;
+  private final DigitalInput rightSensor;
+
+  public CargoDetectorIOIR() {
+    switch (Constants.getRobot()) {
+      case TEST_2020_BOT:
+        leftSensor = new DigitalInput(9);
+        // TODO: Wire this sensor
+        rightSensor = new DigitalInput(25);
+        break;
+      default:
+        throw new UnsupportedSubsystemException(this);
+    }
+  }
 
   @Override
   public void updateInputs(Inputs inputs) {
-    inputs.hasLeftCargo = leftSensor.get();
-    inputs.hasRightCargo = rightSensor.get();
+    // The sensor outputs an off signal when it triggers, so we invert the return value
+    inputs.hasLeftCargo = !leftSensor.get();
+    inputs.hasRightCargo = !rightSensor.get();
   }
 }
