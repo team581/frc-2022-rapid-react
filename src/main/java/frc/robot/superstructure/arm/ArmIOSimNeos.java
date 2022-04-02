@@ -65,8 +65,8 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
 
     sim.update(Constants.PERIOD_SECONDS);
 
-    var positionRadians = sim.getAngleRads();
-    var velocityRadiansPerSecond = sim.getVelocityRadPerSec();
+    final var positionRadians = sim.getAngleRads();
+    final var velocityRadiansPerSecond = sim.getVelocityRadPerSec();
 
     final var encoderSim = encoder.getSimCollection();
 
@@ -89,6 +89,18 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
       // A hack to make the desired voltage look the same as the actual voltage
 
       inputs.appliedVolts = new double[] {-inputs.appliedVolts[0], -inputs.appliedVolts[1]};
+    }
+
+    if (positionRadians >= ArmPosition.UP.state.position) {
+      inputs.upperLimitSwitchEnabled = true;
+    } else {
+      inputs.upperLimitSwitchEnabled = false;
+    }
+
+    if (positionRadians <= ArmPosition.DOWN.state.position) {
+      inputs.lowerLimitSwitchEnabled = true;
+    } else {
+      inputs.lowerLimitSwitchEnabled = false;
     }
   }
 
