@@ -34,7 +34,7 @@ public class Wheel extends SubsystemBase {
         MAX_WHEEL_VELOCITY =
             WHEEL_CONVERTER.radiansToDistance(Units.rotationsToRadians(1.011986826));
         VOLTAGE_CLAMP = new Clamp(12);
-        FEEDFORWARD = new SimpleMotorFeedforward(0.61761, 2.3902, 0.17718);
+        FEEDFORWARD = new SimpleMotorFeedforward(0.088986, 0.18647, 0.0076096);
         break;
       case COMP_BOT:
         WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
@@ -78,20 +78,7 @@ public class Wheel extends SubsystemBase {
 
     switch (Constants.getRobot()) {
       case TEST_2020_BOT:
-        // TODO: Experiment with different values for max velocity error and max control effort.
-        // Remember to check and uncheck "Convert Gains to Encoder Counts" to trigger a refresh and
-        // fix the Kp value. Consider rerunning both the quasistatic ramp rate test and the dynamic
-        // step voltage test with the robot travelling with 12.0V of energy. This may be unnecessary
-        // since the Falcon 500 motors have a pretty linear output of speed:voltage. When recording
-        // test results make a note of what voltages were used.
-        // Error=1.2m/s MaxControlEffort=7.0V -> Kp = 2.7182 (DEFAULT)
-        // Error=0.3m/s MaxControlEffort=12.0V -> Kp = 7.2692
-        // Error=0.3m/s MaxControlEffort=7.0V -> Kp = 6.5871
-        // Error=0.3m/s MaxControlEffort=7.0V -> Kp = 6.5871
-        // Error=0.8m/s MaxControlEffort=7.0V -> Kp = 3.9486
-        // TODO: This needs to be recalculated to use radians instead of meters. So do the example
-        // values shown above.
-        pid = new PIDController(0.24579, 0, 0, Constants.PERIOD_SECONDS);
+        pid = new PIDController(0.031124, 0, 0, Constants.PERIOD_SECONDS);
         break;
       case COMP_BOT:
         pid = new PIDController(0.068406, 0, 0, Constants.PERIOD_SECONDS);
