@@ -31,13 +31,12 @@ import org.littletonrobotics.junction.Logger;
  */
 public class DriveSubsystem extends SubsystemBase {
   private static final class Constants {
-    // Max of 1 rotation per second and max acceleration of 0.5 rotations
-    // per second squared
+    // TODO: These values need to be properly recorded
     private static final TrapezoidProfile.Constraints MAX_ROTATION =
-        new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(180));
+        new TrapezoidProfile.Constraints(3.13635666583381, Math.pow(3.13635666583381, 2));
 
     /** The acceptable amount of error between the robot's current pose and the desired pose. */
-    private static final Pose2d POSE_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(5));
+    private static final Pose2d POSE_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(8));
   }
 
   public final MecanumDriveKinematics kinematics;
