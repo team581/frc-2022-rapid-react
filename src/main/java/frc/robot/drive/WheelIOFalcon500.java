@@ -83,9 +83,6 @@ public class WheelIOFalcon500 implements WheelIO {
       default:
         throw new UnknownTargetRobotException();
     }
-
-    // TODO: These values probably need to be tuned - see tuning instructions
-    // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html#recommended-procedure
     motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
     motor.configVelocityMeasurementWindow(1);
   }
