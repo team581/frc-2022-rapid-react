@@ -74,6 +74,7 @@ public class PPCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    // TODO: Allow ending the command early if the trajectory is finished before the timer
     return timer.hasElapsed(trajectory.getTotalTimeSeconds());
   }
 }
