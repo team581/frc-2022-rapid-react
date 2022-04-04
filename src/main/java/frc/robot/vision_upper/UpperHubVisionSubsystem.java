@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-import frc.robot.imu.ImuSubsystem;
 import frc.robot.vision.Camera;
 import frc.robot.vision.ComputerVisionUtilForCamera;
 import frc.robot.vision.VisionSubsystemBase;
@@ -47,13 +46,9 @@ public class UpperHubVisionSubsystem extends VisionSubsystemBase {
     VISION_UTIL = new ComputerVisionUtilForCamera(CAMERA);
   }
 
-  private final ImuSubsystem imu;
-
   /** Creates a new UpperHubVisionSubsystem. */
-  public UpperHubVisionSubsystem(UpperHubVisionIO io, ImuSubsystem imu) {
+  public UpperHubVisionSubsystem(UpperHubVisionIO io) {
     super(LOGGER_NAME, io, Pipelines.DRIVER_MODE.index);
-
-    this.imu = imu;
   }
 
   @Override
