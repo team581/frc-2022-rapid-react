@@ -64,8 +64,6 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     VISION_UTIL = new ComputerVisionUtilForCamera(CAMERA);
   }
 
-  public final LoadingBayVisionTarget loadingBay = new LoadingBayVisionTarget(this);
-
   private final UpperHubVisionTarget upperHub = new UpperHubVisionTarget();
   private final CargoVisionTarget redCargo =
       new CargoVisionTarget(this, CargoVisionTarget.Color.RED);
