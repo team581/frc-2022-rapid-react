@@ -7,7 +7,6 @@ package frc.robot.vision;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.vision.VisionIO.Inputs;
-import frc.robot.vision.commands.UseDriverModeCommand;
 import lib.limelight.Limelight;
 import org.littletonrobotics.junction.Logger;
 
@@ -30,12 +29,6 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
     this.loggerName = loggerName;
     this.io = io;
     this.driverModePipeline = driverModePipeline;
-
-    // Enable driver mode when other commands aren't using vision processing
-    setDefaultCommand(
-        new UseDriverModeCommand(this)
-            .perpetually()
-            .withName("Perpetual" + UseDriverModeCommand.class.getSimpleName()));
   }
 
   @Override
@@ -58,10 +51,10 @@ public abstract class VisionSubsystemBase extends SubsystemBase {
    * @see {@link frc.robot.vision.commands.UseDriverModeCommand}
    */
   public void useDriverMode() {
-    // isDriverMode = true;
-    // io.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
-    // io.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
-    // io.setPipeline(driverModePipeline);
+    isDriverMode = true;
+    io.setCamMode(Limelight.CamMode.DRIVER_CAMERA);
+    io.setStreamingMode(Limelight.StreamingMode.PIP_MAIN);
+    io.setPipeline(driverModePipeline);
   }
 
   /**
