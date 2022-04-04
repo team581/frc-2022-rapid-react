@@ -4,7 +4,7 @@
 
 package frc.robot.drive;
 
-/** The corner of a wheel. */
+/** The corner of a {@link Wheel wheel}. */
 public enum Corner {
   FRONT_RIGHT("FrontRight"),
   FRONT_LEFT("FrontLeft"),
