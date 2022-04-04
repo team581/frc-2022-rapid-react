@@ -27,7 +27,7 @@ public class WheelConverter {
     return radians * radius;
   }
 
-  /** Converts a rotation in radians to a distance. */
+  /** Converts a rotation to a distance. */
   public double radiansToDistance(Rotation2d rotation) {
     return radiansToDistance(rotation.getRadians());
   }
@@ -35,15 +35,5 @@ public class WheelConverter {
   /** Converts a distance to a rotation in radians. */
   public double distanceToRadians(double distance) {
     return distance / radius;
-  }
-
-  /** Converts an angular velocity (radians/second) to a velocity (meters/second). */
-  public double angularVelocityToVelocity(double angularVelocity) {
-    return angularVelocity * radius;
-  }
-
-  /** Converts a velocity (distance/second) to an angular velocity (radians/second). */
-  public double velocityToAngularVelocity(double velocity) {
-    return velocity / radius;
   }
 }

@@ -49,9 +49,10 @@ class Wheel extends SubsystemBase {
         throw new UnknownTargetRobotException();
     }
 
-    MAX_ACCELERATION =
-        // This is not a velocity but the math is the same
-        WHEEL_CONVERTER.angularVelocityToVelocity(VOLTAGE_CLAMP.maximum / FEEDFORWARD.ka);
+    // Feedforward is used to convert radians/second to a voltage. You can divide the maximum
+    // voltage by the acceleration component of the feedforward to get the robot's average
+    // acceleration.
+    MAX_ACCELERATION = WHEEL_CONVERTER.radiansToDistance(VOLTAGE_CLAMP.maximum / FEEDFORWARD.ka);
   }
 
   /** Wheel velocity PID controller. Input is in radians/second, output is in volts. */
@@ -115,12 +116,12 @@ class Wheel extends SubsystemBase {
    * @param metersPerSecond The desired velocity in meters/second
    */
   public void setDesiredVelocity(double metersPerSecond) {
-    pid.setSetpoint(WHEEL_CONVERTER.velocityToAngularVelocity(metersPerSecond));
+    pid.setSetpoint(WHEEL_CONVERTER.distanceToRadians(metersPerSecond));
   }
 
   /** Get this wheel's velocity in meters/second. */
   public double getVelocity() {
-    return WHEEL_CONVERTER.angularVelocityToVelocity(inputs.velocityRadiansPerSecond);
+    return WHEEL_CONVERTER.radiansToDistance(inputs.velocityRadiansPerSecond);
   }
 
   /** Get the distance in meters this wheel's encoder has travelled since last being reset. */
