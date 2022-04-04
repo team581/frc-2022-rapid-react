@@ -128,9 +128,4 @@ class Wheel extends SubsystemBase {
   public double getDistance() {
     return WHEEL_CONVERTER.radiansToDistance(inputs.positionRadians);
   }
-
-  /** Zeroes the encoder position. */
-  public void zeroEncoder() {
-    io.zeroEncoder();
-  }
 }

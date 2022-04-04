@@ -36,7 +36,4 @@ interface WheelIO extends SubsystemIO<WheelIO.Inputs> {
 
   /** Sets the output voltage of the wheel's motor. */
   public void setVoltage(double outputVolts);
-
-  /** Zeroes the encoder position. */
-  public void zeroEncoder();
 }

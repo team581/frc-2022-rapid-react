@@ -35,8 +35,6 @@ class Drivebase extends SubsystemBase {
       default:
         throw new UnknownTargetRobotException();
     }
-
-    zeroEncoders();
   }
 
   @Override
@@ -72,12 +70,5 @@ class Drivebase extends SubsystemBase {
   /** Stops all the motors. */
   public void stopMotors() {
     setWheelSpeeds(new MecanumDriveWheelSpeeds());
-  }
-
-  public void zeroEncoders() {
-    frontLeft.zeroEncoder();
-    frontRight.zeroEncoder();
-    rearLeft.zeroEncoder();
-    rearRight.zeroEncoder();
   }
 }
