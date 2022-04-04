@@ -19,6 +19,10 @@ public class CargoDetectorIOIR implements CargoDetectorIO {
         // TODO: Wire this sensor
         rightSensor = new DigitalInput(25);
         break;
+      case SIM_BOT:
+        leftSensor = new DigitalInput(9);
+        rightSensor = new DigitalInput(8);
+        break;
       default:
         throw new UnsupportedSubsystemException(this);
     }
