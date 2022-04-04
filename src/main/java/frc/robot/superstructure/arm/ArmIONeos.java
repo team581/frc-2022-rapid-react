@@ -28,8 +28,9 @@ public class ArmIONeos implements ArmIO {
 
   static {
     switch (Constants.getRobot()) {
+      case COMP_BOT:
       case SIM_BOT:
-        ENCODER_ABSOLUTE_POSITION_DIFFERENCE = new Rotation2d();
+        ENCODER_ABSOLUTE_POSITION_DIFFERENCE = Rotation2d.fromDegrees(237.568);
         INVERTED = false;
         break;
       default:
@@ -50,7 +51,7 @@ public class ArmIONeos implements ArmIO {
       case SIM_BOT:
         leader = new CANSparkMax(5, CANSparkMaxLowLevel.MotorType.kBrushless);
         follower = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
-        encoder = new CANCoder(7);
+        encoder = new CANCoder(3);
 
         forwardLimitSwitch = leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
         reverseLimitSwitch = leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
