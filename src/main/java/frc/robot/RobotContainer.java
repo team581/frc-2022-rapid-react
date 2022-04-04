@@ -74,8 +74,9 @@ public class RobotContainer {
       arm = new Arm(new ArmIOReplay(), lights);
       swiffer = new Swiffer(new SwifferIOReplay(), lights);
       imuSubsystem = new ImuSubsystem(new ImuIOReplay());
-      upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-      cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
+      upperVisionSubsystem =
+          new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
+      cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
       driveSubsystem =
           new DriveSubsystem(
               driverController,
@@ -92,8 +93,9 @@ public class RobotContainer {
           arm = new Arm(new ArmIOReplay(), lights);
           swiffer = new Swiffer(new SwifferIOReplay(), lights);
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
-          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
+          upperVisionSubsystem =
+              new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay());
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
@@ -109,9 +111,9 @@ public class RobotContainer {
           arm = new Arm(new ArmIOReplay(), lights);
           swiffer = new Swiffer(new SwifferIOReplay(), lights);
           imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
-          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-          cargoVisionSubsystem =
-              new CargoVisionSubsystem(new CargoVisionIOLimelight(), imuSubsystem);
+          upperVisionSubsystem =
+              new UpperHubVisionSubsystem(new UpperHubVisionIOReplay(), imuSubsystem);
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOLimelight());
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
@@ -127,8 +129,9 @@ public class RobotContainer {
           arm = new Arm(new ArmIOSimNeos(), lights);
           swiffer = new Swiffer(new SwifferIOSimFalcon500(), lights);
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
-          upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOSim());
-          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim(), imuSubsystem);
+          upperVisionSubsystem =
+              new UpperHubVisionSubsystem(new UpperHubVisionIOSim(), imuSubsystem);
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim());
           driveSubsystem =
               new DriveSubsystem(
                   driverController,
@@ -144,7 +147,7 @@ public class RobotContainer {
     }
 
     superstructureSubsystem = new SuperstructureSubsystem(swiffer, arm, lights);
-    localization = new Localization(driveSubsystem, cargoVisionSubsystem, imuSubsystem);
+    localization = new Localization(driveSubsystem, upperVisionSubsystem, imuSubsystem);
 
     autonomousChooser =
         new AutoRoutineChooser(driveSubsystem, superstructureSubsystem, localization);
