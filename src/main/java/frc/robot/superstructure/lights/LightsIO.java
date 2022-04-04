@@ -2,14 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.lights;
+package frc.robot.superstructure.lights;
 
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface LightsIO extends SubsystemIO<LightsIO.Inputs> {
+interface LightsIO extends SubsystemIO<LightsIO.Inputs> {
   public class Inputs implements LoggableInputs {
     public int ledCount = 0;
 

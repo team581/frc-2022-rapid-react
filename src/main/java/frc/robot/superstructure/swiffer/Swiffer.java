@@ -10,10 +10,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.misc.util.Clamp;
+import frc.robot.superstructure.lights.Lights;
 import frc.robot.superstructure.swiffer.SwifferIO.Inputs;
 import org.littletonrobotics.junction.Logger;
 
 public class Swiffer extends SubsystemBase {
+  // TODO: Measure this
+  public static final double MASS = 10;
+
   private static final double TOLERANCE_RPM;
   private static final SimpleMotorFeedforward FEEDFORWARD;
   private static final Clamp VOLTAGE_CLAMP;
@@ -30,6 +34,7 @@ public class Swiffer extends SubsystemBase {
   }
 
   private final PIDController pid;
+  private final Lights lights;
 
   private final SwifferIO io;
   private final Inputs inputs = new Inputs();
@@ -38,8 +43,9 @@ public class Swiffer extends SubsystemBase {
   private double desiredVoltageVolts = 0;
 
   /** Creates a new Swiffer. */
-  public Swiffer(SwifferIO io) {
+  public Swiffer(SwifferIO io, Lights lights) {
     this.io = io;
+    this.lights = lights;
 
     switch (Constants.getRobot()) {
       case SIM_BOT:
@@ -63,14 +69,17 @@ public class Swiffer extends SubsystemBase {
 
     doVelocityControlLoop();
 
-    Logger.getInstance().recordOutput("Swiffer/Goal/Mode", desiredMode.toString());
-    Logger.getInstance().recordOutput("Swiffer/Goal/AtGoal", pid.atSetpoint());
+    final var atGoal = pid.atSetpoint();
     final var goalRpm = Units.radiansPerSecondToRotationsPerMinute(getDesiredAngularVelocity());
     final var actualRpm =
         Units.radiansPerSecondToRotationsPerMinute(inputs.angularVelocityRadiansPerSecond);
+    Logger.getInstance().recordOutput("Swiffer/Goal/Mode", desiredMode.toString());
+    Logger.getInstance().recordOutput("Swiffer/Goal/AtGoal", atGoal);
     Logger.getInstance().recordOutput("Swiffer/Goal/Rpm", goalRpm);
     Logger.getInstance().recordOutput("Swiffer/Goal/Error/Rpm", goalRpm - actualRpm);
     Logger.getInstance().recordOutput("Swiffer/Goal/VoltageVolts", desiredVoltageVolts);
+
+    lights.setSubsystemState(desiredMode, atGoal);
   }
 
   /** Set the desired mode of the flywheel to the one provided. */

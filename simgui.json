@@ -42,7 +42,6 @@
       "/LiveWindow/Drivebase": "Subsystem",
       "/LiveWindow/FmsSubsystem": "Subsystem",
       "/LiveWindow/ImuSubsystem": "Subsystem",
-      "/LiveWindow/LightsSubsystem": "Subsystem",
       "/LiveWindow/MatchMetadataSubsystem": "Subsystem",
       "/LiveWindow/ShooterSubsystem": "Subsystem",
       "/LiveWindow/SnarferSubsystem": "Subsystem",
