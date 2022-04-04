@@ -6,7 +6,6 @@ package frc.robot.drive;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -17,9 +16,12 @@ import frc.robot.misc.util.WheelConverter;
 import org.littletonrobotics.junction.Logger;
 
 /** This class should only be used within {@link DriveSubsystem} and {@link Drivebase}. */
-public class Wheel extends SubsystemBase {
+class Wheel extends SubsystemBase {
   /** The maximum velocity of a wheel in meters/second. */
   public static final double MAX_WHEEL_VELOCITY;
+
+  /** The maximum acceleration of a wheel in meters/second/second. */
+  public static final double MAX_ACCELERATION;
 
   private static final Clamp VOLTAGE_CLAMP;
 
@@ -46,13 +48,11 @@ public class Wheel extends SubsystemBase {
       default:
         throw new UnknownTargetRobotException();
     }
-  }
 
-  /**
-   * The position of the wheel corresponding to this motor, relative to the robot center, in meters.
-   * Used for kinematics.
-   */
-  public final Translation2d positionToCenterOfRobot;
+    MAX_ACCELERATION =
+        // This is not a velocity but the math is the same
+        WHEEL_CONVERTER.angularVelocityToVelocity(VOLTAGE_CLAMP.maximum / FEEDFORWARD.ka);
+  }
 
   /** Wheel velocity PID controller. Input is in radians/second, output is in volts. */
   private final PIDController pid;
@@ -65,9 +65,8 @@ public class Wheel extends SubsystemBase {
 
   private double desiredVoltageVolts = 0;
 
-  public Wheel(Corner corner, WheelIO io, Translation2d positionToCenterOfRobot) {
+  public Wheel(Corner corner, WheelIO io) {
     this.loggerName = "Wheel/" + corner.toString();
-    this.positionToCenterOfRobot = positionToCenterOfRobot;
     this.io = io;
 
     switch (Constants.getRobot()) {

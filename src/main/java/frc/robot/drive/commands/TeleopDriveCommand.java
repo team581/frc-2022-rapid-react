@@ -4,12 +4,16 @@
 
 package frc.robot.drive.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.DriveSubsystem;
 
 public class TeleopDriveCommand extends CommandBase {
+  /** The maximum allowed turn rate of the robot during teleop, per second. */
+  public static final Rotation2d MAX_TELEOP_TURN_RATE = Rotation2d.fromDegrees(180);
+
   private final DriveSubsystem driveSubsystem;
   private final DriveController controller;
 
