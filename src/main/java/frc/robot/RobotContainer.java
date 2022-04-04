@@ -6,7 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.auto.AutoRoutineChooser;
 import frc.robot.controller.ButtonController;
 import frc.robot.controller.DriveController;
 import frc.robot.controller.LogitechF310DirectInputController;
@@ -17,7 +17,6 @@ import frc.robot.imu.*;
 import frc.robot.localization.Localization;
 import frc.robot.match_metadata.*;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
-import frc.robot.paths.PPPaths;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.*;
 import frc.robot.superstructure.commands.ArmDownAndSnarfCommand;
@@ -26,7 +25,6 @@ import frc.robot.superstructure.lights.*;
 import frc.robot.superstructure.swiffer.*;
 import frc.robot.vision_cargo.*;
 import frc.robot.vision_upper.*;
-import lib.pathplanner.PPCommand;
 import org.littletonrobotics.junction.inputs.LoggedSystemStats;
 
 /**
@@ -37,6 +35,8 @@ import org.littletonrobotics.junction.inputs.LoggedSystemStats;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+
+  private final AutoRoutineChooser autonomousChooser;
 
   private final DriveController driverController =
       new DriveController(new LogitechF310DirectInputController(Constants.DRIVER_CONTROLLER_PORT));
@@ -54,8 +54,6 @@ public class RobotContainer {
   private final SuperstructureSubsystem superstructureSubsystem;
   private final Lights lights;
   private final Localization localization;
-
-  private final Command autoCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -148,20 +146,16 @@ public class RobotContainer {
     superstructureSubsystem = new SuperstructureSubsystem(swiffer, arm, lights);
     localization = new Localization(driveSubsystem, cargoVisionSubsystem, imuSubsystem);
 
+    autonomousChooser =
+        new AutoRoutineChooser(driveSubsystem, superstructureSubsystem, localization);
+
     // Configure the button bindings. You must call this after the subsystems are defined since they
     // are used to add command requirements.
     configureDriverButtonBindings();
     configureCopilotButtonBindings();
-
-    // TODO: Add autonomous command
-    autoCommand = new ParallelCommandGroup();
   }
 
   private void configureDriverButtonBindings() {
-    // Testing PathPlanner
-    driverController.bButton.whenHeld(
-        new PPCommand(PPPaths.simplePath, driveSubsystem, localization));
-
     // Testing autonomous
     driverController.yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
 
@@ -186,8 +180,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  // TODO: Move this method to a dedicated AutonomousChooser class
   public Command getAutonomousCommand() {
-    return autoCommand;
+    return autonomousChooser.getAutonomousCommand();
   }
 }

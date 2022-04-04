@@ -143,6 +143,13 @@ public class Localization extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
+  public void resetPose(Pose2d robotPose) {
+    // TODO: Consider using the rotation in the robotPose if gyroscope offsetting is causing issues
+    // TODO: Also consider setting the rotation of the IMU based on the rotation in robotPose
+    poseEstimator.resetPosition(robotPose, imuSubsystem.getRotation());
+    odometry.resetPosition(robotPose, imuSubsystem.getRotation());
+  }
+
   /**
    * Returns the robot pose from the vision system directly, if available. You probably want to use
    * {@link #getPose()} instead.
