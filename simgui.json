@@ -3,7 +3,8 @@
     "Addressable LEDs": {
       "0": {
         "columns": 8
-      },
+      }
+    },
     "DIO": {
       "window": {
         "visible": true
