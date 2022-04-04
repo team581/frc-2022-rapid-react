@@ -13,7 +13,7 @@ public enum SwifferMode {
   SHOOTING(-30);
 
   /** Angular velocity in radians/second. */
-  public final double angularVelocity;
+  final double angularVelocity;
 
   /** @param rpm The desired rotations per minute (RPM) for this mode. */
   SwifferMode(double rpm) {

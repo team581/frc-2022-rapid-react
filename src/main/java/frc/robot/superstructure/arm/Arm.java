@@ -13,11 +13,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.misc.util.Clamp;
 import frc.robot.superstructure.arm.ArmIO.Inputs;
+import frc.robot.superstructure.lights.Lights;
+import frc.robot.superstructure.swiffer.Swiffer;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
   /** Mass of arm in kilograms. */
-  public static final double ARM_MASS = 4776.833 / 1e3;
+  public static final double ARM_MASS = Swiffer.MASS + (4776.833 / 1e3);
 
   /** Length of arm in meters. */
   public static final double ARM_LENGTH = 838.20 / 1e3;
@@ -38,8 +40,6 @@ public class Arm extends SubsystemBase {
 
   private static final ArmFeedforward FEEDFORWARD;
 
-  private final ProfiledPIDController pidController;
-
   static {
     switch (Constants.getRobot()) {
       case COMP_BOT:
@@ -57,6 +57,9 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  private final ProfiledPIDController pidController;
+  private final Lights lights;
+
   private final ArmIO io;
   private final Inputs inputs = new Inputs();
 
@@ -64,17 +67,18 @@ public class Arm extends SubsystemBase {
   private double desiredVoltageVolts = 0;
 
   /** Creates a new Arm. */
-  public Arm(ArmIO io) {
+  public Arm(ArmIO io, Lights lights) {
     this.io = io;
+    this.lights = lights;
 
     switch (Constants.getRobot()) {
       case SIM_BOT:
       case COMP_BOT:
         // TODO: Use SysID to calculate the PID terms
         pidController =
-            new ProfiledPIDController(3.2, 0.35, 0.5, CONSTRAINTS, Constants.PERIOD_SECONDS);
+            new ProfiledPIDController(3.4, 0.25, 0.3, CONSTRAINTS, Constants.PERIOD_SECONDS);
         // TODO: Measure actual acceptable tolerance
-        pidController.setTolerance(Units.degreesToRadians(0.01), Units.degreesToRadians(10));
+        pidController.setTolerance(Units.degreesToRadians(2), Units.degreesToRadians(8));
         break;
       default:
         pidController = new ProfiledPIDController(1, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
@@ -99,8 +103,9 @@ public class Arm extends SubsystemBase {
 
     Logger.getInstance().processInputs("Arm", inputs);
 
+    final var atGoal = pidController.atGoal();
     Logger.getInstance().recordOutput("Arm/Goal/Position", desiredPosition.toString());
-    Logger.getInstance().recordOutput("Arm/Goal/AtGoal", pidController.atGoal());
+    Logger.getInstance().recordOutput("Arm/Goal/AtGoal", atGoal);
     Logger.getInstance().recordOutput("Arm/Goal/PositionRadians", pidController.getGoal().position);
     Logger.getInstance()
         .recordOutput(
@@ -124,6 +129,8 @@ public class Arm extends SubsystemBase {
     Logger.getInstance()
         .recordOutput(
             "Arm/MotionProfile/Error/VelocityRadiansPerSecond", pidController.getVelocityError());
+
+    lights.setSubsystemState(desiredPosition, atGoal);
   }
 
   private void resetController() {

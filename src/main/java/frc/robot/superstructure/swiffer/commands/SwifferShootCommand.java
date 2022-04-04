@@ -18,7 +18,6 @@ public class SwifferShootCommand extends SwifferCommand {
 
   @Override
   public void initialize() {
-
     super.initialize();
 
     timer.reset();

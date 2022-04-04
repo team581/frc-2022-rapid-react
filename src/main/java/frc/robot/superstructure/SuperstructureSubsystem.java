@@ -7,16 +7,19 @@ package frc.robot.superstructure;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.superstructure.arm.Arm;
 import frc.robot.superstructure.commands.ArmUpAndSwifferStopCommand;
+import frc.robot.superstructure.lights.Lights;
 import frc.robot.superstructure.swiffer.Swiffer;
 
 public class SuperstructureSubsystem extends SubsystemBase {
   public final Swiffer swiffer;
   public final Arm arm;
+  public final Lights lights;
 
   /** Creates a new SuperstructureSubsystem. */
-  public SuperstructureSubsystem(Swiffer swiffer, Arm arm) {
+  public SuperstructureSubsystem(Swiffer swiffer, Arm arm, Lights lights) {
     this.swiffer = swiffer;
     this.arm = arm;
+    this.lights = lights;
 
     setDefaultCommand(
         new ArmUpAndSwifferStopCommand(this)
