@@ -16,8 +16,8 @@ interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
     public double[] tempCelcius = {};
     public Rotation2d position = new Rotation2d();
     public double velocityRadiansPerSecond = 0;
-    public boolean upperLimitSwitchEnabled = false;
-    public boolean lowerLimitSwitchEnabled = false;
+    public boolean downwardLimitSwitchEnabled = false;
+    public boolean upwardLimitSwitchEnabled = false;
 
     public void toLog(LogTable table) {
       table.put("VoltageVolts", appliedVolts);
@@ -25,8 +25,8 @@ interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
       table.put("TempCelcius", tempCelcius);
       table.put("PositionRadians", position.getRadians());
       table.put("VelocityRadiansPerSecond", velocityRadiansPerSecond);
-      table.put("UpperLimitSwitchEnabled", upperLimitSwitchEnabled);
-      table.put("LowerLimitSwitchEnabled", lowerLimitSwitchEnabled);
+      table.put("UpperLimitSwitchEnabled", downwardLimitSwitchEnabled);
+      table.put("LowerLimitSwitchEnabled", upwardLimitSwitchEnabled);
     }
 
     public void fromLog(LogTable table) {
@@ -36,10 +36,10 @@ interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
       position = new Rotation2d(table.getDouble("PositionRadians", position.getRadians()));
       velocityRadiansPerSecond =
           table.getDouble("VelocityRadiansPerSecond", velocityRadiansPerSecond);
-      upperLimitSwitchEnabled =
-          table.getBoolean("UpperLimitSwitchEnabled", upperLimitSwitchEnabled);
-      lowerLimitSwitchEnabled =
-          table.getBoolean("LowerLimitSwitchEnabled", lowerLimitSwitchEnabled);
+      downwardLimitSwitchEnabled =
+          table.getBoolean("UpperLimitSwitchEnabled", downwardLimitSwitchEnabled);
+      upwardLimitSwitchEnabled =
+          table.getBoolean("LowerLimitSwitchEnabled", upwardLimitSwitchEnabled);
     }
   }
 
