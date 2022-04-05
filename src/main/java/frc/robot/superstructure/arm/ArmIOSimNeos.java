@@ -92,15 +92,15 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
     }
 
     if (positionRadians >= ArmPosition.UP.state.position) {
-      inputs.upperLimitSwitchEnabled = true;
+      inputs.downwardLimitSwitchEnabled = true;
     } else {
-      inputs.upperLimitSwitchEnabled = false;
+      inputs.downwardLimitSwitchEnabled = false;
     }
 
     if (positionRadians <= ArmPosition.DOWN.state.position) {
-      inputs.lowerLimitSwitchEnabled = true;
+      inputs.upwardLimitSwitchEnabled = true;
     } else {
-      inputs.lowerLimitSwitchEnabled = false;
+      inputs.upwardLimitSwitchEnabled = false;
     }
   }
 
