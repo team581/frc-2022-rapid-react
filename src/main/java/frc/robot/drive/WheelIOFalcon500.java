@@ -28,7 +28,7 @@ public class WheelIOFalcon500 implements WheelIO {
             motor.setInverted(true);
             break;
           case REAR_LEFT:
-            motor = new WPI_TalonFX(12);
+            motor = new WPI_TalonFX(10);
             break;
           case REAR_RIGHT:
             motor = new WPI_TalonFX(13);

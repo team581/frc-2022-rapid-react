@@ -24,11 +24,16 @@ public class Swiffer extends SubsystemBase {
 
   static {
     switch (Constants.getRobot()) {
+      case COMP_BOT:
       case SIM_BOT:
+        VOLTAGE_CLAMP = new Clamp(12);
+        TOLERANCE_RPM = 1;
+        FEEDFORWARD = new SimpleMotorFeedforward(0.019184, 0.17836, 0.002161);
+        break;
       default:
         VOLTAGE_CLAMP = new Clamp(12);
         TOLERANCE_RPM = 20;
-        FEEDFORWARD = new SimpleMotorFeedforward(0.1, 0.5, 0.25);
+        FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
         break;
     }
   }
@@ -48,9 +53,12 @@ public class Swiffer extends SubsystemBase {
     this.lights = lights;
 
     switch (Constants.getRobot()) {
+      case COMP_BOT:
       case SIM_BOT:
+        pid = new PIDController(0.0020592, 0, 0, Constants.PERIOD_SECONDS);
+        break;
       default:
-        pid = new PIDController(0.2, 0, 0, Constants.PERIOD_SECONDS);
+        pid = new PIDController(1.1, 0, 0, Constants.PERIOD_SECONDS);
         break;
     }
 

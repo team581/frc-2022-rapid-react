@@ -19,6 +19,11 @@ public class SwifferIOFalcon500 implements SwifferIO {
 
   public SwifferIOFalcon500() {
     switch (Constants.getRobot()) {
+      case COMP_BOT:
+        gearingConverter = new GearingConverter(10);
+        motor = new WPI_TalonFX(12);
+        isInverted = false;
+        break;
       case SIM_BOT:
         gearingConverter = new GearingConverter(25);
         motor = new WPI_TalonFX(8);
