@@ -44,8 +44,7 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
       armTower.append(new MechanismLigament2d("Arm", Arm.ARM_LENGTH, 0));
 
   public ArmIOSimNeos() {
-    REVPhysicsSim.getInstance().addSparkMax(leader, DCMotor.getNEO(1));
-    REVPhysicsSim.getInstance().addSparkMax(follower, DCMotor.getNEO(1));
+    REVPhysicsSim.getInstance().addSparkMax(motor, DCMotor.getNEO(1));
 
     SmartDashboard.putData("Arm Sim", arm2d);
 
@@ -61,7 +60,7 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
 
   @Override
   public void updateInputs(Inputs inputs) {
-    sim.setInputVoltage(leader.getAppliedOutput());
+    sim.setInputVoltage(motor.getAppliedOutput());
 
     sim.update(Constants.PERIOD_SECONDS);
 
@@ -88,7 +87,7 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
     if (ArmIONeos.INVERTED) {
       // A hack to make the desired voltage look the same as the actual voltage
 
-      inputs.appliedVolts = new double[] {-inputs.appliedVolts[0], -inputs.appliedVolts[1]};
+      inputs.appliedVolts *= -1;
     }
 
     if (positionRadians >= ArmPosition.UP.state.position) {
@@ -111,8 +110,6 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
       volts *= -1;
     }
 
-    // REV simulation software doesn't support follower motors
-    follower.setVoltage(volts);
     super.setVoltage(volts);
   }
 }

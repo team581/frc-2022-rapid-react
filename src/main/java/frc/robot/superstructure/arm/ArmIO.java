@@ -11,9 +11,9 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
   public class Inputs implements LoggableInputs {
-    public double[] appliedVolts = {};
-    public double[] currentAmps = {};
-    public double[] tempCelcius = {};
+    public double appliedVolts = 0;
+    public double currentAmps = 0;
+    public double tempCelcius = 0;
     public Rotation2d position = new Rotation2d();
     public double velocityRadiansPerSecond = 0;
     public boolean upperLimitSwitchEnabled = false;
@@ -30,9 +30,9 @@ interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
     }
 
     public void fromLog(LogTable table) {
-      appliedVolts = table.getDoubleArray("VoltageVolts", appliedVolts);
-      currentAmps = table.getDoubleArray("CurrentAmps", currentAmps);
-      tempCelcius = table.getDoubleArray("TempCelcius", tempCelcius);
+      appliedVolts = table.getDouble("VoltageVolts", appliedVolts);
+      currentAmps = table.getDouble("CurrentAmps", currentAmps);
+      tempCelcius = table.getDouble("TempCelcius", tempCelcius);
       position = new Rotation2d(table.getDouble("PositionRadians", position.getRadians()));
       velocityRadiansPerSecond =
           table.getDouble("VelocityRadiansPerSecond", velocityRadiansPerSecond);

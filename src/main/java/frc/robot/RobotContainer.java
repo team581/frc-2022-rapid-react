@@ -89,8 +89,8 @@ public class RobotContainer {
         case COMP_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
           lights = new Lights(new LightsIOReplay());
-          arm = new Arm(new ArmIONeos(), lights);
-          swiffer = new Swiffer(new SwifferIOFalcon500(), lights);
+          arm = new Arm(new ArmIOReplay(), lights);
+          swiffer = new Swiffer(new SwifferIOReplay(), lights);
           imuSubsystem = new ImuSubsystem(new ImuIONavx());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
           cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);

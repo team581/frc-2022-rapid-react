@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public enum ArmPosition {
-  UP(Rotation2d.fromDegrees(50)),
+  UP(Rotation2d.fromDegrees(121.904)),
   DOWN(Rotation2d.fromDegrees(0));
 
   public final TrapezoidProfile.State state;
