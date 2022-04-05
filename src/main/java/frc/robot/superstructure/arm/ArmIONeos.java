@@ -53,8 +53,8 @@ public class ArmIONeos implements ArmIO {
         follower = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
         encoder = new CANCoder(3);
 
-        forwardLimitSwitch = leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
-        reverseLimitSwitch = leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+        forwardLimitSwitch = leader.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        reverseLimitSwitch = leader.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         break;
       default:
         throw new UnsupportedSubsystemException(this);
@@ -86,6 +86,11 @@ public class ArmIONeos implements ArmIO {
 
   @Override
   public void setVoltage(double volts) {
+    if ((volts > 0 && forwardLimitSwitch.isPressed())
+        || (volts < 0 && reverseLimitSwitch.isPressed())) {
+      leader.setVoltage(0);
+    }
+
     leader.setVoltage(volts);
   }
 }
