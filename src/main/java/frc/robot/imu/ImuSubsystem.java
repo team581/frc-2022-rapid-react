@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.Logger;
 public class ImuSubsystem extends SubsystemBase {
   private final ImuIO io;
   private final Inputs inputs = new Inputs();
+  private Rotation2d offset = new Rotation2d();
 
   /** Creates a new ImuSubsystem. */
   public ImuSubsystem(ImuIO io) {
@@ -24,11 +25,18 @@ public class ImuSubsystem extends SubsystemBase {
 
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Imu", inputs);
+    Logger.getInstance().recordOutput("Imu/OffsettedPositionRadians", getRotation().getRadians());
   }
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
+    resetHeadingTo(new Rotation2d());
+  }
+
+  /** Sets the heading of the IMU. */
+  public void resetHeadingTo(Rotation2d heading) {
     io.zeroHeading();
+    offset = heading;
   }
 
   /** Returns the turn rate of the robot in radians/second. */
@@ -38,6 +46,6 @@ public class ImuSubsystem extends SubsystemBase {
 
   /** Get the heading of the robot. */
   public Rotation2d getRotation() {
-    return new Rotation2d(inputs.rotationRadians);
+    return new Rotation2d(inputs.rotationRadians - offset.getRadians());
   }
 }

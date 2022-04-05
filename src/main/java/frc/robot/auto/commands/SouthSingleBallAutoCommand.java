@@ -5,25 +5,25 @@
 package frc.robot.auto.commands;
 
 import com.pathplanner.lib.PathPlanner;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.localization.Localization;
+import frc.robot.localization.commands.SeedLocalizationCommand;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.commands.ArmUpAndSwifferShootCommand;
 import frc.robot.superstructure.commands.ArmUpAndSwifferStopCommand;
 import lib.pathplanner.PPCommand;
 
-public class SouthSingleBallAuto extends SequentialCommandGroup {
-  /** Creates a new SouthSingleBallAuto. */
-  public SouthSingleBallAuto(
+public class SouthSingleBallAutoCommand extends SequentialCommandGroup {
+  /** Creates a new SouthSingleBallAutoCommand. */
+  public SouthSingleBallAutoCommand(
       DriveSubsystem driveSubsystem,
       SuperstructureSubsystem superstructure,
       Localization localization) {
     final var path = PathPlanner.loadPath("SouthSingleBallAuto", 3, 2.5);
 
     addCommands(
-        new InstantCommand(() -> localization.resetPose(path.getInitialPose())),
+        new SeedLocalizationCommand(localization, path),
         new ArmUpAndSwifferShootCommand(superstructure),
         new ArmUpAndSwifferStopCommand(superstructure),
         new PPCommand(path, driveSubsystem, localization));

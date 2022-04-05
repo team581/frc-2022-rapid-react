@@ -5,7 +5,7 @@
 package frc.robot.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.auto.commands.SouthSingleBallAuto;
+import frc.robot.auto.commands.SouthSingleBallAutoCommand;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.localization.Localization;
 import frc.robot.superstructure.SuperstructureSubsystem;
@@ -27,6 +27,6 @@ public class AutoRoutineChooser {
 
   /** Get the {@link Command command} to run in autonomous. */
   public Command getAutonomousCommand() {
-    return new SouthSingleBallAuto(driveSubsystem, superstructure, localization);
+    return new SouthSingleBallAutoCommand(driveSubsystem, superstructure, localization);
   }
 }
