@@ -15,16 +15,16 @@ import frc.robot.superstructure.commands.ArmUpAndSwifferStopCommand;
 import lib.pathplanner.PPCommand;
 
 /**
- * An autonomous routine starting in the south tarmac that scores the preload and taxis out of the
+ * An autonomous routine starting in the north tarmac that scores the preload and taxis out of the
  * tarmac.
  */
-public class SouthSingleBallAutoCommand extends SequentialCommandGroup {
-  /** Creates a new SouthSingleBallAutoCommand. */
-  public SouthSingleBallAutoCommand(
+public class NorthSingleBallAutoCommand extends SequentialCommandGroup {
+  /** Creates a new NorthSingleBallAutoCommand. */
+  public NorthSingleBallAutoCommand(
       DriveSubsystem driveSubsystem,
       SuperstructureSubsystem superstructure,
       Localization localization) {
-    final var path = PathPlanner.loadPath("SouthSingleBallAuto", 4, 2.25);
+    final var path = PathPlanner.loadPath("NorthSingleBallAuto", 4, 2.25);
 
     addCommands(
         new SeedLocalizationCommand(localization, path),
