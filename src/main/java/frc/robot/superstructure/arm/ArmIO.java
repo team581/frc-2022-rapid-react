@@ -25,8 +25,8 @@ interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
       table.put("TempCelcius", tempCelcius);
       table.put("PositionRadians", position.getRadians());
       table.put("VelocityRadiansPerSecond", velocityRadiansPerSecond);
-      table.put("UpperLimitSwitchEnabled", downwardLimitSwitchEnabled);
-      table.put("LowerLimitSwitchEnabled", upwardLimitSwitchEnabled);
+      table.put("DownwardLimitSwitchEnabled", downwardLimitSwitchEnabled);
+      table.put("UpwardLimitSwitchEnabled", upwardLimitSwitchEnabled);
     }
 
     public void fromLog(LogTable table) {
@@ -37,9 +37,9 @@ interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
       velocityRadiansPerSecond =
           table.getDouble("VelocityRadiansPerSecond", velocityRadiansPerSecond);
       downwardLimitSwitchEnabled =
-          table.getBoolean("UpperLimitSwitchEnabled", downwardLimitSwitchEnabled);
+          table.getBoolean("DownwardLimitSwitchEnabled", downwardLimitSwitchEnabled);
       upwardLimitSwitchEnabled =
-          table.getBoolean("LowerLimitSwitchEnabled", upwardLimitSwitchEnabled);
+          table.getBoolean("UpwardLimitSwitchEnabled", upwardLimitSwitchEnabled);
     }
   }
 
