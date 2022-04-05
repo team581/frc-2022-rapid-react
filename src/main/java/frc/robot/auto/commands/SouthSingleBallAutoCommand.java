@@ -20,7 +20,7 @@ public class SouthSingleBallAutoCommand extends SequentialCommandGroup {
       DriveSubsystem driveSubsystem,
       SuperstructureSubsystem superstructure,
       Localization localization) {
-    final var path = PathPlanner.loadPath("SouthSingleBallAuto", 3, 2.5);
+    final var path = PathPlanner.loadPath("SouthSingleBallAuto", 4, 2.25);
 
     addCommands(
         new SeedLocalizationCommand(localization, path),
