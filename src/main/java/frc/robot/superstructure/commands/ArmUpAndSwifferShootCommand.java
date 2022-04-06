@@ -17,11 +17,10 @@ public class ArmUpAndSwifferShootCommand extends SequentialCommandGroup {
   /** Creates a new ArmUpAndSwifferShootCommand. */
   public ArmUpAndSwifferShootCommand(SuperstructureSubsystem superstructure) {
     addCommands(
+        // The shooting mode won't enable until the arm is in position so we manually tell
+        // the lights that are are preparing to shoot.
         new InstantCommand(
-            () ->
-                // The shooting mode won't enable until the arm is in position so we manually tell
-                // the lights that are are preparing to shoot.
-                superstructure.lights.setSubsystemState(SwifferMode.SHOOTING, false)),
+            () -> superstructure.lights.setSubsystemState(SwifferMode.SHOOTING, false)),
         // Arm up
         new ArmCommand(superstructure.arm, ArmPosition.UP),
         // Shoot all cargo after the arm is up
