@@ -45,7 +45,7 @@ public class Arm extends SubsystemBase {
       case COMP_BOT:
       case SIM_BOT:
         // TODO: Use SysID to calculate the feedforward
-        FEEDFORWARD = new ArmFeedforward(1, 1.2, 0.4, 0.25);
+        FEEDFORWARD = new ArmFeedforward(1.2, 2.73, 2, 0.08);
         VOLTAGE_CLAMP = new Clamp(12);
         CONSTRAINTS = new TrapezoidProfile.Constraints(4.6, 28.86);
         break;
@@ -76,9 +76,9 @@ public class Arm extends SubsystemBase {
       case COMP_BOT:
         // TODO: Use SysID to calculate the PID terms
         pidController =
-            new ProfiledPIDController(3.4, 0.25, 0.3, CONSTRAINTS, Constants.PERIOD_SECONDS);
+            new ProfiledPIDController(1.5, 0, 0.4, CONSTRAINTS, Constants.PERIOD_SECONDS);
         // TODO: Measure actual acceptable tolerance
-        pidController.setTolerance(Units.degreesToRadians(3), Units.degreesToRadians(8));
+        pidController.setTolerance(Units.degreesToRadians(4), Units.degreesToRadians(4));
         break;
       default:
         pidController = new ProfiledPIDController(1, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
