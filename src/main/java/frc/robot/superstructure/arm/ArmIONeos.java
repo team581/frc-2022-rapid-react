@@ -4,6 +4,7 @@
 
 package frc.robot.superstructure.arm;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.revrobotics.CANSparkMax;
@@ -63,6 +64,8 @@ public class ArmIONeos implements ArmIO {
     motor.setInverted(INVERTED);
 
     encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    encoder.configSensorDirection(false);
+    encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
   }
 
   protected static DCMotor getMotorSim() {

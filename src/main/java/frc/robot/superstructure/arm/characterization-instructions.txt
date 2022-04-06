@@ -1,0 +1,6 @@
+1. Use a block to hold the arm parallel to the floor
+2. In Phoenix Tuner use BootToZero and power cycle the robot
+3. Power cycle the robot (sets the encoder to 0)
+4. Deploy SysID
+5. Remove the block and allow the arm to fully lower
+6. Run the characterization routine
