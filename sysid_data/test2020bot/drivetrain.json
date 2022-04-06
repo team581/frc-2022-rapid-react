@@ -17,5 +17,5 @@
   "secondary encoder ports": [2, 3],
   "secondary motor ports": [11, 13],
   "secondary motors inverted": [true, true],
-  "velocity measurement period": 100
+  "velocity measurement period": 1
 }
