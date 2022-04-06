@@ -18,7 +18,6 @@ import frc.robot.misc.util.LoggingUtil;
 import frc.robot.vision_upper.TimestampedPose2d;
 import frc.robot.vision_upper.UpperHubVisionSubsystem;
 import frc.robot.vision_upper.UpperHubVisionTarget;
-
 import java.util.Optional;
 import lib.wpilib.MecanumDrivePoseEstimator;
 import org.ejml.data.SingularMatrixException;

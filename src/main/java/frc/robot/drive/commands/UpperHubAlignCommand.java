@@ -14,7 +14,6 @@ import frc.robot.localization.Localization;
 import frc.robot.paths.commands.DynamicTrajectoryFollowCommand;
 import frc.robot.paths.util.TrajectoryGenerator;
 import frc.robot.vision_upper.UpperHubVisionTarget;
-
 import java.util.List;
 
 public class UpperHubAlignCommand extends DynamicTrajectoryFollowCommand {

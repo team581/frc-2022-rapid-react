@@ -17,7 +17,6 @@ import frc.robot.misc.util.PolarTranslation2d;
 import frc.robot.vision.Camera;
 import frc.robot.vision.ComputerVisionUtilForCamera;
 import frc.robot.vision.VisionSubsystemBase;
-
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
