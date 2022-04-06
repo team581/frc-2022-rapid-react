@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import frc.robot.imu.ImuSubsystem;
+import frc.robot.misc.util.LoggingUtil;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -134,13 +135,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void logTrajectoryPose(Trajectory.State state) {
     Logger.getInstance()
-        .recordOutput(
-            "Drive/TrajectoryPose",
-            new double[] {
-              state.poseMeters.getX(),
-              state.poseMeters.getY(),
-              state.poseMeters.getRotation().getRadians()
-            });
+        .recordOutput("Drive/TrajectoryPose", LoggingUtil.poseToArray(state.poseMeters));
   }
 
   // TODO: Delete this method, or replace it with another method for setting robot pose at match
