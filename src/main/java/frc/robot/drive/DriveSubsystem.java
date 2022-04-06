@@ -151,8 +151,8 @@ public class DriveSubsystem extends SubsystemBase {
         ChassisSpeeds.fromFieldRelativeSpeeds(
             xPercentage * MAX_VELOCITY,
             yPercentage * MAX_VELOCITY,
-            thetaController.calculate(robotHeading.getRadians(), newGoalHeading),
-            imuSubsystem.getRotation());
+            thetaController.calculate(imuSubsystem.getRotation().getRadians(), newGoalHeading),
+            robotHeading);
 
     Logger.getInstance()
         .recordOutput("Drive/GoalHeadingRadians", thetaController.getGoal().position);
