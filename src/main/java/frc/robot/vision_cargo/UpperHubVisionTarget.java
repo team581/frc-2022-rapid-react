@@ -25,8 +25,14 @@ public class UpperHubVisionTarget extends VisionTarget {
       new PolarTranslation2d(RADIUS, new Rotation2d());
 
   public UpperHubVisionTarget() {
+    // Measurements from https://firstfrc.blob.core.windows.net/frc2022/Manual/2022FRCGameManual.pdf
     super(
-        // TODO: See where the camera is placing the crosshair on the target
-        0.75, CargoVisionSubsystem.Pipelines.UPPER_HUB.index);
+        // The vision tape is 8 feet, 5 and 5/8 inches from the carpet
+        Units.feetToMeters(8)
+            + Units.inchesToMeters(5)
+            + Units.inchesToMeters(5.0 / 8.0)
+            // The crosshair is placed in the center of the vision tape which is 2 inches tall
+            + Units.inchesToMeters(2) / 2,
+        CargoVisionSubsystem.Pipelines.UPPER_HUB.index);
   }
 }
