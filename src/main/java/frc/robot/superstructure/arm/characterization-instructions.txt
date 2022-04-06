@@ -1,3 +1,5 @@
+This is necessary until this is merged: https://github.com/wpilibsuite/sysid/issues/416
+
 1. Use a block to hold the arm parallel to the floor
 2. In Phoenix Tuner use BootToZero and power cycle the robot
 3. Power cycle the robot (sets the encoder to 0)
