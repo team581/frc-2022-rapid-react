@@ -32,7 +32,7 @@ public class ArmIONeos implements ArmIO {
       case COMP_BOT:
       case SIM_BOT:
         ENCODER_ABSOLUTE_POSITION_DIFFERENCE = Rotation2d.fromDegrees(237.920);
-        INVERTED = true;
+        INVERTED = false;
         break;
       default:
         throw new UnsupportedSubsystemException(ArmIONeos.class);
@@ -49,7 +49,7 @@ public class ArmIONeos implements ArmIO {
     switch (Constants.getRobot()) {
       case COMP_BOT:
       case SIM_BOT:
-        motor = new CANSparkMax(5, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
         encoder = new CANCoder(3);
 
         forwardLimitSwitch = motor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
