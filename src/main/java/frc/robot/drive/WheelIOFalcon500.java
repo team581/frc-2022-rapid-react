@@ -17,6 +17,7 @@ public class WheelIOFalcon500 implements WheelIO {
 
   public WheelIOFalcon500(Corner corner) {
     switch (Constants.getRobot()) {
+      case SIM_BOT:
       case COMP_BOT:
         gearingConverter = new GearingConverter(12.75);
         switch (corner) {
@@ -53,27 +54,6 @@ public class WheelIOFalcon500 implements WheelIO {
             break;
           case REAR_RIGHT:
             motor = new WPI_TalonFX(13);
-            motor.setInverted(true);
-            break;
-          default:
-            throw new IllegalArgumentException("Unknown corner");
-        }
-        break;
-      case SIM_BOT:
-        gearingConverter = new GearingConverter(1);
-        switch (corner) {
-          case FRONT_LEFT:
-            motor = new WPI_TalonFX(1);
-            break;
-          case FRONT_RIGHT:
-            motor = new WPI_TalonFX(2);
-            motor.setInverted(true);
-            break;
-          case REAR_LEFT:
-            motor = new WPI_TalonFX(3);
-            break;
-          case REAR_RIGHT:
-            motor = new WPI_TalonFX(4);
             motor.setInverted(true);
             break;
           default:

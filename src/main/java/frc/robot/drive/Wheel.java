@@ -36,17 +36,12 @@ public class Wheel extends SubsystemBase {
         FEEDFORWARD = new SimpleMotorFeedforward(0.088986, 0.18647, 0.0076096);
         break;
       case COMP_BOT:
+      case SIM_BOT:
         WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
         // TODO: Measure the maximum wheel velocity
         MAX_WHEEL_VELOCITY = WHEEL_CONVERTER.radiansToDistance(Units.rotationsToRadians(1));
         VOLTAGE_CLAMP = new Clamp(12);
         FEEDFORWARD = new SimpleMotorFeedforward(0.060039, 0.22421, 0.011814);
-        break;
-      case SIM_BOT:
-        WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
-        MAX_WHEEL_VELOCITY = 1;
-        VOLTAGE_CLAMP = new Clamp(12);
-        FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
         break;
       default:
         throw new UnknownTargetRobotException();
@@ -80,10 +75,8 @@ public class Wheel extends SubsystemBase {
         pid = new PIDController(0.031124, 0, 0, Constants.PERIOD_SECONDS);
         break;
       case COMP_BOT:
-        pid = new PIDController(0.068406, 0, 0, Constants.PERIOD_SECONDS);
-        break;
       case SIM_BOT:
-        pid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
+        pid = new PIDController(0.068406, 0, 0, Constants.PERIOD_SECONDS);
         break;
       default:
         throw new UnknownTargetRobotException();
