@@ -4,17 +4,17 @@
 
 package frc.robot.superstructure.arm;
 
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
+import frc.robot.misc.util.GearingConverter;
+import frc.robot.misc.util.sensors.SensorUnitConverter;
+import org.littletonrobotics.junction.Logger;
 
 public class ArmIONeos implements ArmIO {
   public static final boolean INVERTED;
@@ -29,7 +29,7 @@ public class ArmIONeos implements ArmIO {
     switch (Constants.getRobot()) {
       case COMP_BOT:
       case SIM_BOT:
-        ENCODER_ABSOLUTE_POSITION_DIFFERENCE = Rotation2d.fromDegrees(237.920);
+        ENCODER_ABSOLUTE_POSITION_DIFFERENCE = Rotation2d.fromDegrees(0);
         INVERTED = false;
         break;
       default:
@@ -38,20 +38,26 @@ public class ArmIONeos implements ArmIO {
   }
 
   protected final CANSparkMax motor;
-  protected final CANCoder encoder;
+  protected final RelativeEncoder encoder;
 
   protected final SparkMaxLimitSwitch forwardLimitSwitch;
   protected final SparkMaxLimitSwitch reverseLimitSwitch;
+  private final GearingConverter gearingConverter;
+
+  private double previousPositionRadians = Arm.STARTING_POSITION.state.position;
+  private double previousTimestamp = -1;
 
   public ArmIONeos() {
     switch (Constants.getRobot()) {
       case COMP_BOT:
       case SIM_BOT:
         motor = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
-        encoder = new CANCoder(3);
+        encoder = motor.getEncoder();
 
         forwardLimitSwitch = motor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         reverseLimitSwitch = motor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+
+        gearingConverter = new GearingConverter(300.0 / 7.0);
 
         break;
       default:
@@ -59,10 +65,6 @@ public class ArmIONeos implements ArmIO {
     }
 
     motor.setInverted(INVERTED);
-
-    encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
-    encoder.configSensorDirection(false);
-    encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
   }
 
   protected static DCMotor getMotorSim() {
@@ -71,13 +73,32 @@ public class ArmIONeos implements ArmIO {
 
   @Override
   public void updateInputs(Inputs inputs) {
+    final var currentPositionRadians =
+        gearingConverter.beforeToAfterGearing(
+            SensorUnitConverter.sparkMAX.sensorUnitsToRadians(encoder.getPosition()));
+
+    final var currentTimestamp = Logger.getInstance().getTimestamp();
+    double velocityRadiansPerSecond;
+
+    if (previousTimestamp == -1) {
+      // We assume a velocity of 0 on the first run
+      velocityRadiansPerSecond = 0;
+    } else {
+
+      final var positionDelta = currentPositionRadians - previousPositionRadians;
+      final var timestampDelta = currentTimestamp - previousTimestamp;
+
+      velocityRadiansPerSecond = positionDelta / timestampDelta;
+    }
+
+    previousPositionRadians = currentPositionRadians;
+    previousTimestamp = currentTimestamp;
+
     inputs.appliedVolts = motor.getAppliedOutput();
     inputs.currentAmps = motor.getOutputCurrent();
     inputs.tempCelcius = motor.getMotorTemperature();
-    inputs.position =
-        Rotation2d.fromDegrees(encoder.getAbsolutePosition())
-            .minus(ENCODER_ABSOLUTE_POSITION_DIFFERENCE);
-    inputs.velocityRadiansPerSecond = Units.degreesToRadians(encoder.getVelocity());
+    inputs.position = new Rotation2d(currentPositionRadians);
+    inputs.velocityRadiansPerSecond = velocityRadiansPerSecond;
     inputs.upperLimitSwitchEnabled = forwardLimitSwitch.isPressed();
     inputs.lowerLimitSwitchEnabled = reverseLimitSwitch.isPressed();
   }

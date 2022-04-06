@@ -71,18 +71,18 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
     final var positionRadians = sim.getAngleRads();
     final var velocityRadiansPerSecond = sim.getVelocityRadPerSec();
 
-    final var encoderSim = encoder.getSimCollection();
+    // final var encoderSim = encoder.getSimCollection();
 
-    encoderSim.setRawPosition(
-        (int)
-            Math.round(
-                SensorUnitConverter.cancoder.radiansToSensorUnits(
-                    ENCODER_ABSOLUTE_POSITION_DIFFERENCE.getRadians() + positionRadians)));
+    // encoderSim.setRawPosition(
+    //     (int)
+    //         Math.round(
+    //             SensorUnitConverter.cancoder.radiansToSensorUnits(
+    //                 ENCODER_ABSOLUTE_POSITION_DIFFERENCE.getRadians() + positionRadians)));
 
     final var velocitySensorUnits =
         SensorUnitConverter.cancoder.radiansPerSecondToSensorUnitsPer100ms(
             velocityRadiansPerSecond);
-    encoderSim.setVelocity(velocitySensorUnits);
+    // encoderSim.setVelocity(velocitySensorUnits);
 
     Logger.getInstance().recordOutput("Arm/Sim/VelocityRadiansPerSecond", velocityRadiansPerSecond);
     Logger.getInstance().recordOutput("Arm/Sim/PositionRadians", positionRadians);
