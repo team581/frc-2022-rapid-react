@@ -145,13 +145,18 @@ public class DriveSubsystem extends SubsystemBase {
     final var newGoalHeading =
         thetaController.getGoal().position + goalHeadingDifferential.getRadians();
 
+    final var thetaControllerVelocity =
+        thetaController.calculate(imuSubsystem.getRotation().getRadians(), newGoalHeading);
     final var chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
             xPercentage * MAX_VELOCITY,
             yPercentage * MAX_VELOCITY,
-            thetaController.calculate(imuSubsystem.getRotation().getRadians(), newGoalHeading),
+            thetaControllerVelocity,
             robotHeading);
 
+    // TODO: Stop logging this after debugging is finished
+    Logger.getInstance()
+        .recordOutput("Drive/ThetaControllerVelocityRadiansPerSecond", thetaControllerVelocity);
     Logger.getInstance()
         .recordOutput("Drive/GoalHeadingRadians", thetaController.getGoal().position);
 
