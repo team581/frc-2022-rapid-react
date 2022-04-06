@@ -40,8 +40,6 @@ public class DriveSubsystem extends SubsystemBase {
           new Translation2d(-0.285, -0.285));
 
   /** The robot's maximum velocity in meters per second. */
-  // TODO: This is wrong, this measures one wheel's maximum velocity. Instead, you should take the
-  // max wheel velocity and use kinematics to convert 4x wheels at max velocity to a ChassisSpeeds
   public static final double MAX_VELOCITY;
   /** The robot's maximum acceleration in meters per second squared. */
   public static final double MAX_ACCELERATION;
