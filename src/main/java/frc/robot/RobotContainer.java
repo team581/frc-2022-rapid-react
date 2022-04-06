@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.auto.AutoRoutineChooser;
 import frc.robot.controller.ButtonController;
@@ -153,6 +154,21 @@ public class RobotContainer {
     // are used to add command requirements.
     configureDriverButtonBindings();
     configureCopilotButtonBindings();
+
+    initLogging();
+  }
+
+  /** Start logging WPILib structures using their NetworkTables stuff. */
+  private void initLogging() {
+    SmartDashboard.putData(matchMetadataSubsystem);
+    SmartDashboard.putData(imuSubsystem);
+    SmartDashboard.putData(driveSubsystem);
+    SmartDashboard.putData(upperVisionSubsystem);
+    SmartDashboard.putData(cargoVisionSubsystem);
+    SmartDashboard.putData(swiffer);
+    SmartDashboard.putData(arm);
+    SmartDashboard.putData(superstructureSubsystem);
+    SmartDashboard.putData(lights);
   }
 
   private void configureDriverButtonBindings() {
