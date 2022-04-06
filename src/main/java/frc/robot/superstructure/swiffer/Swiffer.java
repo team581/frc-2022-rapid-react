@@ -27,12 +27,13 @@ public class Swiffer extends SubsystemBase {
       case COMP_BOT:
       case SIM_BOT:
         VOLTAGE_CLAMP = new Clamp(12);
-        TOLERANCE_RPM = 1;
+        TOLERANCE_RPM = 75;
+        // TODO: This needs to be measured again
         FEEDFORWARD = new SimpleMotorFeedforward(0.019184, 0.17836, 0.002161);
         break;
       default:
         VOLTAGE_CLAMP = new Clamp(12);
-        TOLERANCE_RPM = 20;
+        TOLERANCE_RPM = 0;
         FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
         break;
     }
