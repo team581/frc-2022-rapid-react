@@ -128,7 +128,17 @@ public class DriveSubsystem extends SubsystemBase {
     drivebase.periodic();
   }
 
-  public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
+  public void driveTeleop(
+      double xPercentage, double yPercentage, double thetaPercentage, boolean fieldRelative) {
+    if (fieldRelative) {
+      driveTeleop(xPercentage, yPercentage, thetaPercentage, imuSubsystem.getRotation());
+    } else {
+      driveTeleop(xPercentage, yPercentage, thetaPercentage, new Rotation2d());
+    }
+  }
+
+  private void driveTeleop(
+      double xPercentage, double yPercentage, double thetaPercentage, Rotation2d robotHeading) {
     thetaController.setGoal(
         thetaController.getGoal().position
             + TeleopDriveCommand.MAX_TELEOP_TURN_RATE
@@ -143,7 +153,7 @@ public class DriveSubsystem extends SubsystemBase {
         ChassisSpeeds.fromFieldRelativeSpeeds(
             xPercentage * MAX_VELOCITY,
             yPercentage * MAX_VELOCITY,
-            thetaController.calculate(imuSubsystem.getRotation().getRadians()),
+            thetaController.calculate(robotHeading.getRadians()),
             imuSubsystem.getRotation());
 
     setChassisSpeeds(chassisSpeeds);
