@@ -149,8 +149,8 @@ public class DriveSubsystem extends SubsystemBase {
         thetaController.calculate(imuSubsystem.getRotation().getRadians(), newGoalHeading);
     final var chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            xPercentage * MAX_VELOCITY,
             yPercentage * MAX_VELOCITY,
+            -xPercentage * MAX_VELOCITY,
             thetaControllerVelocity,
             robotHeading);
 
