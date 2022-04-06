@@ -139,22 +139,22 @@ public class DriveSubsystem extends SubsystemBase {
 
   private void driveTeleop(
       double xPercentage, double yPercentage, double thetaPercentage, Rotation2d robotHeading) {
-    thetaController.setGoal(
-        thetaController.getGoal().position
-            + TeleopDriveCommand.MAX_TELEOP_TURN_RATE
-                .times(Constants.PERIOD_SECONDS)
-                .times(-thetaPercentage)
-                .getRadians());
-
-    Logger.getInstance()
-        .recordOutput("Drive/GoalHeadingRadians", thetaController.getGoal().position);
+    final var goalHeadingDifferential =
+        TeleopDriveCommand.MAX_TELEOP_TURN_RATE
+            .times(Constants.PERIOD_SECONDS)
+            .times(-thetaPercentage);
+    final var newGoalHeading =
+        thetaController.getGoal().position + goalHeadingDifferential.getRadians();
 
     final var chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
             xPercentage * MAX_VELOCITY,
             yPercentage * MAX_VELOCITY,
-            thetaController.calculate(robotHeading.getRadians()),
+            thetaController.calculate(robotHeading.getRadians(), newGoalHeading),
             imuSubsystem.getRotation());
+
+    Logger.getInstance()
+        .recordOutput("Drive/GoalHeadingRadians", thetaController.getGoal().position);
 
     setChassisSpeeds(chassisSpeeds);
   }
