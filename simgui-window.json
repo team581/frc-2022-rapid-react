@@ -16,6 +16,11 @@
       "Pos": "60,60",
       "Size": "202,194"
     },
+    "###/LiveWindow/Arm": {
+      "Collapsed": "0",
+      "Pos": "2134,463",
+      "Size": "178,98"
+    },
     "###/LiveWindow/Ungrouped/Scheduler": {
       "Collapsed": "0",
       "Pos": "835,228",
@@ -28,8 +33,18 @@
     },
     "###/SmartDashboard/Arm Sim": {
       "Collapsed": "0",
-      "Pos": "1191,238",
+      "Pos": "1251,226",
       "Size": "502,498"
+    },
+    "###/SmartDashboard/Scheduler": {
+      "Collapsed": "0",
+      "Pos": "838,241",
+      "Size": "400,200"
+    },
+    "###/SmartDashboard/SuperstructureSubsystem": {
+      "Collapsed": "0",
+      "Pos": "1942,448",
+      "Size": "418,98"
     },
     "###Addressable LEDs": {
       "Collapsed": "0",
@@ -59,7 +74,7 @@
     "###Other Devices": {
       "Collapsed": "0",
       "Pos": "768,443",
-      "Size": "421,269"
+      "Size": "480,287"
     },
     "###RoboRIO": {
       "Collapsed": "0",

@@ -19,9 +19,6 @@ import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 public class ArmIONeos implements ArmIO {
   public static final boolean INVERTED;
 
-  /** Used to make the arm in the visualization look like the actual robot. */
-  protected static final Rotation2d SIM_ANGLE_OFFSET = Rotation2d.fromDegrees(70);
-
   /**
    * The amount to subtract from the absolute position to ensure that an absolute position of 0
    * means the arm is in the {@link ArmPosition#DOWN down position}.

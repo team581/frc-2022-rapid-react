@@ -7,11 +7,16 @@ package frc.robot.superstructure.arm;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
+/**
+ * The goal positions for the arm to be in. Angles are CCW+. When the arm is level with the floor it
+ * is at a rotation of 0. When the arm is perpendicular with the floor it is at a rotation of 90deg
+ * (not -90deg or 270deg, that would be CW+).
+ */
 public enum ArmPosition {
-  UP(Rotation2d.fromDegrees(121.904)),
-  DOWN(Rotation2d.fromDegrees(0));
+  UP(Rotation2d.fromDegrees(40)),
+  DOWN(Rotation2d.fromDegrees(-10));
 
-  public final TrapezoidProfile.State state;
+  final TrapezoidProfile.State state;
 
   ArmPosition(Rotation2d angle) {
     this.state = new TrapezoidProfile.State(angle.getRadians(), 0);
