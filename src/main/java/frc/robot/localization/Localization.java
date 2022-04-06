@@ -15,9 +15,9 @@ import frc.robot.Constants;
 import frc.robot.drive.DriveSubsystem;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.misc.util.LoggingUtil;
-import frc.robot.vision_cargo.CargoVisionSubsystem;
-import frc.robot.vision_cargo.UpperHubVisionTarget;
 import frc.robot.vision_upper.TimestampedPose2d;
+import frc.robot.vision_upper.UpperHubVisionSubsystem;
+import frc.robot.vision_upper.UpperHubVisionTarget;
 import java.util.Optional;
 import lib.wpilib.MecanumDrivePoseEstimator;
 import org.ejml.data.SingularMatrixException;
@@ -39,7 +39,7 @@ public class Localization extends SubsystemBase {
   }
 
   private final DriveSubsystem driveSubsystem;
-  private final CargoVisionSubsystem visionSubsystem;
+  private final UpperHubVisionSubsystem visionSubsystem;
   private final ImuSubsystem imuSubsystem;
   private final MecanumDrivePoseEstimator poseEstimator;
   private final MecanumDriveOdometry odometry;
@@ -49,7 +49,7 @@ public class Localization extends SubsystemBase {
 
   public Localization(
       DriveSubsystem driveSubsystem,
-      CargoVisionSubsystem visionSubsystem,
+      UpperHubVisionSubsystem visionSubsystem,
       ImuSubsystem imuSubsystem,
       Pose2d initialRobotPose) {
     this.driveSubsystem = driveSubsystem;
@@ -79,7 +79,7 @@ public class Localization extends SubsystemBase {
 
   public Localization(
       DriveSubsystem driveSubsystem,
-      CargoVisionSubsystem visionSubsystem,
+      UpperHubVisionSubsystem visionSubsystem,
       ImuSubsystem imuSubsystem) {
     this(
         driveSubsystem,
