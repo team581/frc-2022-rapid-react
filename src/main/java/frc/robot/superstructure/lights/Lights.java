@@ -75,15 +75,29 @@ public class Lights extends SubsystemBase {
     Color color;
     LightsMode lightsMode;
 
+    switch (swifferState) {
+      case STOPPED:
+        color = Color.kYellow;
+        break;
+      case SHOOTING:
+        color = Color.kRed;
+        break;
+      case SNARFING:
+        color = Color.kGreen;
+        break;
+      default:
+        // Should never happen
+        setColorForError();
+        return;
+    }
+
     switch (armState) {
       case UP:
         switch (swifferState) {
           case STOPPED:
-            color = Color.kYellow;
             lightsMode = armAtGoal && swifferAtGoal ? LightsMode.BLINK_SLOW : LightsMode.BLINK_FAST;
             break;
           case SHOOTING:
-            color = Color.kRed;
             lightsMode = armAtGoal ? LightsMode.BLINK_FAST : LightsMode.BLINK_SLOW;
             break;
           default:
@@ -93,7 +107,6 @@ public class Lights extends SubsystemBase {
         }
         break;
       case DOWN:
-        color = Color.kGreen;
         lightsMode = armAtGoal && swifferAtGoal ? LightsMode.BLINK_FAST : LightsMode.BLINK_SLOW;
         break;
       default:
