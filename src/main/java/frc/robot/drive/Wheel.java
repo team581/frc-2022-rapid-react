@@ -23,6 +23,9 @@ class Wheel extends SubsystemBase {
   /** The maximum acceleration of a wheel in meters/second/second. */
   public static final double MAX_ACCELERATION;
 
+  /** The maximum acceleration of a wheel in radians/second/second. */
+  public static final double MAX_ANGULAR_ACCELERATION;
+
   private static final Clamp VOLTAGE_CLAMP;
 
   private static final SimpleMotorFeedforward FEEDFORWARD;
@@ -52,7 +55,8 @@ class Wheel extends SubsystemBase {
     // Feedforward is used to convert radians/second to a voltage. You can divide the maximum
     // voltage by the acceleration component of the feedforward to get the robot's average
     // acceleration.
-    MAX_ACCELERATION = WHEEL_CONVERTER.radiansToDistance(VOLTAGE_CLAMP.maximum / FEEDFORWARD.ka);
+    MAX_ANGULAR_ACCELERATION = VOLTAGE_CLAMP.maximum / FEEDFORWARD.ka;
+    MAX_ACCELERATION = WHEEL_CONVERTER.radiansToDistance(MAX_ANGULAR_ACCELERATION);
   }
 
   /** Wheel velocity PID controller. Input is in radians/second, output is in volts. */

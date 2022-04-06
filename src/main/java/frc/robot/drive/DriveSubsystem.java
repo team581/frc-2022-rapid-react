@@ -69,16 +69,17 @@ public class DriveSubsystem extends SubsystemBase {
             Wheel.MAX_WHEEL_VELOCITY);
     final var maxChassisSpeedsSpinning = KINEMATICS.toChassisSpeeds(maxWheelSpeedsSpinning);
 
-    MAX_VELOCITY = maxChassisSpeedsForward.vyMetersPerSecond;
+    MAX_VELOCITY = maxChassisSpeedsForward.vxMetersPerSecond;
     MAX_ANGULAR_VELOCITY = maxChassisSpeedsSpinning.omegaRadiansPerSecond;
 
     MAX_ACCELERATION = Wheel.MAX_ACCELERATION;
-    // TODO: This needs to be measured
-    MAX_ANGULAR_ACCELERATION = Wheel.MAX_ACCELERATION;
+    // TODO: This is the wheel's angular acceleration, do we need a different value for the robot
+    // itself?
+    MAX_ANGULAR_ACCELERATION = Wheel.MAX_ANGULAR_ACCELERATION;
   }
 
   private static final TrapezoidProfile.Constraints MAX_ROTATION =
-      new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY, Math.pow(MAX_ANGULAR_VELOCITY, 2));
+      new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY, MAX_ANGULAR_ACCELERATION);
 
   /** The acceptable amount of error between the robot's current pose and the desired pose. */
   private static final Pose2d POSE_TOLERANCE = new Pose2d(0.15, 0.15, Rotation2d.fromDegrees(2));
