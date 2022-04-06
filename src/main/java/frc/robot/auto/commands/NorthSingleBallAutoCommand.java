@@ -10,8 +10,8 @@ import frc.robot.drive.DriveSubsystem;
 import frc.robot.localization.Localization;
 import frc.robot.localization.commands.SeedLocalizationCommand;
 import frc.robot.superstructure.SuperstructureSubsystem;
-import frc.robot.superstructure.commands.ArmUpAndSwifferShootCommand;
-import frc.robot.superstructure.commands.ArmUpAndSwifferStopCommand;
+import frc.robot.superstructure.commands.ArmUpAndShootCommand;
+import frc.robot.superstructure.commands.ArmUpAndStopCommand;
 import lib.pathplanner.PPCommand;
 
 /**
@@ -28,8 +28,8 @@ public class NorthSingleBallAutoCommand extends SequentialCommandGroup {
 
     addCommands(
         new SeedLocalizationCommand(localization, path),
-        new ArmUpAndSwifferShootCommand(superstructure),
-        new ArmUpAndSwifferStopCommand(superstructure),
+        new ArmUpAndShootCommand(superstructure),
+        new ArmUpAndStopCommand(superstructure),
         new PPCommand(path, driveSubsystem, localization));
 
     addRequirements(driveSubsystem, superstructure);

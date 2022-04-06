@@ -11,9 +11,9 @@ import frc.robot.superstructure.arm.commands.ArmCommand;
 import frc.robot.superstructure.swiffer.commands.SwifferStopCommand;
 
 /** Lift the swiffer up and stop the flywheel. */
-public class ArmUpAndSwifferStopCommand extends ParallelCommandGroup {
-  /** Creates a new ArmUpAndSwifferStopCommand. */
-  public ArmUpAndSwifferStopCommand(SuperstructureSubsystem superstructure) {
+public class ArmUpAndStopCommand extends ParallelCommandGroup {
+  /** Creates a new ArmUpAndStopCommand. */
+  public ArmUpAndStopCommand(SuperstructureSubsystem superstructure) {
     addCommands(
         // Arm up
         new ArmCommand(superstructure.arm, ArmPosition.UP),

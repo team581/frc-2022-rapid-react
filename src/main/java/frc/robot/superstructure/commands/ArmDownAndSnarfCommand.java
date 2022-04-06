@@ -10,7 +10,7 @@ import frc.robot.superstructure.arm.ArmPosition;
 import frc.robot.superstructure.arm.commands.ArmCommand;
 import frc.robot.superstructure.swiffer.commands.SwifferSnarfCommand;
 
-/** Lowers the swiffer while snarfing. */
+/** Lowers the arm while snarfing. */
 public class ArmDownAndSnarfCommand extends ParallelCommandGroup {
   /** Creates a new ArmDownAndSnarfCommand. */
   public ArmDownAndSnarfCommand(SuperstructureSubsystem superstructure) {

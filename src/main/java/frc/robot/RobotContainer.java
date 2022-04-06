@@ -20,9 +20,9 @@ import frc.robot.match_metadata.*;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.*;
+import frc.robot.superstructure.commands.ArmDownAndShootCommand;
 import frc.robot.superstructure.commands.ArmDownAndSnarfCommand;
-import frc.robot.superstructure.commands.ArmDownAndSwifferShootCommand;
-import frc.robot.superstructure.commands.ArmUpAndSwifferShootCommand;
+import frc.robot.superstructure.commands.ArmUpAndShootCommand;
 import frc.robot.superstructure.lights.*;
 import frc.robot.superstructure.swiffer.*;
 import frc.robot.vision_cargo.*;
@@ -188,14 +188,13 @@ public class RobotContainer {
     copilotController.rightTrigger.whileHeld(new ArmDownAndSnarfCommand(superstructureSubsystem));
 
     // Scoring at the hub
-    copilotController.leftTrigger.whileHeld(
-        new ArmUpAndSwifferShootCommand(superstructureSubsystem));
+    copilotController.leftTrigger.whileHeld(new ArmUpAndShootCommand(superstructureSubsystem));
 
     // Discard cargo by rolling it on the floor
     copilotController
         .rightTrigger
         .and(copilotController.bButton)
-        .whileActiveContinuous(new ArmDownAndSwifferShootCommand(superstructureSubsystem));
+        .whileActiveContinuous(new ArmDownAndShootCommand(superstructureSubsystem));
   }
 
   /**

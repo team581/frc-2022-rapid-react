@@ -13,9 +13,9 @@ import frc.robot.superstructure.swiffer.SwifferMode;
 import frc.robot.superstructure.swiffer.commands.SwifferShootCommand;
 
 /** Puts the arm up and shoots all cargo. */
-public class ArmUpAndSwifferShootCommand extends SequentialCommandGroup {
-  /** Creates a new ArmUpAndSwifferShootCommand. */
-  public ArmUpAndSwifferShootCommand(SuperstructureSubsystem superstructure) {
+public class ArmUpAndShootCommand extends SequentialCommandGroup {
+  /** Creates a new ArmUpAndShootCommand. */
+  public ArmUpAndShootCommand(SuperstructureSubsystem superstructure) {
     addCommands(
         // The shooting mode won't enable until the arm is in position so we manually tell
         // the lights that are are preparing to shoot.

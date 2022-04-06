@@ -16,9 +16,9 @@ import frc.robot.superstructure.swiffer.commands.SwifferShootCommand;
  * Lowers the arm and shoots all cargo. This is used for resolving jams in the intake or discarding
  * unwanted cargo, not for scoring.
  */
-public class ArmDownAndSwifferShootCommand extends SequentialCommandGroup {
-  /** Creates a new ArmDownAndSwifferShootCommand. */
-  public ArmDownAndSwifferShootCommand(SuperstructureSubsystem superstructure) {
+public class ArmDownAndShootCommand extends SequentialCommandGroup {
+  /** Creates a new ArmDownAndShootCommand. */
+  public ArmDownAndShootCommand(SuperstructureSubsystem superstructure) {
     addCommands(
         // The shooting mode won't enable until the arm is in position so we manually tell
         // the lights that are are preparing to shoot.
