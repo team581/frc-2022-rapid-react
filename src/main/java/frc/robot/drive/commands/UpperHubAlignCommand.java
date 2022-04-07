@@ -17,20 +17,23 @@ import frc.robot.vision_cargo.UpperHubVisionTarget;
 import java.util.List;
 
 public class UpperHubAlignCommand extends DynamicTrajectoryFollowCommand {
-  private static final Rotation2d HUB_ROTATION = Rotation2d.fromDegrees(22.5).unaryMinus();
+  /**
+   * The hub is a square structure but it's rotated on the field. In our code we use this angle to
+   * adjust both the fender position and the robot's goal position to accurately match the hub's
+   * rotation.
+   *
+   * @see https://firstfrc.blob.core.windows.net/frc2022/FieldAssets/2022LayoutMarkingDiagram.pdf
+   */
+  private static final Rotation2d HUB_ROTATION = Rotation2d.fromDegrees(21).unaryMinus();
 
   /**
    * The number of meters that we want to be away from the center of the hub in order to be properly
    * lined up with the fenders to score.
    */
   private static final double GOAL_DISTANCE_FROM_HUB_CENTER =
-      UpperHubVisionTarget.RADIUS + Units.feetToMeters(3);
+      UpperHubVisionTarget.RADIUS + Units.feetToMeters(2.5);
 
   /** Four poses that align you with the fenders while facing toward the center of the hub. */
-  // The hub is not perfectly aligned with the edges of the field.
-  // It is rotated 24º ± 3º (counter clockwise).
-  // Refer to the field diagram:
-  // https://firstfrc.blob.core.windows.net/frc2022/FieldAssets/2022LayoutMarkingDiagram.pdf
   private static final List<Pose2d> GOAL_POSES =
       List.of(
           // Closest to opposing alliance wall
