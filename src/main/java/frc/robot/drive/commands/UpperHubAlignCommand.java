@@ -30,26 +30,30 @@ public class UpperHubAlignCommand extends DynamicTrajectoryFollowCommand {
   // Refer to the field diagram:
   // https://firstfrc.blob.core.windows.net/frc2022/FieldAssets/2022LayoutMarkingDiagram.pdf
   private static final List<Pose2d> GOAL_POSES =
-    List.of(
+      List.of(
           // Right
           new Pose2d(
               UpperHubVisionTarget.COORDINATES.plus(
-                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0).rotateBy(Rotation2d.fromDegrees(24))),
-              Rotation2d.fromDegrees(180 + 24 )),
+                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0)
+                      .rotateBy(Rotation2d.fromDegrees(24))),
+              Rotation2d.fromDegrees(180 + 24)),
           // Left
           new Pose2d(
               UpperHubVisionTarget.COORDINATES.minus(
-                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0).rotateBy(Rotation2d.fromDegrees(24))),
+                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0)
+                      .rotateBy(Rotation2d.fromDegrees(24))),
               Rotation2d.fromDegrees(0 + 24)),
           // Up
           new Pose2d(
               UpperHubVisionTarget.COORDINATES.plus(
-                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER).rotateBy(Rotation2d.fromDegrees(24))),
+                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER)
+                      .rotateBy(Rotation2d.fromDegrees(24))),
               Rotation2d.fromDegrees(90 + 24)),
           // Down
           new Pose2d(
               UpperHubVisionTarget.COORDINATES.minus(
-                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER).rotateBy(Rotation2d.fromDegrees(24))),
+                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER)
+                      .rotateBy(Rotation2d.fromDegrees(24))),
               Rotation2d.fromDegrees(270 + 24)));
 
   private static Pose2d chooseGoalPose(Localization localization) {
