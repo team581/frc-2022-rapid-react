@@ -70,10 +70,21 @@ public class DriveSubsystem extends SubsystemBase {
     MAX_VELOCITY = Math.abs(maxChassisSpeedsForward.vxMetersPerSecond);
     MAX_ANGULAR_VELOCITY = Math.abs(maxChassisSpeedsSpinning.omegaRadiansPerSecond);
 
+    System.out.println("maxChassisSpeedsSpinning:");
+    System.out.println(maxChassisSpeedsSpinning);
+
     MAX_ACCELERATION = Wheel.MAX_ACCELERATION;
     // TODO: This is the wheel's angular acceleration, do we need a different value for the robot
     // itself?
     MAX_ANGULAR_ACCELERATION = Wheel.MAX_ANGULAR_ACCELERATION;
+    System.out.println("MAX_VELOCITY");
+    System.out.println(MAX_VELOCITY);
+    System.out.println("MAX_ANGULAR_VELOCITY");
+    System.out.println(MAX_ANGULAR_VELOCITY);
+    System.out.println("MAX_ACCELERATION");
+    System.out.println(MAX_ACCELERATION);
+    System.out.println("MAX_ANGULAR_ACCELERATION");
+    System.out.println(MAX_ANGULAR_ACCELERATION);
   }
 
   private static final TrapezoidProfile.Constraints MAX_ROTATION =
@@ -85,7 +96,7 @@ public class DriveSubsystem extends SubsystemBase {
   public final TrajectoryConfig trajectoryConfig;
 
   private final ProfiledPIDController thetaController =
-      new ProfiledPIDController(1, 0, 0, MAX_ROTATION, Constants.PERIOD_SECONDS);
+      new ProfiledPIDController(2, 0.3, 0.2, MAX_ROTATION, Constants.PERIOD_SECONDS);
 
   // Used for following trajectories
   public final HolonomicDriveController driveController =
@@ -151,7 +162,8 @@ public class DriveSubsystem extends SubsystemBase {
         ChassisSpeeds.fromFieldRelativeSpeeds(
             yPercentage * MAX_VELOCITY,
             -xPercentage * MAX_VELOCITY,
-            thetaControllerVelocity,
+            // TODO: This ignores the PID output
+            thetaPercentage * MAX_ANGULAR_VELOCITY,
             robotHeading);
 
     // TODO: Stop logging this after debugging is finished
