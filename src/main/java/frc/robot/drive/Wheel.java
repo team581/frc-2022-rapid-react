@@ -6,7 +6,6 @@ package frc.robot.drive;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -17,11 +16,19 @@ import frc.robot.misc.util.WheelConverter;
 import org.littletonrobotics.junction.Logger;
 
 /** This class should only be used within {@link DriveSubsystem} and {@link Drivebase}. */
-public class Wheel extends SubsystemBase {
+class Wheel extends SubsystemBase {
   /** The maximum velocity of a wheel in meters/second. */
   public static final double MAX_WHEEL_VELOCITY;
 
-  private static final Clamp VOLTAGE_CLAMP;
+  /** The maximum acceleration of a wheel in meters/second/second. */
+  public static final double MAX_ACCELERATION;
+
+  /** The maximum acceleration of a wheel in radians/second/second. */
+  public static final double MAX_ANGULAR_ACCELERATION;
+
+  public static final double MAX_VOLTAGE = 12.0;
+
+  private static final Clamp VOLTAGE_CLAMP = new Clamp(MAX_VOLTAGE);
 
   private static final SimpleMotorFeedforward FEEDFORWARD;
 
@@ -32,27 +39,25 @@ public class Wheel extends SubsystemBase {
       case TEST_2020_BOT:
         WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
         MAX_WHEEL_VELOCITY = 4.517538186030606;
-        VOLTAGE_CLAMP = new Clamp(12);
         FEEDFORWARD = new SimpleMotorFeedforward(0.088986, 0.18647, 0.0076096);
         break;
       case COMP_BOT:
       case SIM_BOT:
         WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
         // TODO: Measure the maximum wheel velocity
-        MAX_WHEEL_VELOCITY = WHEEL_CONVERTER.radiansToDistance(Units.rotationsToRadians(1));
-        VOLTAGE_CLAMP = new Clamp(12);
+        MAX_WHEEL_VELOCITY = 4.517538186030606;
         FEEDFORWARD = new SimpleMotorFeedforward(0.060039, 0.22421, 0.011814);
         break;
       default:
         throw new UnknownTargetRobotException();
     }
-  }
 
-  /**
-   * The position of the wheel corresponding to this motor, relative to the robot center, in meters.
-   * Used for kinematics.
-   */
-  public final Translation2d positionToCenterOfRobot;
+    // Feedforward is used to convert radians/second to a voltage. You can divide the maximum
+    // voltage by the acceleration component of the feedforward to get the robot's average
+    // acceleration.
+    MAX_ANGULAR_ACCELERATION = VOLTAGE_CLAMP.maximum / FEEDFORWARD.ka;
+    MAX_ACCELERATION = WHEEL_CONVERTER.radiansToDistance(MAX_ANGULAR_ACCELERATION);
+  }
 
   /** Wheel velocity PID controller. Input is in radians/second, output is in volts. */
   private final PIDController pid;
@@ -65,9 +70,8 @@ public class Wheel extends SubsystemBase {
 
   private double desiredVoltageVolts = 0;
 
-  public Wheel(Corner corner, WheelIO io, Translation2d positionToCenterOfRobot) {
+  public Wheel(Corner corner, WheelIO io) {
     this.loggerName = "Wheel/" + corner.toString();
-    this.positionToCenterOfRobot = positionToCenterOfRobot;
     this.io = io;
 
     switch (Constants.getRobot()) {
@@ -116,21 +120,16 @@ public class Wheel extends SubsystemBase {
    * @param metersPerSecond The desired velocity in meters/second
    */
   public void setDesiredVelocity(double metersPerSecond) {
-    pid.setSetpoint(WHEEL_CONVERTER.velocityToAngularVelocity(metersPerSecond));
+    pid.setSetpoint(WHEEL_CONVERTER.distanceToRadians(metersPerSecond));
   }
 
   /** Get this wheel's velocity in meters/second. */
   public double getVelocity() {
-    return WHEEL_CONVERTER.angularVelocityToVelocity(inputs.velocityRadiansPerSecond);
+    return WHEEL_CONVERTER.radiansToDistance(inputs.velocityRadiansPerSecond);
   }
 
   /** Get the distance in meters this wheel's encoder has travelled since last being reset. */
   public double getDistance() {
     return WHEEL_CONVERTER.radiansToDistance(inputs.positionRadians);
-  }
-
-  /** Zeroes the encoder position. */
-  public void zeroEncoder() {
-    io.zeroEncoder();
   }
 }

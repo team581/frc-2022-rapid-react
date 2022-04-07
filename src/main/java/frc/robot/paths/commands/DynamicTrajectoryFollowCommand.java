@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.drive.Wheel;
 import frc.robot.localization.Localization;
 import java.util.function.Supplier;
 
@@ -88,11 +87,7 @@ public class DynamicTrajectoryFollowCommand extends CommandBase {
             desiredState.velocityMetersPerSecond,
             poseWithFixedRotation.getRotation());
 
-    final var targetWheelSpeeds = driveSubsystem.kinematics.toWheelSpeeds(targetChassisSpeeds);
-
-    targetWheelSpeeds.desaturate(Wheel.MAX_WHEEL_VELOCITY);
-
-    driveSubsystem.setWheelSpeeds(targetWheelSpeeds);
+    driveSubsystem.setChassisSpeeds(targetChassisSpeeds);
   }
 
   @Override

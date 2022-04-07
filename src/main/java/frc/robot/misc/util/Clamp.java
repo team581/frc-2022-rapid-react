@@ -7,7 +7,7 @@ package frc.robot.misc.util;
 import edu.wpi.first.math.MathUtil;
 
 public class Clamp {
-  private final double maximum;
+  public final double maximum;
 
   public Clamp(double maximum) {
     this.maximum = Math.abs(maximum);

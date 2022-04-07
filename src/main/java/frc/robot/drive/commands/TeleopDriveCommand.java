@@ -4,12 +4,16 @@
 
 package frc.robot.drive.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.DriveSubsystem;
 
 public class TeleopDriveCommand extends CommandBase {
+  /** The maximum allowed turn rate of the robot during teleop, per second. */
+  public static final Rotation2d MAX_TELEOP_TURN_RATE = Rotation2d.fromDegrees(360 * 0.75);
+
   private final DriveSubsystem driveSubsystem;
   private final DriveController controller;
 
@@ -32,11 +36,21 @@ public class TeleopDriveCommand extends CommandBase {
       return;
     }
 
-    final var x = controller.getXPercentage();
-    final var y = controller.getYPercentage();
-    final var theta = controller.getThetaPercentage();
+    final var slowMode = controller.leftTrigger.get();
+    final var robotRelative = controller.rightTrigger.get();
 
-    driveSubsystem.driveTeleop(x, -y, theta);
+    var sidewaysPercentage = controller.getSidewaysPercentage();
+    var forwardPercentage = controller.getForwardPercentage();
+    var thetaPercentage = controller.getThetaPercentage();
+
+    if (slowMode) {
+      sidewaysPercentage *= 0.5;
+      forwardPercentage *= 0.5;
+      thetaPercentage *= 0.5;
+    }
+
+    driveSubsystem.driveTeleop(
+        sidewaysPercentage, -forwardPercentage, thetaPercentage, !robotRelative);
   }
 
   // Called once the command ends or is interrupted.

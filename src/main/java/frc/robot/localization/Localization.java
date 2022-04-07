@@ -64,17 +64,17 @@ public class Localization extends SubsystemBase {
             initialHeading,
             // Initial position
             initialRobotPose,
-            driveSubsystem.kinematics,
+            DriveSubsystem.KINEMATICS,
             // Standard deviations of wheel odometry x, y, and theta
             VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
             // Standard deviation of gyroscope heading
             VecBuilder.fill(Units.degreesToRadians(0.01)),
             // Vision measurement standard deviations
             VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)),
-            frc.robot.Constants.PERIOD_SECONDS);
+            Constants.PERIOD_SECONDS);
 
     odometry =
-        new MecanumDriveOdometry(driveSubsystem.kinematics, initialHeading, initialRobotPose);
+        new MecanumDriveOdometry(DriveSubsystem.KINEMATICS, initialHeading, initialRobotPose);
   }
 
   public Localization(

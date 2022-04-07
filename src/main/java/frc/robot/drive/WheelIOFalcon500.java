@@ -84,9 +84,4 @@ public class WheelIOFalcon500 implements WheelIO {
   public void setVoltage(double outputVolts) {
     motor.setVoltage(outputVolts);
   }
-
-  @Override
-  public void zeroEncoder() {
-    motor.setSelectedSensorPosition(0);
-  }
 }
