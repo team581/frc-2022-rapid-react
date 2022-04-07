@@ -22,6 +22,7 @@ import frc.robot.Constants;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import frc.robot.imu.ImuSubsystem;
+import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.misc.util.LoggingUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -57,10 +58,22 @@ public class DriveSubsystem extends SubsystemBase {
    * than the usual linear drivetrain characterization. Linear kA is determined using your mass,
    * angular kA is determined using your mass distribution around the center of rotation.
    */
-  private static final SimpleMotorFeedforward ROBOT_ANGULAR_FEEDFORWARD =
-      new SimpleMotorFeedforward(0.12211, 0.18984, 0.010019);
+  private static final SimpleMotorFeedforward ROBOT_ANGULAR_FEEDFORWARD;
 
   static {
+    switch (Constants.getRobot()) {
+      case TEST_2020_BOT:
+        ROBOT_ANGULAR_FEEDFORWARD = new SimpleMotorFeedforward(0.12211, 0.18984, 0.010019);
+        break;
+      case COMP_BOT:
+      case SIM_BOT:
+        // TODO: Use SysID to calculate the angular drivetrain feedforward constants
+        ROBOT_ANGULAR_FEEDFORWARD = new SimpleMotorFeedforward(0.12211, 0.18984, 0.010019);
+        break;
+      default:
+        throw new UnknownTargetRobotException();
+    }
+
     final var maxWheelSpeedsForward =
         new MecanumDriveWheelSpeeds(
             Wheel.MAX_WHEEL_VELOCITY,

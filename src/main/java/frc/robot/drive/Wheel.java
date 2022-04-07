@@ -45,7 +45,7 @@ class Wheel extends SubsystemBase {
       case SIM_BOT:
         WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
         // TODO: Measure the maximum wheel velocity
-        MAX_WHEEL_VELOCITY = WHEEL_CONVERTER.radiansToDistance(Units.rotationsToRadians(1));
+        MAX_WHEEL_VELOCITY = 4.517538186030606;
         FEEDFORWARD = new SimpleMotorFeedforward(0.060039, 0.22421, 0.011814);
         break;
       default:
