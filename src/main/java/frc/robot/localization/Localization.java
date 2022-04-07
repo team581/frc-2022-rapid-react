@@ -30,7 +30,7 @@ public class Localization extends SubsystemBase {
     final var x = translation.getX();
     final var y = translation.getY();
 
-    return x >= 0 && y >= 0 && x <= Constants.FIELD_WIDTH && y <= Constants.FIELD_LENGTH;
+    return x >= 0 && y >= 0 && x <= Constants.FIELD_WIDTH && y <= Constants.FIELD_HEIGHT;
   }
 
   /** Returns whether a pose is within the bounds of the field. */

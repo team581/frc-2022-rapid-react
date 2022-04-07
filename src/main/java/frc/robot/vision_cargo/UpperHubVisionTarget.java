@@ -14,7 +14,7 @@ import frc.robot.vision.VisionTarget;
 /** The upper hub ring vision target. */
 public class UpperHubVisionTarget extends VisionTarget {
   public static final Translation2d COORDINATES =
-      new Translation2d(Constants.FIELD_WIDTH / 2, Constants.FIELD_LENGTH / 2);
+      new Translation2d(Constants.FIELD_WIDTH / 2, Constants.FIELD_HEIGHT / 2);
 
   public static final double RADIUS = Units.feetToMeters(4) / 2;
 

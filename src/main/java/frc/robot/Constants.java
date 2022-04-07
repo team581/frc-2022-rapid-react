@@ -96,8 +96,8 @@ public final class Constants {
   // https://firstfrc.blob.core.windows.net/frc2022/FieldAssets/2022LayoutMarkingDiagram.pdf
   /** The long side of the field parallel to the scoring table. */
   public static final double FIELD_WIDTH = Units.inchesToMeters(324) * 2;
-  /** The short side of the field where drivers are. */
-  public static final double FIELD_LENGTH = Units.inchesToMeters(162) * 2;
+  /** The short side of the field, where alliance walls are. */
+  public static final double FIELD_HEIGHT = Units.inchesToMeters(162) * 2;
 
   static {
     System.out.println("SERIAL NUMBER: " + SERIAL_NUMBER);
