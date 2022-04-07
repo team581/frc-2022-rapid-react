@@ -30,6 +30,8 @@ public class ArmIONeos implements ArmIO {
       case COMP_BOT:
       case SIM_BOT:
         ENCODER_ABSOLUTE_POSITION_DIFFERENCE = Rotation2d.fromDegrees(237.920);
+        // Positive voltage makes the arm go up
+        // Negative voltage makes the arm go down
         INVERTED = false;
         break;
       default:
