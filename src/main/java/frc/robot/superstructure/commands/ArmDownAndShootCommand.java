@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.ArmPosition;
 import frc.robot.superstructure.arm.commands.ArmCommand;
+import frc.robot.superstructure.cargo_detector.CargoInventoryState;
 import frc.robot.superstructure.swiffer.SwifferMode;
 import frc.robot.superstructure.swiffer.commands.SwifferCommand;
 
@@ -17,6 +18,12 @@ import frc.robot.superstructure.swiffer.commands.SwifferCommand;
  * unwanted cargo, not for scoring.
  */
 public class ArmDownAndShootCommand extends SequentialCommandGroup {
+  /**
+   * The maximum amount of time (in seconds) it will take to shoot any amount of cargo from the SPU
+   * onto the floor.
+   */
+  private static final double MAX_SHOOT_DURATION = 1.5;
+
   /** Creates a new ArmDownAndShootCommand. */
   public ArmDownAndShootCommand(SuperstructureSubsystem superstructure) {
     addCommands(
@@ -27,10 +34,10 @@ public class ArmDownAndShootCommand extends SequentialCommandGroup {
         // Arm down
         new ArmCommand(superstructure.arm, ArmPosition.DOWN),
         // Shoot all cargo after the arm is down
-        // Since the default superstructure mode is to lift the arm up and since this command is run
-        // continuously, adding an end condition here can cause the arm to jump up briefly as the
-        // command ends and restarts. We rely on the copilot to know when to cancel this command.
-        new SwifferCommand(superstructure.swiffer, SwifferMode.SHOOTING));
+        new SwifferCommand(superstructure.swiffer, SwifferMode.SHOOTING)
+            .until(() -> superstructure.cargoDetector.isCarrying(CargoInventoryState.EMPTY))
+            // Add a timeout in case the sensor fails
+            .withTimeout(MAX_SHOOT_DURATION));
 
     addRequirements(superstructure, superstructure.arm, superstructure.swiffer);
   }
