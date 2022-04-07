@@ -69,23 +69,22 @@ public class DynamicTrajectoryFollowCommand extends CommandBase {
     final double curTime = timer.get();
 
     final var desiredState = trajectory.sample(curTime);
-
     /**
-     * Take the pose from the trajectory state and replace the rotation with the one the user
-     * provided. This is provided since trajectories generated using WPILib are only for
-     * differential drive robots. This lets robots with holonomic drives provide their own rotation
-     * at each step.
+     * This lets you override the rotation in the trajectory with a user-provided one. This is
+     * helpful since many tools (like all the WPILib ones) exclusively generate trajectories for
+     * differential drive robots. This allows you to take advantage of your robot's holonomic drive
+     * while following the trajectory.
      */
-    final var poseWithFixedRotation =
-        new Pose2d(desiredState.poseMeters.getTranslation(), desiredRotation.get());
-    driveSubsystem.logTrajectoryPose(poseWithFixedRotation);
+    final var rotationOverride = desiredRotation.get();
+
+    // This is an accurate way to display what the 3 setpoints (x, y, theta) are for the holonomic
+    // drive controller
+    driveSubsystem.logTrajectoryPose(
+        new Pose2d(desiredState.poseMeters.getTranslation(), rotationOverride));
 
     final var targetChassisSpeeds =
         driveSubsystem.driveController.calculate(
-            localization.getPose(),
-            poseWithFixedRotation,
-            desiredState.velocityMetersPerSecond,
-            poseWithFixedRotation.getRotation());
+            localization.getPose(), desiredState, rotationOverride);
 
     driveSubsystem.setChassisSpeeds(targetChassisSpeeds);
   }
