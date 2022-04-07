@@ -134,8 +134,14 @@ public class DriveSubsystem extends SubsystemBase {
    * comparing with the actual position.
    */
   public void logTrajectoryPose(Trajectory.State state) {
-    Logger.getInstance()
-        .recordOutput("Drive/TrajectoryPose", LoggingUtil.poseToArray(state.poseMeters));
+    logTrajectoryPose(state.poseMeters);
+  }
+  /**
+   * Used for showing a ghost robot of the expected position while following a trajectory. For
+   * comparing with the actual position.
+   */
+  public void logTrajectoryPose(Pose2d pose) {
+    Logger.getInstance().recordOutput("Drive/TrajectoryPose", LoggingUtil.poseToArray(pose));
   }
 
   // TODO: Delete this method, or replace it with another method for setting robot pose at match

@@ -4,6 +4,7 @@
 
 package frc.robot.paths.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
@@ -30,7 +31,7 @@ public class DynamicTrajectoryFollowCommand extends CommandBase {
   private final DriveSubsystem driveSubsystem;
 
   /**
-   * Constructs a new DynamicMecanumControllerCommand that when executed will follow the provided
+   * Constructs a new DynamicTrajectoryFollowCommand that when executed will follow the provided
    * trajectory. The user should implement a velocity PID on the desired output wheel velocities.
    *
    * <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path -
@@ -70,11 +71,23 @@ public class DynamicTrajectoryFollowCommand extends CommandBase {
 
     final var desiredState = trajectory.sample(curTime);
 
-    driveSubsystem.logTrajectoryPose(desiredState);
+    /**
+     * Take the pose from the trajectory state and replace the rotation with the one the user
+     * provided. This is provided since trajectories generated using WPILib are only for
+     * differential drive robots. This lets robots with holonomic drives provide their own rotation
+     * at each step.
+     */
+    final var poseWithFixedRotation =
+        new Pose2d(desiredState.poseMeters.getTranslation(), desiredRotation.get());
+    driveSubsystem.logTrajectoryPose(poseWithFixedRotation);
 
     final var targetChassisSpeeds =
         driveSubsystem.driveController.calculate(
-            localization.getPose(), desiredState, desiredRotation.get());
+            localization.getPose(),
+            poseWithFixedRotation,
+            desiredState.velocityMetersPerSecond,
+            poseWithFixedRotation.getRotation());
+
     final var targetWheelSpeeds = driveSubsystem.kinematics.toWheelSpeeds(targetChassisSpeeds);
 
     targetWheelSpeeds.desaturate(Wheel.MAX_WHEEL_VELOCITY);
