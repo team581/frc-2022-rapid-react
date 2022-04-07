@@ -19,18 +19,15 @@ import org.littletonrobotics.junction.Logger;
 public class ArmIONeos implements ArmIO {
   public static final boolean INVERTED;
 
-  /**
-   * The amount to subtract from the absolute position to ensure that an absolute position of 0
-   * means the arm is in the {@link ArmPosition#DOWN down position}.
-   */
-  static final Rotation2d ENCODER_ABSOLUTE_POSITION_DIFFERENCE;
+  static final Rotation2d INITIAL_ENCODER_POSITION =
+      new Rotation2d(Arm.STARTING_POSITION.state.position);
 
   static {
     switch (Constants.getRobot()) {
       case COMP_BOT:
       case SIM_BOT:
-        ENCODER_ABSOLUTE_POSITION_DIFFERENCE = Rotation2d.fromDegrees(0);
-        INVERTED = false;
+        // Doing this means negative voltage will lower the arm and positive voltage will raise the arm
+        INVERTED = true;
         break;
       default:
         throw new UnsupportedSubsystemException(ArmIONeos.class);
@@ -40,8 +37,8 @@ public class ArmIONeos implements ArmIO {
   protected final CANSparkMax motor;
   protected final RelativeEncoder encoder;
 
-  protected final SparkMaxLimitSwitch forwardLimitSwitch;
-  protected final SparkMaxLimitSwitch reverseLimitSwitch;
+  protected final SparkMaxLimitSwitch downwardLimitSwitch;
+  protected final SparkMaxLimitSwitch upwardLimitSwitch;
   private final GearingConverter gearingConverter;
 
   private double previousPositionRadians = Arm.STARTING_POSITION.state.position;
@@ -54,8 +51,8 @@ public class ArmIONeos implements ArmIO {
         motor = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
         encoder = motor.getEncoder();
 
-        forwardLimitSwitch = motor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-        reverseLimitSwitch = motor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        downwardLimitSwitch = motor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        upwardLimitSwitch = motor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
         gearingConverter = new GearingConverter(300.0 / 7.0);
 
@@ -75,7 +72,8 @@ public class ArmIONeos implements ArmIO {
   public void updateInputs(Inputs inputs) {
     final var currentPositionRadians =
         gearingConverter.beforeToAfterGearing(
-            SensorUnitConverter.sparkMAX.sensorUnitsToRadians(encoder.getPosition()));
+                SensorUnitConverter.sparkMAX.sensorUnitsToRadians(encoder.getPosition()))
+            + INITIAL_ENCODER_POSITION.getRadians();
 
     final var currentTimestamp = Logger.getInstance().getTimestamp();
     double velocityRadiansPerSecond;
@@ -99,14 +97,18 @@ public class ArmIONeos implements ArmIO {
     inputs.tempCelcius = motor.getMotorTemperature();
     inputs.position = new Rotation2d(currentPositionRadians);
     inputs.velocityRadiansPerSecond = velocityRadiansPerSecond;
-    inputs.upperLimitSwitchEnabled = forwardLimitSwitch.isPressed();
-    inputs.lowerLimitSwitchEnabled = reverseLimitSwitch.isPressed();
+    inputs.downwardLimitSwitchEnabled = downwardLimitSwitch.isPressed();
+    inputs.upwardLimitSwitchEnabled = upwardLimitSwitch.isPressed();
   }
 
   @Override
   public void setVoltage(double volts) {
-    if ((volts > 0 && forwardLimitSwitch.isPressed())
-        || (volts < 0 && reverseLimitSwitch.isPressed())) {
+    if (
+    // Prevent the arm from lowering past the threshold
+    (volts < 0 && downwardLimitSwitch.isPressed())
+        ||
+        // Prevent the arm from raising past the threshold
+        (volts > 0 && upwardLimitSwitch.isPressed())) {
       motor.setVoltage(0);
     }
 
