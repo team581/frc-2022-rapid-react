@@ -12,7 +12,7 @@ import frc.robot.drive.DriveSubsystem;
 
 public class TeleopDriveCommand extends CommandBase {
   /** The maximum allowed turn rate of the robot during teleop, per second. */
-  public static final Rotation2d MAX_TELEOP_TURN_RATE = Rotation2d.fromDegrees(180);
+  public static final Rotation2d MAX_TELEOP_TURN_RATE = Rotation2d.fromDegrees(360 * 0.75);
 
   private final DriveSubsystem driveSubsystem;
   private final DriveController controller;

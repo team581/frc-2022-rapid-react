@@ -61,14 +61,14 @@ public class DriveSubsystem extends SubsystemBase {
     final var maxChassisSpeedsForward = KINEMATICS.toChassisSpeeds(maxWheelSpeedsForward);
     final var maxWheelSpeedsSpinning =
         new MecanumDriveWheelSpeeds(
-            -Wheel.MAX_WHEEL_VELOCITY,
+            Wheel.MAX_WHEEL_VELOCITY,
             -Wheel.MAX_WHEEL_VELOCITY,
             Wheel.MAX_WHEEL_VELOCITY,
-            Wheel.MAX_WHEEL_VELOCITY);
+            -Wheel.MAX_WHEEL_VELOCITY);
     final var maxChassisSpeedsSpinning = KINEMATICS.toChassisSpeeds(maxWheelSpeedsSpinning);
 
-    MAX_VELOCITY = maxChassisSpeedsForward.vxMetersPerSecond;
-    MAX_ANGULAR_VELOCITY = maxChassisSpeedsSpinning.omegaRadiansPerSecond;
+    MAX_VELOCITY = Math.abs(maxChassisSpeedsForward.vxMetersPerSecond);
+    MAX_ANGULAR_VELOCITY = Math.abs(maxChassisSpeedsSpinning.omegaRadiansPerSecond);
 
     MAX_ACCELERATION = Wheel.MAX_ACCELERATION;
     // TODO: This is the wheel's angular acceleration, do we need a different value for the robot
