@@ -10,10 +10,16 @@ import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.ArmPosition;
 import frc.robot.superstructure.arm.commands.ArmCommand;
 import frc.robot.superstructure.swiffer.SwifferMode;
-import frc.robot.superstructure.swiffer.commands.SwifferShootCommand;
+import frc.robot.superstructure.swiffer.commands.SwifferCommand;
 
 /** Puts the arm up and shoots all cargo. */
 public class ArmUpAndShootCommand extends SequentialCommandGroup {
+  /**
+   * The maximum amount of time (in seconds) it will take to shoot any amount of cargo from the SPU.
+   * If we had cargo sensors we'd use those instead of just relying on a timer.
+   */
+  private static final double SHOOT_DURATION = 0.75;
+
   /** Creates a new ArmUpAndShootCommand. */
   public ArmUpAndShootCommand(SuperstructureSubsystem superstructure) {
     addCommands(
@@ -24,7 +30,8 @@ public class ArmUpAndShootCommand extends SequentialCommandGroup {
         // Arm up
         new ArmCommand(superstructure.arm, ArmPosition.UP),
         // Shoot all cargo after the arm is up
-        new SwifferShootCommand(superstructure.swiffer));
+        new SwifferCommand(superstructure.swiffer, SwifferMode.SHOOTING)
+            .withTimeout(SHOOT_DURATION));
 
     addRequirements(superstructure, superstructure.arm, superstructure.swiffer);
   }

@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.ArmPosition;
 import frc.robot.superstructure.arm.commands.ArmCommand;
-import frc.robot.superstructure.swiffer.commands.SwifferSnarfCommand;
+import frc.robot.superstructure.swiffer.SwifferMode;
+import frc.robot.superstructure.swiffer.commands.SwifferCommand;
 
 /** Lowers the arm while snarfing. */
 public class ArmDownAndSnarfCommand extends ParallelCommandGroup {
@@ -18,7 +19,7 @@ public class ArmDownAndSnarfCommand extends ParallelCommandGroup {
         // Start lowering the arm
         new ArmCommand(superstructure.arm, ArmPosition.DOWN),
         // While that's happening we begin spinning up the swiffer
-        new SwifferSnarfCommand(superstructure.swiffer));
+        new SwifferCommand(superstructure.swiffer, SwifferMode.SNARFING));
 
     addRequirements(superstructure, superstructure.arm, superstructure.swiffer);
   }
