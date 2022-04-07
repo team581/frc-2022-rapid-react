@@ -185,7 +185,10 @@ public class RobotContainer {
     copilotController.aButton.whenHeld(new UpperHubAlignCommand(driveSubsystem, localization));
 
     // Snarfing cargo
-    copilotController.rightTrigger.whileHeld(new ArmDownAndSnarfCommand(superstructureSubsystem));
+    copilotController
+        .rightTrigger
+        .and(copilotController.bButton.negate())
+        .whileActiveContinuous(new ArmDownAndSnarfCommand(superstructureSubsystem));
 
     // Scoring at the hub
     copilotController.leftTrigger.whileHeld(new ArmUpAndShootCommand(superstructureSubsystem));
