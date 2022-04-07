@@ -18,9 +18,4 @@ public class WheelIOReplay extends WheelIOSim implements WheelIO {
   public void setVoltage(double outputVolts) {
     // Intentionally left empty
   }
-
-  @Override
-  public void zeroEncoder() {
-    // Intentionally left empty
-  }
 }

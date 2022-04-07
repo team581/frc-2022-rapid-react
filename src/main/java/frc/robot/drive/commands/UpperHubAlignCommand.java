@@ -18,38 +18,44 @@ import java.util.List;
 
 public class UpperHubAlignCommand extends DynamicTrajectoryFollowCommand {
   /**
+   * The hub is a square structure but it's rotated on the field. In our code we use this angle to
+   * adjust both the fender position and the robot's goal position to accurately match the hub's
+   * rotation.
+   *
+   * @see https://firstfrc.blob.core.windows.net/frc2022/FieldAssets/2022LayoutMarkingDiagram.pdf
+   */
+  private static final Rotation2d HUB_ROTATION = Rotation2d.fromDegrees(21).unaryMinus();
+
+  /**
    * The number of meters that we want to be away from the center of the hub in order to be properly
    * lined up with the fenders to score.
    */
   private static final double GOAL_DISTANCE_FROM_HUB_CENTER =
-      UpperHubVisionTarget.RADIUS + Units.feetToMeters(2);
+      UpperHubVisionTarget.RADIUS + Units.feetToMeters(2.5);
 
   /** Four poses that align you with the fenders while facing toward the center of the hub. */
-  // TODO: The hub is not perfectly aligned, it is slightly rotated. Refer to the field diagram and
-  // update these goal poses to properly align
-  // https://firstfrc.blob.core.windows.net/frc2022/FieldAssets/2022LayoutMarkingDiagram.pdf
   private static final List<Pose2d> GOAL_POSES =
       List.of(
-          // Right
+          // Closest to opposing alliance wall
           new Pose2d(
               UpperHubVisionTarget.COORDINATES.plus(
-                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0)),
-              Rotation2d.fromDegrees(180)),
-          // Left
+                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0).rotateBy(HUB_ROTATION)),
+              Rotation2d.fromDegrees(180).plus(HUB_ROTATION)),
+          // Closest to friendly alliance wall
           new Pose2d(
               UpperHubVisionTarget.COORDINATES.minus(
-                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0)),
-              Rotation2d.fromDegrees(0)),
-          // Up
+                  new Translation2d(GOAL_DISTANCE_FROM_HUB_CENTER, 0).rotateBy(HUB_ROTATION)),
+              Rotation2d.fromDegrees(0).plus(HUB_ROTATION)),
+          // North (to the left of the friendly alliance wall)
           new Pose2d(
               UpperHubVisionTarget.COORDINATES.plus(
-                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER)),
-              Rotation2d.fromDegrees(90)),
-          // Down
+                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER).rotateBy(HUB_ROTATION)),
+              Rotation2d.fromDegrees(270).plus(HUB_ROTATION)),
+          // South (to the right of the friendly alliance wall)
           new Pose2d(
               UpperHubVisionTarget.COORDINATES.minus(
-                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER)),
-              Rotation2d.fromDegrees(270)));
+                  new Translation2d(0, GOAL_DISTANCE_FROM_HUB_CENTER).rotateBy(HUB_ROTATION)),
+              Rotation2d.fromDegrees(90).plus(HUB_ROTATION)));
 
   private static Pose2d chooseGoalPose(Localization localization) {
     return frc.robot.paths.util.TrajectoryUtil.shortestDistanceTo(

@@ -8,6 +8,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class LoggingUtil {
+  private LoggingUtil() {}
+
   public static double[] poseToArray(Pose2d pose) {
     return new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()};
   }

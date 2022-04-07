@@ -9,7 +9,6 @@ import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.drive.Wheel;
 import frc.robot.localization.Localization;
 
 /**
@@ -60,11 +59,8 @@ public class PPCommand extends CommandBase {
     var targetChassisSpeeds =
         driveSubsystem.driveController.calculate(
             localization.getPose(), desiredState, desiredState.holonomicRotation);
-    var targetWheelSpeeds = driveSubsystem.kinematics.toWheelSpeeds(targetChassisSpeeds);
 
-    targetWheelSpeeds.desaturate(Wheel.MAX_WHEEL_VELOCITY);
-
-    driveSubsystem.setWheelSpeeds(targetWheelSpeeds);
+    driveSubsystem.setChassisSpeeds(targetChassisSpeeds);
   }
 
   @Override

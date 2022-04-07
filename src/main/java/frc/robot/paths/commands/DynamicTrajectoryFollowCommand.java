@@ -4,13 +4,13 @@
 
 package frc.robot.paths.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.MecanumControllerCommand;
 import frc.robot.drive.DriveSubsystem;
-import frc.robot.drive.Wheel;
 import frc.robot.localization.Localization;
 import java.util.function.Supplier;
 
@@ -30,7 +30,7 @@ public class DynamicTrajectoryFollowCommand extends CommandBase {
   private final DriveSubsystem driveSubsystem;
 
   /**
-   * Constructs a new DynamicMecanumControllerCommand that when executed will follow the provided
+   * Constructs a new DynamicTrajectoryFollowCommand that when executed will follow the provided
    * trajectory. The user should implement a velocity PID on the desired output wheel velocities.
    *
    * <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path -
@@ -69,17 +69,24 @@ public class DynamicTrajectoryFollowCommand extends CommandBase {
     final double curTime = timer.get();
 
     final var desiredState = trajectory.sample(curTime);
+    /**
+     * This lets you override the rotation in the trajectory with a user-provided one. This is
+     * helpful since many tools (like all the WPILib ones) exclusively generate trajectories for
+     * differential drive robots. This allows you to take advantage of your robot's holonomic drive
+     * while following the trajectory.
+     */
+    final var rotationOverride = desiredRotation.get();
 
-    driveSubsystem.logTrajectoryPose(desiredState);
+    // This is an accurate way to display what the 3 setpoints (x, y, theta) are for the holonomic
+    // drive controller
+    driveSubsystem.logTrajectoryPose(
+        new Pose2d(desiredState.poseMeters.getTranslation(), rotationOverride));
 
     final var targetChassisSpeeds =
         driveSubsystem.driveController.calculate(
-            localization.getPose(), desiredState, desiredRotation.get());
-    final var targetWheelSpeeds = driveSubsystem.kinematics.toWheelSpeeds(targetChassisSpeeds);
+            localization.getPose(), desiredState, rotationOverride);
 
-    targetWheelSpeeds.desaturate(Wheel.MAX_WHEEL_VELOCITY);
-
-    driveSubsystem.setWheelSpeeds(targetWheelSpeeds);
+    driveSubsystem.setChassisSpeeds(targetChassisSpeeds);
   }
 
   @Override

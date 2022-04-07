@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.misc.util.LoggingUtil;
 import frc.robot.vision.Camera;
 import frc.robot.vision.ComputerVisionUtilForCamera;
 import frc.robot.vision.VisionSubsystemBase;
@@ -59,9 +60,7 @@ public class UpperHubVisionSubsystem extends VisionSubsystemBase {
       Logger.getInstance()
           .recordOutput(
               LOGGER_NAME + "/VisionTarget",
-              new double[] {
-                UpperHubVisionTarget.COORDINATES.getX(), UpperHubVisionTarget.COORDINATES.getY()
-              });
+              LoggingUtil.translationToArray(UpperHubVisionTarget.COORDINATES));
     }
   }
 }

@@ -4,12 +4,13 @@
 
 package frc.robot.drive;
 
-import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
@@ -17,9 +18,12 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.controller.DriveController;
 import frc.robot.drive.commands.TeleopDriveCommand;
 import frc.robot.imu.ImuSubsystem;
+import frc.robot.misc.exceptions.UnknownTargetRobotException;
+import frc.robot.misc.util.LoggingUtil;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -29,30 +33,87 @@ import org.littletonrobotics.junction.Logger;
  * odometry, and trajectory helpers.
  */
 public class DriveSubsystem extends SubsystemBase {
-  private static final class Constants {
-    // TODO: These values need to be properly recorded
-    private static final TrapezoidProfile.Constraints MAX_ROTATION =
-        new TrapezoidProfile.Constraints(3.13635666583381, Math.pow(3.13635666583381, 2));
+  public static final MecanumDriveKinematics KINEMATICS =
+      // The distances of wheels to the center of the robot is currently the same for all robots
+      new MecanumDriveKinematics(
+          new Translation2d(0.285, 0.285),
+          new Translation2d(0.285, -0.285),
+          new Translation2d(-0.285, 0.285),
+          new Translation2d(-0.285, -0.285));
 
-    /** The acceptable amount of error between the robot's current pose and the desired pose. */
-    private static final Pose2d POSE_TOLERANCE = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(8));
+  /** The robot's maximum velocity in meters per second. */
+  public static final double MAX_VELOCITY;
+  /** The robot's maximum acceleration in meters per second squared. */
+  public static final double MAX_ACCELERATION;
+  /**
+   * The robot's maximum angular velocity in radians per second. Recorded by sitting still and
+   * spinning as fast as possible.
+   */
+  public static final double MAX_ANGULAR_VELOCITY;
+  /** The robot's maximum angular acceleration in radians per second squared. */
+  public static final double MAX_ANGULAR_ACCELERATION;
+
+  /**
+   * The feedforward values from a SysID angular drivetrain characterization. These are different
+   * than the usual linear drivetrain characterization. Linear kA is determined using your mass,
+   * angular kA is determined using your mass distribution around the center of rotation.
+   */
+  private static final SimpleMotorFeedforward ROBOT_ANGULAR_FEEDFORWARD;
+
+  static {
+    switch (Constants.getRobot()) {
+      case TEST_2020_BOT:
+        ROBOT_ANGULAR_FEEDFORWARD = new SimpleMotorFeedforward(0.12211, 0.18984, 0.010019);
+        break;
+      case COMP_BOT:
+      case SIM_BOT:
+        // TODO: Use SysID to calculate the angular drivetrain feedforward constants
+        ROBOT_ANGULAR_FEEDFORWARD = new SimpleMotorFeedforward(0.12211, 0.18984, 0.010019);
+        break;
+      default:
+        throw new UnknownTargetRobotException();
+    }
+
+    final var maxWheelSpeedsForward =
+        new MecanumDriveWheelSpeeds(
+            Wheel.MAX_WHEEL_VELOCITY,
+            Wheel.MAX_WHEEL_VELOCITY,
+            Wheel.MAX_WHEEL_VELOCITY,
+            Wheel.MAX_WHEEL_VELOCITY);
+    final var maxChassisSpeedsForward = KINEMATICS.toChassisSpeeds(maxWheelSpeedsForward);
+    final var maxWheelSpeedsSpinning =
+        new MecanumDriveWheelSpeeds(
+            Wheel.MAX_WHEEL_VELOCITY,
+            -Wheel.MAX_WHEEL_VELOCITY,
+            Wheel.MAX_WHEEL_VELOCITY,
+            -Wheel.MAX_WHEEL_VELOCITY);
+    final var maxChassisSpeedsSpinning = KINEMATICS.toChassisSpeeds(maxWheelSpeedsSpinning);
+
+    MAX_VELOCITY = Math.abs(maxChassisSpeedsForward.vxMetersPerSecond);
+    MAX_ANGULAR_VELOCITY = Math.abs(maxChassisSpeedsSpinning.omegaRadiansPerSecond);
+
+    MAX_ACCELERATION = Wheel.MAX_ACCELERATION;
+    MAX_ANGULAR_ACCELERATION = Wheel.MAX_VOLTAGE / ROBOT_ANGULAR_FEEDFORWARD.ka;
   }
 
-  public final MecanumDriveKinematics kinematics;
+  private static final TrapezoidProfile.Constraints MAX_ROTATION =
+      new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY, MAX_ANGULAR_ACCELERATION);
+
+  /** The acceptable amount of error between the robot's current pose and the desired pose. */
+  private static final Pose2d POSE_TOLERANCE = new Pose2d(0.15, 0.15, Rotation2d.fromDegrees(2));
 
   public final TrajectoryConfig trajectoryConfig;
 
   private final ProfiledPIDController thetaController =
-      new ProfiledPIDController(
-          1, 0, 0, Constants.MAX_ROTATION, frc.robot.Constants.PERIOD_SECONDS);
+      new ProfiledPIDController(1, 0, 0, MAX_ROTATION, Constants.PERIOD_SECONDS);
 
   // Used for following trajectories
   public final HolonomicDriveController driveController =
       new HolonomicDriveController(
           // X controller
-          new PIDController(1, 0, 0, frc.robot.Constants.PERIOD_SECONDS),
+          new PIDController(1, 0, 0, Constants.PERIOD_SECONDS),
           // Y controller
-          new PIDController(1, 0, 0, frc.robot.Constants.PERIOD_SECONDS),
+          new PIDController(1, 0, 0, Constants.PERIOD_SECONDS),
           thetaController);
 
   private final Drivebase drivebase;
@@ -69,19 +130,12 @@ public class DriveSubsystem extends SubsystemBase {
     drivebase = new Drivebase(frontLeftIO, frontRightIO, rearLeftIO, rearRightIO);
     this.imuSubsystem = imuSubsystem;
 
-    kinematics =
-        new MecanumDriveKinematics(
-            drivebase.frontLeft.positionToCenterOfRobot,
-            drivebase.frontRight.positionToCenterOfRobot,
-            drivebase.rearLeft.positionToCenterOfRobot,
-            drivebase.rearRight.positionToCenterOfRobot);
     trajectoryConfig =
-        new TrajectoryConfig(Drivebase.MAX_VELOCITY, Drivebase.MAX_ACCELERATION)
-            .setKinematics(kinematics);
+        new TrajectoryConfig(MAX_VELOCITY, MAX_ACCELERATION).setKinematics(KINEMATICS);
 
     setDefaultCommand(new TeleopDriveCommand(this, controller));
 
-    driveController.setTolerance(Constants.POSE_TOLERANCE);
+    driveController.setTolerance(POSE_TOLERANCE);
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -93,9 +147,32 @@ public class DriveSubsystem extends SubsystemBase {
     drivebase.periodic();
   }
 
-  public void driveTeleop(double xPercentage, double yPercentage, double thetaPercentage) {
-    drivebase.setCartesianPercentages(
-        xPercentage, yPercentage, thetaPercentage, imuSubsystem.getRotation());
+  public void driveTeleop(
+      double sidewaysPercentage,
+      double forwardPercentage,
+      double thetaPercentage,
+      boolean fieldRelative) {
+    if (fieldRelative) {
+      driveTeleop(
+          sidewaysPercentage, forwardPercentage, thetaPercentage, imuSubsystem.getRotation());
+    } else {
+      driveTeleop(sidewaysPercentage, forwardPercentage, thetaPercentage, new Rotation2d());
+    }
+  }
+
+  private void driveTeleop(
+      double sidewaysPercentage,
+      double forwardPercentage,
+      double thetaPercentage,
+      Rotation2d robotHeading) {
+    final var chassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            forwardPercentage * MAX_VELOCITY,
+            -sidewaysPercentage * MAX_VELOCITY,
+            thetaPercentage * MAX_ANGULAR_VELOCITY,
+            robotHeading);
+
+    setChassisSpeeds(chassisSpeeds);
   }
 
   /** Stops all the motors. */
@@ -103,29 +180,18 @@ public class DriveSubsystem extends SubsystemBase {
     drivebase.stopMotors();
   }
 
-  public ChassisSpeeds getChassisSpeeds() {
-    return kinematics.toChassisSpeeds(drivebase.getWheelSpeeds());
-  }
-
-  public double getLinearVelocity() {
-    ChassisSpeeds chassisSpeeds = getChassisSpeeds();
-    return Math.sqrt(
-        Math.pow(chassisSpeeds.vxMetersPerSecond, 2)
-            + Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
-  }
-
   public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
-    final var wheelSpeeds = kinematics.toWheelSpeeds(chassisSpeeds);
+    final var wheelSpeeds = KINEMATICS.toWheelSpeeds(chassisSpeeds);
 
-    setWheelSpeeds(wheelSpeeds);
+    drivebase.setWheelSpeeds(wheelSpeeds);
+  }
+
+  public ChassisSpeeds getChassisSpeeds() {
+    return KINEMATICS.toChassisSpeeds(drivebase.getWheelSpeeds());
   }
 
   public MecanumDriveWheelSpeeds getWheelSpeeds() {
     return drivebase.getWheelSpeeds();
-  }
-
-  public void setWheelSpeeds(MecanumDriveWheelSpeeds wheelSpeeds) {
-    drivebase.setWheelSpeeds(wheelSpeeds);
   }
 
   /**
@@ -133,25 +199,13 @@ public class DriveSubsystem extends SubsystemBase {
    * comparing with the actual position.
    */
   public void logTrajectoryPose(Trajectory.State state) {
-    Logger.getInstance()
-        .recordOutput(
-            "Drive/TrajectoryPose",
-            new double[] {
-              state.poseMeters.getX(),
-              state.poseMeters.getY(),
-              state.poseMeters.getRotation().getRadians()
-            });
+    logTrajectoryPose(state.poseMeters);
   }
-
-  // TODO: Delete this method, or replace it with another method for setting robot pose at match
-  // start via trajectory starting pose
-  /** Resets sensors to prepare for following a trajectory using its initial state. */
-  public void resetSensorsForTrajectory(Trajectory.State initialTrajectoryState) {
-    drivebase.zeroEncoders();
-  }
-
-  /** Resets sensors to prepare for following a trajectory. */
-  public void resetSensorsForTrajectory(PathPlannerTrajectory trajectory) {
-    resetSensorsForTrajectory(trajectory.getInitialState());
+  /**
+   * Used for showing a ghost robot of the expected position while following a trajectory. For
+   * comparing with the actual position.
+   */
+  public void logTrajectoryPose(Pose2d pose) {
+    Logger.getInstance().recordOutput("Drive/TrajectoryPose", LoggingUtil.poseToArray(pose));
   }
 }

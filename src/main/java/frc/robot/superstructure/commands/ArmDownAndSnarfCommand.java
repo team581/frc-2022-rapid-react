@@ -12,7 +12,7 @@ import frc.robot.superstructure.cargo_detector.CargoInventoryState;
 import frc.robot.superstructure.swiffer.SwifferMode;
 import frc.robot.superstructure.swiffer.commands.SwifferCommand;
 
-/** Lowers the swiffer while snarfing. */
+/** Lowers the arm while snarfing. */
 public class ArmDownAndSnarfCommand extends ParallelCommandGroup {
   /** Creates a new ArmDownAndSnarfCommand. */
   public ArmDownAndSnarfCommand(SuperstructureSubsystem superstructure) {

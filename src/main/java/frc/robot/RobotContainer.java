@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.auto.AutoRoutineChooser;
 import frc.robot.controller.ButtonController;
@@ -20,8 +21,9 @@ import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.*;
 import frc.robot.superstructure.cargo_detector.*;
+import frc.robot.superstructure.commands.ArmDownAndShootCommand;
 import frc.robot.superstructure.commands.ArmDownAndSnarfCommand;
-import frc.robot.superstructure.commands.ArmUpAndSwifferShootCommand;
+import frc.robot.superstructure.commands.ArmUpAndShootCommand;
 import frc.robot.superstructure.lights.*;
 import frc.robot.superstructure.swiffer.*;
 import frc.robot.vision_cargo.*;
@@ -159,6 +161,21 @@ public class RobotContainer {
     // are used to add command requirements.
     configureDriverButtonBindings();
     configureCopilotButtonBindings();
+
+    initLogging();
+  }
+
+  /** Start logging WPILib structures using their NetworkTables stuff. */
+  private void initLogging() {
+    SmartDashboard.putData(matchMetadataSubsystem);
+    SmartDashboard.putData(imuSubsystem);
+    SmartDashboard.putData(driveSubsystem);
+    SmartDashboard.putData(upperVisionSubsystem);
+    SmartDashboard.putData(cargoVisionSubsystem);
+    SmartDashboard.putData(swiffer);
+    SmartDashboard.putData(arm);
+    SmartDashboard.putData(superstructureSubsystem);
+    SmartDashboard.putData(lights);
   }
 
   private void configureDriverButtonBindings() {
@@ -173,12 +190,20 @@ public class RobotContainer {
     // Align for shooting
     copilotController.aButton.whenHeld(new UpperHubAlignCommand(driveSubsystem, localization));
 
-    // Snarfing
-    copilotController.rightTrigger.whenHeld(new ArmDownAndSnarfCommand(superstructureSubsystem));
+    // Snarfing cargo
+    copilotController
+        .rightTrigger
+        .and(copilotController.bButton.negate())
+        .whenActive(new ArmDownAndSnarfCommand(superstructureSubsystem));
 
-    // Shooting
-    copilotController.leftTrigger.whenHeld(
-        new ArmUpAndSwifferShootCommand(superstructureSubsystem));
+    // Scoring at the hub
+    copilotController.leftTrigger.whenHeld(new ArmUpAndShootCommand(superstructureSubsystem));
+
+    // Discard cargo by rolling it on the floor
+    copilotController
+        .rightTrigger
+        .and(copilotController.bButton)
+        .whenActive(new ArmDownAndShootCommand(superstructureSubsystem));
   }
 
   /**

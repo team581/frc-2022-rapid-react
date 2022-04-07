@@ -7,7 +7,7 @@ package frc.robot.superstructure;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.superstructure.arm.Arm;
 import frc.robot.superstructure.cargo_detector.CargoDetector;
-import frc.robot.superstructure.commands.ArmUpAndSwifferStopCommand;
+import frc.robot.superstructure.commands.ArmUpAndStopCommand;
 import frc.robot.superstructure.lights.Lights;
 import frc.robot.superstructure.swiffer.Swiffer;
 
@@ -26,9 +26,9 @@ public class SuperstructureSubsystem extends SubsystemBase {
     this.cargoDetector = cargoDetector;
 
     setDefaultCommand(
-        new ArmUpAndSwifferStopCommand(this)
+        new ArmUpAndStopCommand(this)
             .perpetually()
-            .withName("Perpetual" + ArmUpAndSwifferStopCommand.class.getSimpleName()));
+            .withName("Perpetual" + ArmUpAndStopCommand.class.getSimpleName()));
   }
 
   @Override

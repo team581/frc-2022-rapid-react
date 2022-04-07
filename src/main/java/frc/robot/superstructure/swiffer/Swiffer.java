@@ -27,12 +27,13 @@ public class Swiffer extends SubsystemBase {
       case COMP_BOT:
       case SIM_BOT:
         VOLTAGE_CLAMP = new Clamp(12);
-        TOLERANCE_RPM = 1;
-        FEEDFORWARD = new SimpleMotorFeedforward(0.019184, 0.17836, 0.002161);
+        TOLERANCE_RPM = 75;
+        // TODO: This needs to be measured again
+        FEEDFORWARD = new SimpleMotorFeedforward(0.019184 * 0.6, 0.17836 * 0.6, 0.002161 * 0.6);
         break;
       default:
         VOLTAGE_CLAMP = new Clamp(12);
-        TOLERANCE_RPM = 20;
+        TOLERANCE_RPM = 0;
         FEEDFORWARD = new SimpleMotorFeedforward(0, 0, 0);
         break;
     }
@@ -55,10 +56,11 @@ public class Swiffer extends SubsystemBase {
     switch (Constants.getRobot()) {
       case COMP_BOT:
       case SIM_BOT:
-        pid = new PIDController(0.0020592, 0, 0, Constants.PERIOD_SECONDS);
+        // TODO: This needs to be measured again
+        pid = new PIDController(0.0020592 * 0.6, 0, 0, Constants.PERIOD_SECONDS);
         break;
       default:
-        pid = new PIDController(1.1, 0, 0, Constants.PERIOD_SECONDS);
+        pid = new PIDController(1, 0, 0, Constants.PERIOD_SECONDS);
         break;
     }
 

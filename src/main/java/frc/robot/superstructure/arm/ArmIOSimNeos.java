@@ -6,6 +6,7 @@ package frc.robot.superstructure.arm;
 
 import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -23,13 +24,16 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
   /** Height in meters of the tower the arm is attached to. */
   private static final double TOWER_HEIGHT = 330.20 / 1e3;
 
+  /** The arm tower's angle relative to the floor. */
+  private static final Rotation2d TOWER_ANGLE = Rotation2d.fromDegrees(90);
+
   private final SingleJointedArmSim sim =
       new SingleJointedArmSim(
           getMotorSim(),
           Arm.GEARING,
           Arm.ARM_LENGTH,
           Arm.MOMENT_OF_INERTIA,
-          // This assumes that the DOWN position has an angle higher than the UP position
+          // This assumes that the DOWN position has an angle less than the UP position
           ArmPosition.DOWN.state.position,
           ArmPosition.UP.state.position,
           Arm.ARM_MASS,
@@ -39,7 +43,7 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
   private final MechanismRoot2d armPivot =
       arm2d.getRoot("ArmPivot", (Arm.ARM_LENGTH * 1.5) / 4, (TOWER_HEIGHT + Arm.ARM_LENGTH) / 4);
   private final MechanismLigament2d armTower =
-      armPivot.append(new MechanismLigament2d("ArmTower", -TOWER_HEIGHT, -90));
+      armPivot.append(new MechanismLigament2d("ArmTower", TOWER_HEIGHT, TOWER_ANGLE.getDegrees()));
   private final MechanismLigament2d arm =
       armTower.append(new MechanismLigament2d("Arm", Arm.ARM_LENGTH, 0));
 
@@ -70,7 +74,10 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
     final var encoderSim = encoder.getSimCollection();
 
     encoderSim.setRawPosition(
-        (int) Math.round(SensorUnitConverter.cancoder.radiansToSensorUnits(positionRadians)));
+        (int)
+            Math.round(
+                SensorUnitConverter.cancoder.radiansToSensorUnits(
+                    ENCODER_ABSOLUTE_POSITION_DIFFERENCE.getRadians() + positionRadians)));
 
     final var velocitySensorUnits =
         SensorUnitConverter.cancoder.radiansPerSecondToSensorUnitsPer100ms(
@@ -80,7 +87,7 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
     Logger.getInstance().recordOutput("Arm/Sim/VelocityRadiansPerSecond", velocityRadiansPerSecond);
     Logger.getInstance().recordOutput("Arm/Sim/PositionRadians", positionRadians);
 
-    arm.setAngle(Units.radiansToDegrees(SIM_ANGLE_OFFSET.getRadians() + positionRadians));
+    arm.setAngle(Units.radiansToDegrees(positionRadians) - TOWER_ANGLE.getDegrees());
 
     super.updateInputs(inputs);
 

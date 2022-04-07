@@ -75,15 +75,29 @@ public class Lights extends SubsystemBase {
     Color color;
     LightsMode lightsMode;
 
+    switch (swifferState) {
+      case STOPPED:
+        color = Color.kYellow;
+        break;
+      case SHOOTING:
+        color = Color.kRed;
+        break;
+      case SNARFING:
+        color = Color.kGreen;
+        break;
+      default:
+        // Should never happen
+        setColorForError();
+        return;
+    }
+
     switch (armState) {
       case UP:
         switch (swifferState) {
           case STOPPED:
-            color = Color.kYellow;
             lightsMode = armAtGoal && swifferAtGoal ? LightsMode.BLINK_SLOW : LightsMode.BLINK_FAST;
             break;
           case SHOOTING:
-            color = Color.kRed;
             lightsMode = armAtGoal ? LightsMode.BLINK_FAST : LightsMode.BLINK_SLOW;
             break;
           default:
@@ -93,7 +107,6 @@ public class Lights extends SubsystemBase {
         }
         break;
       case DOWN:
-        color = Color.kGreen;
         lightsMode = armAtGoal && swifferAtGoal ? LightsMode.BLINK_FAST : LightsMode.BLINK_SLOW;
         break;
       default:
@@ -131,11 +144,12 @@ public class Lights extends SubsystemBase {
     }
   }
 
-  private void setColorBlink(Color color, double duration) {
-    if (color != currentColor) {
+  /** Use a blink pattern that alternates between the provided colors. */
+  private void setColorBlink(Color colorA, Color colorB, double duration) {
+    if (colorA != currentColor) {
       // Force the new color to appear immediately instead of having a brief delay where the lights
       // are turned off
-      setColorSolid(color);
+      setColorSolid(colorA);
       return;
     }
 
@@ -144,11 +158,16 @@ public class Lights extends SubsystemBase {
     if (time >= duration) {
       if (time >= duration * 2) {
         blinkTimer.reset();
-        setColorSolid(Color.kBlack);
+        setColorSolid(colorB);
       } else {
-        setColorSolid(color);
+        setColorSolid(colorA);
       }
     }
+  }
+
+  /** Use a blink pattern that alternates between the provided color and turning off the LEDs. */
+  private void setColorBlink(Color color, double duration) {
+    setColorBlink(color, Color.kBlack, duration);
   }
 
   /** Sets the lights to the color pattern for when an error has occurred. */

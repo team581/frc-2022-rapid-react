@@ -11,8 +11,8 @@ import frc.robot.localization.Localization;
 import frc.robot.localization.commands.SeedLocalizationCommand;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.commands.ArmDownAndSnarfCommand;
-import frc.robot.superstructure.commands.ArmUpAndSwifferShootCommand;
-import frc.robot.superstructure.commands.ArmUpAndSwifferStopCommand;
+import frc.robot.superstructure.commands.ArmUpAndShootCommand;
+import frc.robot.superstructure.commands.ArmUpAndStopCommand;
 import lib.pathplanner.PPCommand;
 
 /**
@@ -31,8 +31,8 @@ public class SouthTwoBallAutoCommand extends SequentialCommandGroup {
     addCommands(
         new SeedLocalizationCommand(localization, firstPath),
         // Score preload
-        new ArmUpAndSwifferShootCommand(superstructure),
-        new ArmUpAndSwifferStopCommand(superstructure),
+        new ArmUpAndShootCommand(superstructure),
+        new ArmUpAndStopCommand(superstructure),
         // Fetch ball directly south of robot
         race(
             new PPCommand(firstPath, driveSubsystem, localization),
@@ -40,8 +40,8 @@ public class SouthTwoBallAutoCommand extends SequentialCommandGroup {
         // Travel back to fender
         new PPCommand(secondPath, driveSubsystem, localization),
         // Score second ball
-        new ArmUpAndSwifferShootCommand(superstructure),
-        new ArmUpAndSwifferStopCommand(superstructure));
+        new ArmUpAndShootCommand(superstructure),
+        new ArmUpAndStopCommand(superstructure));
 
     addRequirements(driveSubsystem, superstructure);
   }
