@@ -10,6 +10,7 @@ public class DriveController extends ButtonController {
   private final LogitechF310DirectInputController controller;
   private final SlewRateLimiter xLimiter = new SlewRateLimiter(7);
   private final SlewRateLimiter yLimiter = new SlewRateLimiter(7);
+  private final SlewRateLimiter thetaLimiter = new SlewRateLimiter(7);
 
   public DriveController(LogitechF310DirectInputController controller) {
     super(controller);
@@ -34,7 +35,6 @@ public class DriveController extends ButtonController {
 
   /** The rotation about the robot's z-axis as a percentage (<code>-1 <= x <= 1</code>) */
   public double getThetaPercentage() {
-    // This is not ratelimited since heading control is already motion profiled
-    return joystickScale(controller.getRightX());
+    return joystickScale(thetaLimiter.calculate(controller.getRightX()));
   }
 }

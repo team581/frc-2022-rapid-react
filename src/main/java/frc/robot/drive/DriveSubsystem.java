@@ -165,28 +165,12 @@ public class DriveSubsystem extends SubsystemBase {
       double forwardPercentage,
       double thetaPercentage,
       Rotation2d robotHeading) {
-    final var goalHeadingDifferential =
-        TeleopDriveCommand.MAX_TELEOP_TURN_RATE
-            .times(Constants.PERIOD_SECONDS)
-            .times(-thetaPercentage);
-    final var newGoalHeading =
-        thetaController.getGoal().position + goalHeadingDifferential.getRadians();
-
-    final var thetaControllerVelocity =
-        thetaController.calculate(imuSubsystem.getRotation().getRadians(), newGoalHeading);
     final var chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
             forwardPercentage * MAX_VELOCITY,
             -sidewaysPercentage * MAX_VELOCITY,
-            // TODO: This ignores the PID output
             thetaPercentage * MAX_ANGULAR_VELOCITY,
             robotHeading);
-
-    // TODO: Stop logging this after debugging is finished
-    Logger.getInstance()
-        .recordOutput("Drive/ThetaControllerVelocityRadiansPerSecond", thetaControllerVelocity);
-    Logger.getInstance()
-        .recordOutput("Drive/GoalHeadingRadians", thetaController.getGoal().position);
 
     setChassisSpeeds(chassisSpeeds);
   }
