@@ -7,6 +7,7 @@ package frc.robot.drive;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -51,6 +52,14 @@ public class DriveSubsystem extends SubsystemBase {
   /** The robot's maximum angular acceleration in radians per second squared. */
   public static final double MAX_ANGULAR_ACCELERATION;
 
+  /**
+   * The feedforward values from a SysID angular drivetrain characterization. These are different
+   * than the usual linear drivetrain characterization. Linear kA is determined using your mass,
+   * angular kA is determined using your mass distribution around the center of rotation.
+   */
+  private static final SimpleMotorFeedforward ROBOT_ANGULAR_FEEDFORWARD =
+      new SimpleMotorFeedforward(0.12211, 0.18984, 0.010019);
+
   static {
     final var maxWheelSpeedsForward =
         new MecanumDriveWheelSpeeds(
@@ -70,21 +79,8 @@ public class DriveSubsystem extends SubsystemBase {
     MAX_VELOCITY = Math.abs(maxChassisSpeedsForward.vxMetersPerSecond);
     MAX_ANGULAR_VELOCITY = Math.abs(maxChassisSpeedsSpinning.omegaRadiansPerSecond);
 
-    System.out.println("maxChassisSpeedsSpinning:");
-    System.out.println(maxChassisSpeedsSpinning);
-
     MAX_ACCELERATION = Wheel.MAX_ACCELERATION;
-    // TODO: This is the wheel's angular acceleration, do we need a different value for the robot
-    // itself?
-    MAX_ANGULAR_ACCELERATION = Wheel.MAX_ANGULAR_ACCELERATION;
-    System.out.println("MAX_VELOCITY");
-    System.out.println(MAX_VELOCITY);
-    System.out.println("MAX_ANGULAR_VELOCITY");
-    System.out.println(MAX_ANGULAR_VELOCITY);
-    System.out.println("MAX_ACCELERATION");
-    System.out.println(MAX_ACCELERATION);
-    System.out.println("MAX_ANGULAR_ACCELERATION");
-    System.out.println(MAX_ANGULAR_ACCELERATION);
+    MAX_ANGULAR_ACCELERATION = Wheel.MAX_VOLTAGE / ROBOT_ANGULAR_FEEDFORWARD.ka;
   }
 
   private static final TrapezoidProfile.Constraints MAX_ROTATION =
@@ -96,7 +92,7 @@ public class DriveSubsystem extends SubsystemBase {
   public final TrajectoryConfig trajectoryConfig;
 
   private final ProfiledPIDController thetaController =
-      new ProfiledPIDController(2, 0.3, 0.2, MAX_ROTATION, Constants.PERIOD_SECONDS);
+      new ProfiledPIDController(1, 0, 0, MAX_ROTATION, Constants.PERIOD_SECONDS);
 
   // Used for following trajectories
   public final HolonomicDriveController driveController =

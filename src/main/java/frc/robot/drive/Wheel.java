@@ -26,7 +26,9 @@ class Wheel extends SubsystemBase {
   /** The maximum acceleration of a wheel in radians/second/second. */
   public static final double MAX_ANGULAR_ACCELERATION;
 
-  private static final Clamp VOLTAGE_CLAMP;
+  public static final double MAX_VOLTAGE = 12.0;
+
+  private static final Clamp VOLTAGE_CLAMP = new Clamp(MAX_VOLTAGE);
 
   private static final SimpleMotorFeedforward FEEDFORWARD;
 
@@ -37,7 +39,6 @@ class Wheel extends SubsystemBase {
       case TEST_2020_BOT:
         WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
         MAX_WHEEL_VELOCITY = 4.517538186030606;
-        VOLTAGE_CLAMP = new Clamp(12);
         FEEDFORWARD = new SimpleMotorFeedforward(0.088986, 0.18647, 0.0076096);
         break;
       case COMP_BOT:
@@ -45,7 +46,6 @@ class Wheel extends SubsystemBase {
         WHEEL_CONVERTER = WheelConverter.fromDiameter(Units.inchesToMeters(5.97));
         // TODO: Measure the maximum wheel velocity
         MAX_WHEEL_VELOCITY = WHEEL_CONVERTER.radiansToDistance(Units.rotationsToRadians(1));
-        VOLTAGE_CLAMP = new Clamp(12);
         FEEDFORWARD = new SimpleMotorFeedforward(0.060039, 0.22421, 0.011814);
         break;
       default:
