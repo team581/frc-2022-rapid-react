@@ -14,11 +14,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public enum ArmPosition {
   UP(Rotation2d.fromDegrees(40)),
-  DOWN(Rotation2d.fromDegrees(-10));
+  DOWN(Rotation2d.fromDegrees(-10)),
+  UNKNOWN(null);
 
-  final TrapezoidProfile.State state;
+  final TrapezoidProfile.State stateForSimulation;
 
   ArmPosition(Rotation2d angle) {
-    this.state = new TrapezoidProfile.State(angle.getRadians(), 0);
+    this.stateForSimulation =
+        angle == null ? null : new TrapezoidProfile.State(angle.getRadians(), 0);
   }
 }
