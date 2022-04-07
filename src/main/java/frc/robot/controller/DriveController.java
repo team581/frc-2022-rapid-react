@@ -23,12 +23,12 @@ public class DriveController extends ButtonController {
   }
 
   /** The rotation across the robot's x-axis as a percentage (<code>-1 <= x <= 1</code>) */
-  public double getXPercentage() {
+  public double getSidewaysPercentage() {
     return joystickScale(xLimiter.calculate(controller.getLeftX()));
   }
 
   /** The translation across the robot's y-axis as a percentage (<code>-1 <= x <= 1</code>) */
-  public double getYPercentage() {
+  public double getForwardPercentage() {
     return joystickScale(yLimiter.calculate(controller.getLeftY()));
   }
 

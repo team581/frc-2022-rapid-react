@@ -148,16 +148,23 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveTeleop(
-      double xPercentage, double yPercentage, double thetaPercentage, boolean fieldRelative) {
+      double sidewaysPercentage,
+      double forwardPercentage,
+      double thetaPercentage,
+      boolean fieldRelative) {
     if (fieldRelative) {
-      driveTeleop(xPercentage, yPercentage, thetaPercentage, imuSubsystem.getRotation());
+      driveTeleop(
+          sidewaysPercentage, forwardPercentage, thetaPercentage, imuSubsystem.getRotation());
     } else {
-      driveTeleop(xPercentage, yPercentage, thetaPercentage, new Rotation2d());
+      driveTeleop(sidewaysPercentage, forwardPercentage, thetaPercentage, new Rotation2d());
     }
   }
 
   private void driveTeleop(
-      double xPercentage, double yPercentage, double thetaPercentage, Rotation2d robotHeading) {
+      double sidewaysPercentage,
+      double forwardPercentage,
+      double thetaPercentage,
+      Rotation2d robotHeading) {
     final var goalHeadingDifferential =
         TeleopDriveCommand.MAX_TELEOP_TURN_RATE
             .times(Constants.PERIOD_SECONDS)
@@ -169,8 +176,8 @@ public class DriveSubsystem extends SubsystemBase {
         thetaController.calculate(imuSubsystem.getRotation().getRadians(), newGoalHeading);
     final var chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            yPercentage * MAX_VELOCITY,
-            -xPercentage * MAX_VELOCITY,
+            forwardPercentage * MAX_VELOCITY,
+            -sidewaysPercentage * MAX_VELOCITY,
             // TODO: This ignores the PID output
             thetaPercentage * MAX_ANGULAR_VELOCITY,
             robotHeading);
