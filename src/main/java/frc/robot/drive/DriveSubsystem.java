@@ -178,8 +178,7 @@ public class DriveSubsystem extends SubsystemBase {
         ChassisSpeeds.fromFieldRelativeSpeeds(
             forwardPercentage * MAX_VELOCITY,
             -sidewaysPercentage * MAX_VELOCITY,
-            // TODO: This ignores the PID output
-            thetaPercentage * MAX_ANGULAR_VELOCITY,
+            thetaControllerVelocity,
             robotHeading);
 
     // TODO: Stop logging this after debugging is finished
