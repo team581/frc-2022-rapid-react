@@ -26,7 +26,8 @@ public class ArmIONeos implements ArmIO {
     switch (Constants.getRobot()) {
       case COMP_BOT:
       case SIM_BOT:
-        // Doing this means negative voltage will lower the arm and positive voltage will raise the arm
+        // Doing this means negative voltage will lower the arm and positive voltage will raise the
+        // arm
         INVERTED = true;
         break;
       default:
