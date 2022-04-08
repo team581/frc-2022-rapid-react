@@ -21,7 +21,7 @@ import frc.robot.misc.util.GearingConverter;
 public class ArmIONeos implements ArmIO {
   /** Initial encoder position after gearing. */
   static final Rotation2d INITIAL_ENCODER_POSITION =
-      new Rotation2d(Arm.STARTING_POSITION.state.position);
+      new Rotation2d(Arm.STARTING_POSITION.stateForSimulation.position);
 
   protected static final GearingConverter GEARING_CONVERTER = new GearingConverter(60.0 / 15.0);
 
