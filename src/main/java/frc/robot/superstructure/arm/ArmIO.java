@@ -4,7 +4,6 @@
 
 package frc.robot.superstructure.arm;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -33,7 +32,7 @@ interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
       appliedVolts = table.getDouble("VoltageVolts", appliedVolts);
       currentAmps = table.getDouble("CurrentAmps", currentAmps);
       tempCelcius = table.getDouble("TempCelcius", tempCelcius);
-      position = new Rotation2d(table.getDouble("PositionRadians", position.getRadians()));
+      positionRadians = table.getDouble("PositionRadians", positionRadians);
       velocityRadiansPerSecond =
           table.getDouble("VelocityRadiansPerSecond", velocityRadiansPerSecond);
       downwardLimitSwitchEnabled =
