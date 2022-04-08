@@ -28,7 +28,7 @@ public class Arm extends SubsystemBase {
   public static final double MOMENT_OF_INERTIA = 3.084;
 
   /** Gear ratio of motor. */
-  public static final double GEARING = 14;
+  public static final double GEARING = 300.0 / 7.0;
 
   /** The starting positon of the arm. */
   // Arm starts in the up position
@@ -45,9 +45,13 @@ public class Arm extends SubsystemBase {
       case COMP_BOT:
       case SIM_BOT:
         // TODO: Use SysID to calculate the feedforward
-        FEEDFORWARD = new ArmFeedforward(1.2, 2.73, 2, 0.08);
+        FEEDFORWARD = new ArmFeedforward(1.2, 0.95, 2, 0.08);
         VOLTAGE_CLAMP = new Clamp(12);
-        CONSTRAINTS = new TrapezoidProfile.Constraints(4.6, 28.86);
+        CONSTRAINTS =
+            // We use the actual max acceleration here but limit the velocity to avoid breaking the
+            // arm or tipping the robot
+            new TrapezoidProfile.Constraints(
+                Units.degreesToRadians(20), VOLTAGE_CLAMP.maximum / FEEDFORWARD.ka);
         break;
       default:
         FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);

@@ -42,6 +42,10 @@ interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
     }
   }
 
-  /** Sets the output voltage of the arm's motor. */
+  /**
+   * Sets the output voltage of the arm's motor. A positive voltage will raise the arm and a
+   * negative voltage will lower the it. That means that positive voltage and a positive arm angle
+   * are directly related.
+   */
   public void setVoltage(double volts);
 }

@@ -14,11 +14,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.Constants.TargetRobot;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 
 public class ArmIONeos implements ArmIO {
-  public static final boolean INVERTED;
-
   /**
    * The amount to subtract from the absolute position to ensure that an absolute position of 0
    * means the arm is in the {@link ArmPosition#DOWN down position}.
@@ -30,9 +29,6 @@ public class ArmIONeos implements ArmIO {
       case COMP_BOT:
       case SIM_BOT:
         ENCODER_ABSOLUTE_POSITION_DIFFERENCE = Rotation2d.fromDegrees(237.920);
-        // Positive voltage makes the arm go up
-        // Negative voltage makes the arm go down
-        INVERTED = false;
         break;
       default:
         throw new UnsupportedSubsystemException(ArmIONeos.class);
@@ -60,7 +56,9 @@ public class ArmIONeos implements ArmIO {
         throw new UnsupportedSubsystemException(this);
     }
 
-    motor.setInverted(INVERTED);
+    if (Constants.getRobot() == TargetRobot.COMP_BOT) {
+      motor.setInverted(true);
+    }
 
     encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     encoder.configSensorDirection(false);

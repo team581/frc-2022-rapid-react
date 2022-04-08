@@ -91,7 +91,7 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
 
     super.updateInputs(inputs);
 
-    if (ArmIONeos.INVERTED) {
+    if (motor.getInverted()) {
       // A hack to make the desired voltage look the same as the actual voltage
 
       inputs.appliedVolts *= -1;
@@ -103,7 +103,7 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
 
   @Override
   public void setVoltage(double volts) {
-    if (ArmIONeos.INVERTED) {
+    if (motor.getInverted()) {
       // REV simulation software doesn't invert voltage, even when the motor is inverted
       volts *= -1;
     }
