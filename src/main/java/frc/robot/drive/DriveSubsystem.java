@@ -152,6 +152,9 @@ public class DriveSubsystem extends SubsystemBase {
       double forwardPercentage,
       double thetaPercentage,
       boolean fieldRelative) {
+    // Convert from CW+ to CCW+
+    thetaPercentage *= -1;
+
     if (fieldRelative) {
       driveTeleop(
           sidewaysPercentage, forwardPercentage, thetaPercentage, imuSubsystem.getRotation());
