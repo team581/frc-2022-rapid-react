@@ -66,12 +66,18 @@ public class Arm extends SubsystemBase {
   private void doPositionControlLoop() {
     if (atGoal()) {
       desiredVoltageVolts = 0;
-    }
-
-    if (desiredPosition == ArmPosition.UP) {
-      desiredVoltageVolts = 2.0;
     } else {
-      desiredVoltageVolts = 1.0;
+      switch (desiredPosition) {
+        case UP:
+          desiredVoltageVolts = 2.0;
+
+          break;
+        case DOWN:
+          desiredVoltageVolts = -1.0;
+          break;
+        default:
+          throw new IllegalArgumentException("Invalid desired position");
+      }
     }
 
     io.setVoltage(desiredVoltageVolts);
