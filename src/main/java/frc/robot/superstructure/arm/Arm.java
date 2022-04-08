@@ -47,12 +47,11 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
 
     io.updateInputs(inputs);
+    Logger.getInstance().processInputs("Arm", inputs);
 
     if (DriverStation.isEnabled()) {
       doPositionControlLoop();
     }
-
-    Logger.getInstance().processInputs("Arm", inputs);
 
     final var isAtGoal = atGoal();
     Logger.getInstance().recordOutput("Arm/Goal/Position", desiredPosition.toString());
@@ -63,6 +62,16 @@ public class Arm extends SubsystemBase {
     lights.setSubsystemState(desiredPosition, isAtGoal);
   }
 
+  /** Set the desired position of the arm. */
+  public void setDesiredPosition(ArmPosition position) {
+    desiredPosition = position;
+  }
+
+  /** Check if the arm is at the provided position. */
+  public boolean atPosition(ArmPosition position) {
+    return getPosition() == position;
+  }
+
   private void doPositionControlLoop() {
     if (atGoal()) {
       desiredVoltageVolts = 0;
@@ -70,7 +79,6 @@ public class Arm extends SubsystemBase {
       switch (desiredPosition) {
         case UP:
           desiredVoltageVolts = 2.0;
-
           break;
         case DOWN:
           desiredVoltageVolts = -1.0;
@@ -87,11 +95,6 @@ public class Arm extends SubsystemBase {
     return atPosition(desiredPosition);
   }
 
-  /** Check if the arm is at the provided position. */
-  public boolean atPosition(ArmPosition position) {
-    return getPosition() == position;
-  }
-
   private ArmPosition getPosition() {
     if (inputs.upwardLimitSwitchEnabled) {
       if (inputs.downwardLimitSwitchEnabled) {
@@ -105,10 +108,5 @@ public class Arm extends SubsystemBase {
     } else {
       return ArmPosition.UNKNOWN;
     }
-  }
-
-  /** Set the desired position of the arm. */
-  public void setDesiredPosition(ArmPosition position) {
-    desiredPosition = position;
   }
 }
