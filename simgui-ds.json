@@ -25,17 +25,7 @@
       ],
       "axisCount": 6,
       "buttonCount": 8,
-      "buttonKeys": [
-        90,
-        88,
-        67,
-        86,
-        89,
-        85,
-        73,
-        79,
-        -1
-      ],
+      "buttonKeys": [90, 88, 67, 86, 89, 85, 73, 79, -1],
       "povConfig": [
         {
           "key0": 328,
@@ -62,12 +52,7 @@
       ],
       "axisCount": 2,
       "buttonCount": 4,
-      "buttonKeys": [
-        77,
-        44,
-        46,
-        47
-      ],
+      "buttonKeys": [77, 44, 46, 47],
       "povCount": 0
     },
     {
@@ -83,14 +68,7 @@
       ],
       "axisCount": 2,
       "buttonCount": 6,
-      "buttonKeys": [
-        260,
-        268,
-        266,
-        261,
-        269,
-        267
-      ],
+      "buttonKeys": [260, 268, 266, 261, 269, 267],
       "povCount": 0
     },
     {
