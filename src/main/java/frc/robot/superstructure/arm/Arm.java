@@ -78,10 +78,10 @@ public class Arm extends SubsystemBase {
     } else {
       switch (desiredPosition) {
         case UP:
-          desiredVoltageVolts = 2.0;
+          desiredVoltageVolts = 2.75;
           break;
         case DOWN:
-          desiredVoltageVolts = -1.0;
+          desiredVoltageVolts = -2;
           break;
         default:
           throw new IllegalArgumentException("Invalid desired position");
