@@ -12,9 +12,9 @@ import frc.robot.superstructure.SuperstructureSubsystem;
 
 /** Chooses the autonomous routine to run at the start of a match. */
 public class AutoRoutineChooser {
-  private SuperstructureSubsystem superstructure;
-  private DriveSubsystem driveSubsystem;
-  private Localization localization;
+  private final SuperstructureSubsystem superstructure;
+  private final DriveSubsystem driveSubsystem;
+  private final Localization localization;
 
   public AutoRoutineChooser(
       DriveSubsystem driveSubsystem,
