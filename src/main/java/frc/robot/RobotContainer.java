@@ -94,10 +94,10 @@ public class RobotContainer {
         case COMP_BOT:
           matchMetadataSubsystem = new MatchMetadataSubsystem(new MatchMetadataIOFms());
           lights = new Lights(new LightsIOReplay());
-          arm = new Arm(new ArmIOReplay(), lights);
-          swiffer = new Swiffer(new SwifferIOReplay(), lights);
+          arm = new Arm(new ArmIONeos(), lights);
+          swiffer = new Swiffer(new SwifferIOFalcon500(), lights);
+          imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
           cargoDetector = new CargoDetector(new CargoDetectorIOReplay());
-          imuSubsystem = new ImuSubsystem(new ImuIONavx());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
           cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
           driveSubsystem =
@@ -115,10 +115,9 @@ public class RobotContainer {
           arm = new Arm(new ArmIOReplay(), lights);
           swiffer = new Swiffer(new SwifferIOReplay(), lights);
           cargoDetector = new CargoDetector(new CargoDetectorIOIR());
-          imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
+          imuSubsystem = new ImuSubsystem(new ImuIOReplay());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
-          cargoVisionSubsystem =
-              new CargoVisionSubsystem(new CargoVisionIOLimelight(), imuSubsystem);
+          cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
           driveSubsystem =
               new DriveSubsystem(
                   driverController,

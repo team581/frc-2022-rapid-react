@@ -14,7 +14,7 @@ public class ImuIOAdis16470 implements ImuIO {
 
   public ImuIOAdis16470() {
     switch (Constants.getRobot()) {
-      case TEST_2020_BOT:
+      case COMP_BOT:
       case SIM_BOT:
         sensor = new ADIS16470_IMU();
         break;

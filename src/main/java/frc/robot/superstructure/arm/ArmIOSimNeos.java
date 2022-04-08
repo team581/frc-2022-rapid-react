@@ -91,28 +91,19 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
 
     super.updateInputs(inputs);
 
-    if (ArmIONeos.INVERTED) {
+    if (motor.getInverted()) {
       // A hack to make the desired voltage look the same as the actual voltage
 
       inputs.appliedVolts *= -1;
     }
 
-    if (positionRadians >= ArmPosition.UP.state.position) {
-      inputs.upperLimitSwitchEnabled = true;
-    } else {
-      inputs.upperLimitSwitchEnabled = false;
-    }
-
-    if (positionRadians <= ArmPosition.DOWN.state.position) {
-      inputs.lowerLimitSwitchEnabled = true;
-    } else {
-      inputs.lowerLimitSwitchEnabled = false;
-    }
+    inputs.upwardLimitSwitchEnabled = positionRadians >= ArmPosition.UP.state.position;
+    inputs.downwardLimitSwitchEnabled = positionRadians <= ArmPosition.DOWN.state.position;
   }
 
   @Override
   public void setVoltage(double volts) {
-    if (ArmIONeos.INVERTED) {
+    if (motor.getInverted()) {
       // REV simulation software doesn't invert voltage, even when the motor is inverted
       volts *= -1;
     }

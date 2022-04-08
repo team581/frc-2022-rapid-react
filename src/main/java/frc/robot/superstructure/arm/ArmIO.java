@@ -4,7 +4,6 @@
 
 package frc.robot.superstructure.arm;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.misc.SubsystemIO;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -14,35 +13,39 @@ interface ArmIO extends SubsystemIO<ArmIO.Inputs> {
     public double appliedVolts = 0;
     public double currentAmps = 0;
     public double tempCelcius = 0;
-    public Rotation2d position = new Rotation2d();
+    public double positionRadians = 0;
     public double velocityRadiansPerSecond = 0;
-    public boolean upperLimitSwitchEnabled = false;
-    public boolean lowerLimitSwitchEnabled = false;
+    public boolean downwardLimitSwitchEnabled = false;
+    public boolean upwardLimitSwitchEnabled = false;
 
     public void toLog(LogTable table) {
       table.put("VoltageVolts", appliedVolts);
       table.put("CurrentAmps", currentAmps);
       table.put("TempCelcius", tempCelcius);
-      table.put("PositionRadians", position.getRadians());
+      table.put("PositionRadians", positionRadians);
       table.put("VelocityRadiansPerSecond", velocityRadiansPerSecond);
-      table.put("UpperLimitSwitchEnabled", upperLimitSwitchEnabled);
-      table.put("LowerLimitSwitchEnabled", lowerLimitSwitchEnabled);
+      table.put("DownwardLimitSwitchEnabled", downwardLimitSwitchEnabled);
+      table.put("UpwardLimitSwitchEnabled", upwardLimitSwitchEnabled);
     }
 
     public void fromLog(LogTable table) {
       appliedVolts = table.getDouble("VoltageVolts", appliedVolts);
       currentAmps = table.getDouble("CurrentAmps", currentAmps);
       tempCelcius = table.getDouble("TempCelcius", tempCelcius);
-      position = new Rotation2d(table.getDouble("PositionRadians", position.getRadians()));
+      positionRadians = table.getDouble("PositionRadians", positionRadians);
       velocityRadiansPerSecond =
           table.getDouble("VelocityRadiansPerSecond", velocityRadiansPerSecond);
-      upperLimitSwitchEnabled =
-          table.getBoolean("UpperLimitSwitchEnabled", upperLimitSwitchEnabled);
-      lowerLimitSwitchEnabled =
-          table.getBoolean("LowerLimitSwitchEnabled", lowerLimitSwitchEnabled);
+      downwardLimitSwitchEnabled =
+          table.getBoolean("DownwardLimitSwitchEnabled", downwardLimitSwitchEnabled);
+      upwardLimitSwitchEnabled =
+          table.getBoolean("UpwardLimitSwitchEnabled", upwardLimitSwitchEnabled);
     }
   }
 
-  /** Sets the output voltage of the arm's motor. */
+  /**
+   * Sets the output voltage of the arm's motor. A positive voltage will raise the arm and a
+   * negative voltage will lower the it. That means that positive voltage and a positive arm angle
+   * are directly related.
+   */
   public void setVoltage(double volts);
 }

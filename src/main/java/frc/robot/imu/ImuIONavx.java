@@ -15,7 +15,6 @@ public class ImuIONavx implements ImuIO {
 
   public ImuIONavx() {
     switch (Constants.getRobot()) {
-      case COMP_BOT:
       case SIM_BOT:
         sensor = new AHRS(Port.kMXP);
         break;

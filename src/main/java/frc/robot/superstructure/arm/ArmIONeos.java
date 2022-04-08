@@ -14,11 +14,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.Constants.TargetRobot;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
 
 public class ArmIONeos implements ArmIO {
-  public static final boolean INVERTED;
-
   /**
    * The amount to subtract from the absolute position to ensure that an absolute position of 0
    * means the arm is in the {@link ArmPosition#DOWN down position}.
@@ -30,9 +29,6 @@ public class ArmIONeos implements ArmIO {
       case COMP_BOT:
       case SIM_BOT:
         ENCODER_ABSOLUTE_POSITION_DIFFERENCE = Rotation2d.fromDegrees(237.920);
-        // Positive voltage makes the arm go up
-        // Negative voltage makes the arm go down
-        INVERTED = false;
         break;
       default:
         throw new UnsupportedSubsystemException(ArmIONeos.class);
@@ -42,8 +38,8 @@ public class ArmIONeos implements ArmIO {
   protected final CANSparkMax motor;
   protected final CANCoder encoder;
 
-  protected final SparkMaxLimitSwitch forwardLimitSwitch;
-  protected final SparkMaxLimitSwitch reverseLimitSwitch;
+  protected final SparkMaxLimitSwitch downwardLimitSwitch;
+  protected final SparkMaxLimitSwitch upwardLimitSwitch;
 
   public ArmIONeos() {
     switch (Constants.getRobot()) {
@@ -52,15 +48,17 @@ public class ArmIONeos implements ArmIO {
         motor = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
         encoder = new CANCoder(3);
 
-        forwardLimitSwitch = motor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-        reverseLimitSwitch = motor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        downwardLimitSwitch = motor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        upwardLimitSwitch = motor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
         break;
       default:
         throw new UnsupportedSubsystemException(this);
     }
 
-    motor.setInverted(INVERTED);
+    if (Constants.getRobot() == TargetRobot.COMP_BOT) {
+      motor.setInverted(true);
+    }
 
     encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     encoder.configSensorDirection(false);
@@ -76,18 +74,19 @@ public class ArmIONeos implements ArmIO {
     inputs.appliedVolts = motor.getAppliedOutput();
     inputs.currentAmps = motor.getOutputCurrent();
     inputs.tempCelcius = motor.getMotorTemperature();
-    inputs.position =
+    inputs.positionRadians =
         Rotation2d.fromDegrees(encoder.getAbsolutePosition())
-            .minus(ENCODER_ABSOLUTE_POSITION_DIFFERENCE);
+            .minus(ENCODER_ABSOLUTE_POSITION_DIFFERENCE)
+            .getRadians();
     inputs.velocityRadiansPerSecond = Units.degreesToRadians(encoder.getVelocity());
-    inputs.upperLimitSwitchEnabled = forwardLimitSwitch.isPressed();
-    inputs.lowerLimitSwitchEnabled = reverseLimitSwitch.isPressed();
+    inputs.downwardLimitSwitchEnabled = downwardLimitSwitch.isPressed();
+    inputs.upwardLimitSwitchEnabled = upwardLimitSwitch.isPressed();
   }
 
   @Override
   public void setVoltage(double volts) {
-    if ((volts > 0 && forwardLimitSwitch.isPressed())
-        || (volts < 0 && reverseLimitSwitch.isPressed())) {
+    if ((volts < 0 && downwardLimitSwitch.isPressed())
+        || (volts > 0 && upwardLimitSwitch.isPressed())) {
       motor.setVoltage(0);
     }
 
