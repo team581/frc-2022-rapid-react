@@ -53,6 +53,7 @@ public class ArmIONeos implements ArmIO {
     encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
     encoder.configSensorDirection(false);
     encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+    encoder.setPosition(0);
   }
 
   protected static DCMotor getMotorSim() {

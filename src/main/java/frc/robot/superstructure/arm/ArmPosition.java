@@ -13,8 +13,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  * (not -90deg or 270deg, that would be CW+).
  */
 public enum ArmPosition {
-  UP(Rotation2d.fromDegrees(78.95751953144587)),
-  DOWN(Rotation2d.fromDegrees(-17.5463867));
+  UP(Rotation2d.fromDegrees(87.69287109375)),
+  LEVEL(new Rotation2d(0)),
+  DOWN(Rotation2d.fromDegrees(-9.602050781249998));
 
   final TrapezoidProfile.State state;
 
