@@ -4,8 +4,10 @@
 
 package frc.robot.controller;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * A wrapper around {@link LogitechF310DirectInputController} for triggering commands using buttons.
@@ -16,8 +18,8 @@ public class ButtonController {
   public final Button xButton;
   public final Button yButton;
 
-  public final Button leftTrigger;
-  public final Button rightTrigger;
+  public final Trigger leftTrigger;
+  public final Trigger rightTrigger;
 
   public final Button leftBumper;
   public final Button rightBumper;
@@ -58,5 +60,24 @@ public class ButtonController {
         new JoystickButton(controller, LogitechF310DirectInputController.Button.LEFT_STICK.value);
     rightStick =
         new JoystickButton(controller, LogitechF310DirectInputController.Button.RIGHT_STICK.value);
+  }
+
+  public ButtonController(XboxController controller) {
+    xButton = new JoystickButton(controller, XboxController.Button.kX.value);
+    aButton = new JoystickButton(controller, XboxController.Button.kA.value);
+    bButton = new JoystickButton(controller, XboxController.Button.kB.value);
+    yButton = new JoystickButton(controller, XboxController.Button.kY.value);
+
+    leftBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value);
+    rightBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
+
+    leftTrigger = new Trigger(() -> controller.getLeftTriggerAxis() > 0.5);
+    rightTrigger = new Trigger(() -> controller.getRightTriggerAxis() > 0.5);
+
+    backButton = new JoystickButton(controller, XboxController.Button.kBack.value);
+    startButton = new JoystickButton(controller, XboxController.Button.kStart.value);
+
+    leftStick = new JoystickButton(controller, XboxController.Button.kLeftStick.value);
+    rightStick = new JoystickButton(controller, XboxController.Button.kRightStick.value);
   }
 }

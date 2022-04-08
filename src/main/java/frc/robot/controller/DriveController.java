@@ -5,14 +5,15 @@
 package frc.robot.controller;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.XboxController;
 
 public class DriveController extends ButtonController {
-  private final LogitechF310DirectInputController controller;
+  private final XboxController controller;
   private final SlewRateLimiter xLimiter = new SlewRateLimiter(7);
   private final SlewRateLimiter yLimiter = new SlewRateLimiter(7);
   private final SlewRateLimiter thetaLimiter = new SlewRateLimiter(7);
 
-  public DriveController(LogitechF310DirectInputController controller) {
+  public DriveController(XboxController controller) {
     super(controller);
 
     this.controller = controller;
