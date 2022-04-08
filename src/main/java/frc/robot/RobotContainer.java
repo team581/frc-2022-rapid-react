@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.auto.AutoRoutineChooser;
@@ -12,8 +13,6 @@ import frc.robot.controller.ButtonController;
 import frc.robot.controller.DriveController;
 import frc.robot.controller.LogitechF310DirectInputController;
 import frc.robot.drive.*;
-import frc.robot.drive.commands.UpperHubAlignCommand;
-import frc.robot.drive.commands.VelocityControlTestCommand;
 import frc.robot.imu.*;
 import frc.robot.localization.Localization;
 import frc.robot.match_metadata.*;
@@ -41,7 +40,7 @@ public class RobotContainer {
   private final AutoRoutineChooser autonomousChooser;
 
   private final DriveController driverController =
-      new DriveController(new LogitechF310DirectInputController(Constants.DRIVER_CONTROLLER_PORT));
+      new DriveController(new XboxController(Constants.DRIVER_CONTROLLER_PORT));
   private final ButtonController copilotController =
       new ButtonController(
           new LogitechF310DirectInputController(Constants.COPILOT_CONTROLLER_PORT));
@@ -172,17 +171,11 @@ public class RobotContainer {
   }
 
   private void configureDriverButtonBindings() {
-    // Testing autonomous
-    driverController.yButton.whenHeld(new VelocityControlTestCommand(driveSubsystem));
-
     // Resetting field oriented control
     driverController.xButton.whenActive(imuSubsystem::zeroHeading);
   }
 
   private void configureCopilotButtonBindings() {
-    // Align for shooting
-    copilotController.aButton.whenHeld(new UpperHubAlignCommand(driveSubsystem, localization));
-
     // Snarfing cargo
     copilotController
         .rightTrigger
@@ -190,7 +183,8 @@ public class RobotContainer {
         .whileActiveContinuous(new ArmDownAndSnarfCommand(superstructureSubsystem));
 
     // Scoring at the hub
-    copilotController.leftTrigger.whileHeld(new ArmUpAndShootCommand(superstructureSubsystem));
+    copilotController.leftTrigger.whileActiveContinuous(
+        new ArmUpAndShootCommand(superstructureSubsystem));
 
     // Discard cargo by rolling it on the floor
     copilotController
