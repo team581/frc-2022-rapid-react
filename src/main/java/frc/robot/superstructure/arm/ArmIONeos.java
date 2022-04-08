@@ -16,24 +16,14 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.TargetRobot;
 import frc.robot.misc.exceptions.UnsupportedSubsystemException;
+import frc.robot.misc.util.GearingConverter;
 
 public class ArmIONeos implements ArmIO {
-  /**
-   * The amount to subtract from the absolute position to ensure that an absolute position of 0
-   * means the arm is in the {@link ArmPosition#DOWN down position}.
-   */
-  static final Rotation2d ENCODER_ABSOLUTE_POSITION_DIFFERENCE;
+  /** Initial encoder position after gearing. */
+  static final Rotation2d INITIAL_ENCODER_POSITION =
+      new Rotation2d(Arm.STARTING_POSITION.state.position);
 
-  static {
-    switch (Constants.getRobot()) {
-      case COMP_BOT:
-      case SIM_BOT:
-        ENCODER_ABSOLUTE_POSITION_DIFFERENCE = Rotation2d.fromDegrees(237.920);
-        break;
-      default:
-        throw new UnsupportedSubsystemException(ArmIONeos.class);
-    }
-  }
+  protected static final GearingConverter GEARING_CONVERTER = new GearingConverter(60.0 / 15.0);
 
   protected final CANSparkMax motor;
   protected final CANCoder encoder;
@@ -60,7 +50,7 @@ public class ArmIONeos implements ArmIO {
       motor.setInverted(true);
     }
 
-    encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
     encoder.configSensorDirection(false);
     encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
   }
@@ -75,8 +65,8 @@ public class ArmIONeos implements ArmIO {
     inputs.currentAmps = motor.getOutputCurrent();
     inputs.tempCelcius = motor.getMotorTemperature();
     inputs.positionRadians =
-        Rotation2d.fromDegrees(encoder.getAbsolutePosition())
-            .minus(ENCODER_ABSOLUTE_POSITION_DIFFERENCE)
+        Rotation2d.fromDegrees(GEARING_CONVERTER.beforeToAfterGearing(encoder.getPosition()))
+            .plus(INITIAL_ENCODER_POSITION)
             .getRadians();
     inputs.velocityRadiansPerSecond = Units.degreesToRadians(encoder.getVelocity());
     inputs.downwardLimitSwitchEnabled = downwardLimitSwitch.isPressed();

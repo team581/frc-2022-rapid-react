@@ -77,7 +77,7 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
         (int)
             Math.round(
                 SensorUnitConverter.cancoder.radiansToSensorUnits(
-                    ENCODER_ABSOLUTE_POSITION_DIFFERENCE.getRadians() + positionRadians)));
+                    INITIAL_ENCODER_POSITION.getRadians() + positionRadians)));
 
     final var velocitySensorUnits =
         SensorUnitConverter.cancoder.radiansPerSecondToSensorUnitsPer100ms(
