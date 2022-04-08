@@ -82,7 +82,7 @@ public class Arm extends SubsystemBase {
         pidController =
             new ProfiledPIDController(1.5, 0, 0.4, CONSTRAINTS, Constants.PERIOD_SECONDS);
         // TODO: Measure actual acceptable tolerance
-        pidController.setTolerance(Units.degreesToRadians(4), Units.degreesToRadians(4));
+        pidController.setTolerance(Units.degreesToRadians(4), Units.degreesToRadians(8));
         break;
       default:
         pidController = new ProfiledPIDController(1, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
