@@ -37,7 +37,8 @@ public class SwifferCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // This command never stops unless it's interrupted by the driver
+    // This command never stops unless it's interrupted by something else (the driver or the cargo
+    // detector)
     return false;
   }
 }

@@ -20,6 +20,7 @@ import frc.robot.match_metadata.*;
 import frc.robot.misc.exceptions.UnknownTargetRobotException;
 import frc.robot.superstructure.SuperstructureSubsystem;
 import frc.robot.superstructure.arm.*;
+import frc.robot.superstructure.cargo_detector.*;
 import frc.robot.superstructure.commands.ArmDownAndShootCommand;
 import frc.robot.superstructure.commands.ArmDownAndSnarfCommand;
 import frc.robot.superstructure.commands.ArmUpAndShootCommand;
@@ -53,9 +54,10 @@ public class RobotContainer {
   private final CargoVisionSubsystem cargoVisionSubsystem;
   private final Swiffer swiffer;
   private final Arm arm;
-  private final SuperstructureSubsystem superstructureSubsystem;
   private final Lights lights;
+  private final SuperstructureSubsystem superstructureSubsystem;
   private final Localization localization;
+  private final CargoDetector cargoDetector;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -75,6 +77,7 @@ public class RobotContainer {
       lights = new Lights(new LightsIOReplay());
       arm = new Arm(new ArmIOReplay(), lights);
       swiffer = new Swiffer(new SwifferIOReplay(), lights);
+      cargoDetector = new CargoDetector(new CargoDetectorIOReplay());
       imuSubsystem = new ImuSubsystem(new ImuIOReplay());
       upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
       cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
@@ -94,6 +97,7 @@ public class RobotContainer {
           arm = new Arm(new ArmIONeos(), lights);
           swiffer = new Swiffer(new SwifferIOFalcon500(), lights);
           imuSubsystem = new ImuSubsystem(new ImuIOAdis16470());
+          cargoDetector = new CargoDetector(new CargoDetectorIOReplay());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
           cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
           driveSubsystem =
@@ -110,6 +114,7 @@ public class RobotContainer {
           lights = new Lights(new LightsIORoborio());
           arm = new Arm(new ArmIOReplay(), lights);
           swiffer = new Swiffer(new SwifferIOReplay(), lights);
+          cargoDetector = new CargoDetector(new CargoDetectorIOIR());
           imuSubsystem = new ImuSubsystem(new ImuIOReplay());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOReplay());
           cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOReplay(), imuSubsystem);
@@ -127,6 +132,7 @@ public class RobotContainer {
           lights = new Lights(new LightsIOSim());
           arm = new Arm(new ArmIOSimNeos(), lights);
           swiffer = new Swiffer(new SwifferIOSimFalcon500(), lights);
+          cargoDetector = new CargoDetector(new CargoDetectorIOSim());
           imuSubsystem = new ImuSubsystem(new ImuIOSim());
           upperVisionSubsystem = new UpperHubVisionSubsystem(new UpperHubVisionIOSim());
           cargoVisionSubsystem = new CargoVisionSubsystem(new CargoVisionIOSim(), imuSubsystem);
@@ -144,7 +150,7 @@ public class RobotContainer {
       }
     }
 
-    superstructureSubsystem = new SuperstructureSubsystem(swiffer, arm, lights);
+    superstructureSubsystem = new SuperstructureSubsystem(swiffer, arm, lights, cargoDetector);
     localization = new Localization(driveSubsystem, cargoVisionSubsystem, imuSubsystem);
 
     autonomousChooser =
@@ -187,16 +193,16 @@ public class RobotContainer {
     copilotController
         .rightTrigger
         .and(copilotController.bButton.negate())
-        .whileActiveContinuous(new ArmDownAndSnarfCommand(superstructureSubsystem));
+        .whenActive(new ArmDownAndSnarfCommand(superstructureSubsystem));
 
     // Scoring at the hub
-    copilotController.leftTrigger.whileHeld(new ArmUpAndShootCommand(superstructureSubsystem));
+    copilotController.leftTrigger.whenHeld(new ArmUpAndShootCommand(superstructureSubsystem));
 
     // Discard cargo by rolling it on the floor
     copilotController
         .rightTrigger
         .and(copilotController.bButton)
-        .whileActiveContinuous(new ArmDownAndShootCommand(superstructureSubsystem));
+        .whenActive(new ArmDownAndShootCommand(superstructureSubsystem));
   }
 
   /**
