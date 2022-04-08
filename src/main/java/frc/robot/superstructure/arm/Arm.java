@@ -110,7 +110,7 @@ public class Arm extends SubsystemBase {
     Logger.getInstance()
         .recordOutput(
             "Arm/Goal/Error/PositionRadians",
-            pidController.getGoal().position - inputs.position.getRadians());
+            pidController.getGoal().position - inputs.positionRadians);
     Logger.getInstance()
         .recordOutput(
             "Arm/Goal/Error/VelocityRadiansPerSecond",
@@ -134,13 +134,13 @@ public class Arm extends SubsystemBase {
   }
 
   private void resetController() {
-    pidController.reset(inputs.position.getRadians(), inputs.velocityRadiansPerSecond);
+    pidController.reset(inputs.positionRadians, inputs.velocityRadiansPerSecond);
   }
 
   private void doPositionControlLoop() {
     final var setpoint = pidController.getSetpoint();
     final var feedforward = FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
-    final var feedback = pidController.calculate(inputs.position.getRadians());
+    final var feedback = pidController.calculate(inputs.positionRadians);
 
     final var voltage = feedforward + feedback;
     desiredVoltageVolts = VOLTAGE_CLAMP.clamp(voltage);

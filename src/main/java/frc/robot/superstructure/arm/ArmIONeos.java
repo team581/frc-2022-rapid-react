@@ -42,8 +42,8 @@ public class ArmIONeos implements ArmIO {
   protected final CANSparkMax motor;
   protected final CANCoder encoder;
 
-  protected final SparkMaxLimitSwitch forwardLimitSwitch;
-  protected final SparkMaxLimitSwitch reverseLimitSwitch;
+  protected final SparkMaxLimitSwitch downwardLimitSwitch;
+  protected final SparkMaxLimitSwitch upwardLimitSwitch;
 
   public ArmIONeos() {
     switch (Constants.getRobot()) {
@@ -52,8 +52,8 @@ public class ArmIONeos implements ArmIO {
         motor = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
         encoder = new CANCoder(3);
 
-        forwardLimitSwitch = motor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-        reverseLimitSwitch = motor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        downwardLimitSwitch = motor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        upwardLimitSwitch = motor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
         break;
       default:
@@ -76,18 +76,19 @@ public class ArmIONeos implements ArmIO {
     inputs.appliedVolts = motor.getAppliedOutput();
     inputs.currentAmps = motor.getOutputCurrent();
     inputs.tempCelcius = motor.getMotorTemperature();
-    inputs.position =
+    inputs.positionRadians =
         Rotation2d.fromDegrees(encoder.getAbsolutePosition())
-            .minus(ENCODER_ABSOLUTE_POSITION_DIFFERENCE);
+            .minus(ENCODER_ABSOLUTE_POSITION_DIFFERENCE)
+            .getRadians();
     inputs.velocityRadiansPerSecond = Units.degreesToRadians(encoder.getVelocity());
-    inputs.upperLimitSwitchEnabled = forwardLimitSwitch.isPressed();
-    inputs.lowerLimitSwitchEnabled = reverseLimitSwitch.isPressed();
+    inputs.downwardLimitSwitchEnabled = downwardLimitSwitch.isPressed();
+    inputs.upwardLimitSwitchEnabled = upwardLimitSwitch.isPressed();
   }
 
   @Override
   public void setVoltage(double volts) {
-    if ((volts > 0 && forwardLimitSwitch.isPressed())
-        || (volts < 0 && reverseLimitSwitch.isPressed())) {
+    if ((volts < 0 && downwardLimitSwitch.isPressed())
+        || (volts > 0 && upwardLimitSwitch.isPressed())) {
       motor.setVoltage(0);
     }
 
