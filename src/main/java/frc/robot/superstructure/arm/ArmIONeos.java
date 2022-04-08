@@ -50,7 +50,6 @@ public class ArmIONeos implements ArmIO {
 
         downwardLimitSwitch = motor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         upwardLimitSwitch = motor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-
         break;
       default:
         throw new UnsupportedSubsystemException(this);
