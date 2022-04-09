@@ -66,6 +66,7 @@ public class PPCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
+    driveSubsystem.stopMotors();
   }
 
   @Override
