@@ -4,14 +4,8 @@
 
 package frc.robot.superstructure.arm;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.misc.util.Clamp;
 import frc.robot.superstructure.arm.ArmIO.Inputs;
 import frc.robot.superstructure.lights.Lights;
 import frc.robot.superstructure.swiffer.Swiffer;
@@ -34,34 +28,6 @@ public class Arm extends SubsystemBase {
   // Arm starts in the up position
   public static final ArmPosition STARTING_POSITION = ArmPosition.UP;
 
-  private static final Clamp VOLTAGE_CLAMP;
-
-  private static final TrapezoidProfile.Constraints CONSTRAINTS;
-
-  private static final ArmFeedforward FEEDFORWARD;
-
-  static {
-    switch (Constants.getRobot()) {
-      case COMP_BOT:
-      case SIM_BOT:
-        // TODO: Use SysID to calculate the feedforward
-        FEEDFORWARD = new ArmFeedforward(1.2, 0.95, 2, 0.08);
-        VOLTAGE_CLAMP = new Clamp(12);
-        CONSTRAINTS =
-            // We use the actual max acceleration here but limit the velocity to avoid breaking the
-            // arm or tipping the robot
-            new TrapezoidProfile.Constraints(
-                Units.degreesToRadians(20), VOLTAGE_CLAMP.maximum / FEEDFORWARD.ka);
-        break;
-      default:
-        FEEDFORWARD = new ArmFeedforward(0, 0, 0, 0);
-        VOLTAGE_CLAMP = new Clamp(12);
-        CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
-        break;
-    }
-  }
-
-  private final ProfiledPIDController pidController;
   private final Lights lights;
 
   private final ArmIO io;
@@ -74,23 +40,6 @@ public class Arm extends SubsystemBase {
   public Arm(ArmIO io, Lights lights) {
     this.io = io;
     this.lights = lights;
-
-    switch (Constants.getRobot()) {
-      case SIM_BOT:
-      case COMP_BOT:
-        // TODO: Use SysID to calculate the PID terms
-        pidController =
-            new ProfiledPIDController(1.5, 0, 0.4, CONSTRAINTS, Constants.PERIOD_SECONDS);
-        // TODO: Measure actual acceptable tolerance
-        pidController.setTolerance(Units.degreesToRadians(4), Units.degreesToRadians(8));
-        break;
-      default:
-        pidController = new ProfiledPIDController(1, 0, 0, CONSTRAINTS, Constants.PERIOD_SECONDS);
-        break;
-    }
-
-    pidController.setGoal(desiredPosition.state);
-    resetController();
   }
 
   @Override
@@ -98,68 +47,66 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
 
     io.updateInputs(inputs);
+    Logger.getInstance().processInputs("Arm", inputs);
 
     if (DriverStation.isEnabled()) {
       doPositionControlLoop();
-    } else {
-      resetController();
     }
 
-    Logger.getInstance().processInputs("Arm", inputs);
-
-    final var atGoal = pidController.atGoal();
+    final var isAtGoal = atGoal();
     Logger.getInstance().recordOutput("Arm/Goal/Position", desiredPosition.toString());
-    Logger.getInstance().recordOutput("Arm/Goal/AtGoal", atGoal);
-    Logger.getInstance().recordOutput("Arm/Goal/PositionRadians", pidController.getGoal().position);
-    Logger.getInstance()
-        .recordOutput(
-            "Arm/Goal/Error/PositionRadians",
-            pidController.getGoal().position - inputs.positionRadians);
-    Logger.getInstance()
-        .recordOutput(
-            "Arm/Goal/Error/VelocityRadiansPerSecond",
-            pidController.getGoal().velocity - inputs.velocityRadiansPerSecond);
+    Logger.getInstance().recordOutput("Arm/Goal/AtGoal", isAtGoal);
+    Logger.getInstance().recordOutput("Arm/Position", getPosition().toString());
+    Logger.getInstance().recordOutput("Arm/DesiredVoltageVolts", desiredVoltageVolts);
 
-    Logger.getInstance()
-        .recordOutput(
-            "Arm/MotionProfile/DesiredPositionRadians", pidController.getSetpoint().position);
-    Logger.getInstance()
-        .recordOutput(
-            "Arm/MotionProfile/DesiredVelocityRadiansPerSecond",
-            pidController.getSetpoint().velocity);
-    Logger.getInstance().recordOutput("Arm/MotionProfile/DesiredVoltageVolts", desiredVoltageVolts);
-    Logger.getInstance()
-        .recordOutput("Arm/MotionProfile/Error/PositionRadians", pidController.getPositionError());
-    Logger.getInstance()
-        .recordOutput(
-            "Arm/MotionProfile/Error/VelocityRadiansPerSecond", pidController.getVelocityError());
-
-    lights.setSubsystemState(desiredPosition, atGoal);
-  }
-
-  private void resetController() {
-    pidController.reset(inputs.positionRadians, inputs.velocityRadiansPerSecond);
-  }
-
-  private void doPositionControlLoop() {
-    final var setpoint = pidController.getSetpoint();
-    final var feedforward = FEEDFORWARD.calculate(setpoint.position, setpoint.velocity);
-    final var feedback = pidController.calculate(inputs.positionRadians);
-
-    final var voltage = feedforward + feedback;
-    desiredVoltageVolts = VOLTAGE_CLAMP.clamp(voltage);
-
-    io.setVoltage(desiredVoltageVolts);
-  }
-
-  /** Check if the arm is at the provided position. */
-  public boolean atPosition(ArmPosition position) {
-    return pidController.getGoal() == position.state && pidController.atGoal();
+    lights.setSubsystemState(desiredPosition, isAtGoal);
   }
 
   /** Set the desired position of the arm. */
   public void setDesiredPosition(ArmPosition position) {
     desiredPosition = position;
-    pidController.setGoal(position.state);
+  }
+
+  /** Check if the arm is at the provided position. */
+  public boolean atPosition(ArmPosition position) {
+    return getPosition() == position;
+  }
+
+  private void doPositionControlLoop() {
+    if (atGoal()) {
+      desiredVoltageVolts = 0;
+    } else {
+      switch (desiredPosition) {
+        case UP:
+          desiredVoltageVolts = 2.75;
+          break;
+        case DOWN:
+          desiredVoltageVolts = -2;
+          break;
+        default:
+          throw new IllegalArgumentException("Invalid desired position");
+      }
+    }
+
+    io.setVoltage(desiredVoltageVolts);
+  }
+
+  private boolean atGoal() {
+    return atPosition(desiredPosition);
+  }
+
+  private ArmPosition getPosition() {
+    if (inputs.upwardLimitSwitchEnabled) {
+      if (inputs.downwardLimitSwitchEnabled) {
+        // Both limit switches should never be enabled
+        return ArmPosition.UNKNOWN;
+      }
+
+      return ArmPosition.UP;
+    } else if (inputs.downwardLimitSwitchEnabled) {
+      return ArmPosition.DOWN;
+    } else {
+      return ArmPosition.UNKNOWN;
+    }
   }
 }

@@ -13,13 +13,14 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  * (not -90deg or 270deg, that would be CW+).
  */
 public enum ArmPosition {
-  UP(Rotation2d.fromDegrees(87.69287109375)),
-  LEVEL(new Rotation2d(0)),
-  DOWN(Rotation2d.fromDegrees(-9.602050781249998));
+  UP(Rotation2d.fromDegrees(40)),
+  DOWN(Rotation2d.fromDegrees(-10)),
+  UNKNOWN(null);
 
-  final TrapezoidProfile.State state;
+  final TrapezoidProfile.State stateForSimulation;
 
   ArmPosition(Rotation2d angle) {
-    this.state = new TrapezoidProfile.State(angle.getRadians(), 0);
+    this.stateForSimulation =
+        angle == null ? null : new TrapezoidProfile.State(angle.getRadians(), 0);
   }
 }

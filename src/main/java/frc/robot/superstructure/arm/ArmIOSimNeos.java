@@ -34,8 +34,8 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
           Arm.ARM_LENGTH,
           Arm.MOMENT_OF_INERTIA,
           // This assumes that the DOWN position has an angle less than the UP position
-          ArmPosition.DOWN.state.position,
-          ArmPosition.UP.state.position,
+          ArmPosition.DOWN.stateForSimulation.position,
+          ArmPosition.UP.stateForSimulation.position,
           Arm.ARM_MASS,
           true);
   private final Mechanism2d arm2d =
@@ -57,7 +57,8 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
 
     sim.setState(
         VecBuilder.fill(
-            Arm.STARTING_POSITION.state.position, Arm.STARTING_POSITION.state.velocity));
+            Arm.STARTING_POSITION.stateForSimulation.position,
+            Arm.STARTING_POSITION.stateForSimulation.velocity));
 
     // TODO: Use CAD for drawing accurate line widths
   }
@@ -97,8 +98,9 @@ public class ArmIOSimNeos extends ArmIONeos implements ArmIO {
       inputs.appliedVolts *= -1;
     }
 
-    inputs.upwardLimitSwitchEnabled = positionRadians >= ArmPosition.UP.state.position;
-    inputs.downwardLimitSwitchEnabled = positionRadians <= ArmPosition.DOWN.state.position;
+    inputs.upwardLimitSwitchEnabled = positionRadians >= ArmPosition.UP.stateForSimulation.position;
+    inputs.downwardLimitSwitchEnabled =
+        positionRadians <= ArmPosition.DOWN.stateForSimulation.position;
   }
 
   @Override
