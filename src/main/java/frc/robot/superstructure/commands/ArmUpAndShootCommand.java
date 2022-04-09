@@ -18,7 +18,7 @@ public class ArmUpAndShootCommand extends SequentialCommandGroup {
    * The maximum amount of time (in seconds) it will take to shoot any amount of cargo from the SPU.
    * If we had cargo sensors we'd use those instead of just relying on a timer.
    */
-  private static final double SHOOT_DURATION = 0.75;
+  private static final double SHOOT_DURATION = 1;
 
   /** Creates a new ArmUpAndShootCommand. */
   public ArmUpAndShootCommand(SuperstructureSubsystem superstructure) {
