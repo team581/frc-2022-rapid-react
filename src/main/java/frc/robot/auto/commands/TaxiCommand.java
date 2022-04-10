@@ -25,13 +25,14 @@ public class TaxiCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveSubsystem.setChassisSpeeds(new ChassisSpeeds(-2, 0, 0));
+    driveSubsystem.setChassisSpeeds(new ChassisSpeeds(-1, 0, 0));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.stopMotors();
+    // Setting chassis speeds to 0 doesn't seem to work
+    driveSubsystem.setChassisSpeeds(new ChassisSpeeds(-0.1, 0, 0));
   }
 
   // Returns true when the command should end.
