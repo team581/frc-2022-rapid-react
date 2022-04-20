@@ -4,22 +4,21 @@
 
 [Team 581](https://github.com/team581)'s robot code for [the FRC 2022 Rapid React game](https://youtu.be/LgniEjI9cCM).
 
+![A photo of our robot](./robot.jpg)
+
 ## Features
 
-Our robot itself is still WIP, but these are highlights of what we've accomplished on the software side so far:
-
-- ??? ball auto
+- Zero, one, or two ball autonomous
 - Drivetrain
   - Mecanum drivetrain controlled with a holonomic drive controller during autonomous
   - Per-wheel closed-loop velocity control with feedforward and feedback via PID
 - Vision
-  - Two Limelight 2+s used for seeking cargo and aligning with the upper hub
-  - Uses on-the-fly trajectory generation to plan the best route to the goal
+  - Two Limelight 2+s used for tracking cargo and aligning with the upper hub
+  - Uses on-the-fly trajectory generation for aligning with the hub's fenders during teleop
   - Full robot localization using vision data fused with odometry data using an unscented Kalman filter
-- Intake & shooter (AKA "Swiffer Picker Upper")
-  - Closed-loop velocity control for flywheel
-- Arm for Swiffer Picker Upper
-  - Arm position control via motion profiled PID with feedforward
+- Arm which carries the intake & shooter (AKA "Swiffer Picker Upper")
+  - Closed-loop velocity control for intake & shooter flywheel
+  - Open-loop position control for moving arm
 - Misc
   - Mass data logging to USB + streamed to driver station via Advantage Kit
 
