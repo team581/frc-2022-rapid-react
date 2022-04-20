@@ -4,7 +4,7 @@
 
 [Team 581](https://github.com/team581)'s robot code for [the FRC 2022 Rapid React game](https://youtu.be/LgniEjI9cCM).
 
-![A photo of our robot](./robot.jpg)
+![A photo of our robot](./robot.png)
 
 ## Features
 
