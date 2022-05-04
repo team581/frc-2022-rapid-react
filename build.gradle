@@ -110,7 +110,7 @@ wpi.java.configureTestTasks(test)
 apply plugin: 'groovy'
 spotless {
 	encoding 'UTF-8'
-	lineEndings 'WINDOWS'
+	lineEndings 'UNIX'
 
 	java {
 		licenseHeader '// Copyright (c) FIRST and other WPILib contributors.\n' +
