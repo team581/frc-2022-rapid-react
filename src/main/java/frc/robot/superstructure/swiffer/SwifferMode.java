@@ -15,7 +15,9 @@ public enum SwifferMode {
   /** Angular velocity in radians/second. */
   final double angularVelocity;
 
-  /** @param rpm The desired rotations per minute (RPM) for this mode. */
+  /**
+   * @param rpm The desired rotations per minute (RPM) for this mode.
+   */
   SwifferMode(double rpm) {
     this.angularVelocity = Units.rotationsPerMinuteToRadiansPerSecond(rpm);
   }

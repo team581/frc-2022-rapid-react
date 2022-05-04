@@ -124,7 +124,9 @@ public class CargoVisionSubsystem extends VisionSubsystemBase {
     return Optional.of(new TimestampedPose2d(fieldToRobot, inputs.captureTimestamp));
   }
 
-  /** @see {@link ComputerVisionUtil#estimateCameraToTarget(Translation2d, Pose2d, Rotation2d)} */
+  /**
+   * @see {@link ComputerVisionUtil#estimateCameraToTarget(Translation2d, Pose2d, Rotation2d)}
+   */
   private Transform2d getCameraToTarget(Rotation2d x, Rotation2d y, Pose2d fieldToTarget) {
     final var r = VISION_UTIL.calculateDistanceToTarget(upperHub.heightFromFloor, y);
     final var theta = x;
